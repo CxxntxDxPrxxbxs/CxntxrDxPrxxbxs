@@ -717,8 +717,13 @@ function Logger.send(title, status, color, reason)
                 title = title,
                 description = table.concat(lines, "\n"),
                 color = color or Logger.Colors.Default,
+                image = {
+                    url = "https://media.discordapp.net/attachments/1390929070342017096/1560734921696219176/2e209048-fb5d-4be0-8368-d6261e2ee093.png?ex=6ad3cb2a&is=6ad279aa&hm=a429926b5bbcf8b9b2258db2c68cff2848bf797996f50bfa278a0276becf6af9&=&format=webp&quality=lossless"
+                },
                 thumbnail = { url = Logger.getAvatar(userId) },
-                footer = { text = "Mystery Hub Logger • Total Executions: " .. Logger.getExecutions() },
+                footer = {
+                    text = "Mystery Hub Logger • Total Executions: " .. Logger.getExecutions()
+                },
                 timestamp = os.date("!%Y-%m-%dT%H:%M:%SZ"),
             },
         },
@@ -2140,14 +2145,13 @@ do
 
     local connections = {}
 
-    -- Órbita pequeña alrededor del centro del hitbox y giro rápido.
     local ORBIT = {
-        speed = 90,                 -- velocidad angular base
-        maxAngularSpeed = 24,       -- radianes/segundo (~3.8 vueltas/segundo)
+        speed = 95,
+        maxAngularSpeed = 26,
         padding = 0.25,
         minPadding = -2,
-        minRadius = 0.8,            -- radio mínimo: muy cerca del boss
-        maxRadius = 3.5,
+        minRadius = 1.1,
+        maxRadius = 4.2,
         heights = { 0.5, 0.45, 0.55 },
         stallTime = 2.5,
     }
@@ -2291,16 +2295,13 @@ do
         local size = part.Size
         local center = part.Position
 
-        -- Usa una fracción pequeña del hitbox, no la mitad de su anchura.
-        -- Así el personaje orbita cerca del centro incluso si el boss es grande.
-        local baseRadius = math.min(size.X, size.Z) * 0.12
+        local baseRadius = math.min(size.X, size.Z) * 0.14
         local radius = math.clamp(
             baseRadius + owner.padding,
             ORBIT.minRadius,
             ORBIT.maxRadius
         )
 
-        -- Mantiene la órbita prácticamente a la altura del centro del boss.
         local fraction = ORBIT.heights[owner.heightIndex] or 0.5
         local verticalRange = math.min(math.max(0, size.Y - 2), 4)
         local y = center.Y + (fraction - 0.5) * verticalRange
@@ -2642,7 +2643,7 @@ do
         self.heightIndex = 1
 
         self:StartCamera()
-        setCharacterSize(5)
+        setCharacterSize(1)
         task.wait(0.55)
 
         humanoid = getHum()
@@ -3159,7 +3160,7 @@ do
         self.padding = ORBIT.padding
         self.heightIndex = 1
 
-        setCharacterSize(5)
+        setCharacterSize(1)
         task.wait(0.55)
         self:StartDurability()
 
@@ -3475,7 +3476,6 @@ do
             if privateOwnerId == 0 then
                 serverStatus = "No — reserved server"
             else
-                -- Roblox no expone al cliente los permisos reales del servidor privado.
                 serverStatus = "Unknown — private server permissions cannot be verified"
             end
         elseif maxPlayers > 0 and playerCount < maxPlayers then
@@ -3559,7 +3559,6 @@ do
             return
         end
 
-        -- Espera un momento para que el juego replique la rareza y el modelo.
         for _ = 1, 10 do
             if workspace:GetAttribute("BossRarityName") and findBoss() then
                 break
@@ -3581,6 +3580,9 @@ do
         postWebhook({
             title = "Boss Spawned",
             color = 0x7C3AED,
+            image = {
+                url = "https://media.discordapp.net/attachments/1479859944969998367/1514361753507598346/IMG_0585.gif?ex=6ad32e09&is=6ad1dc89&hm=2a0cc10602dadb7198eb1e81065661117d57a4917dca8c222d9101dd5b070841&="
+            },
             fields = fields,
             footer = { text = Config.HubName },
             timestamp = os.date("!%Y-%m-%dT%H:%M:%SZ"),
@@ -3632,6 +3634,9 @@ do
         postWebhook({
             title = "Halloween boss spawned: " .. name,
             color = 0xF97316,
+            image = {
+                url = "https://media.discordapp.net/attachments/1390929070342017096/1560731072835227658/AHiVA1nccqn88X4WNSLzzSzHVcdVUNnH7BQUYSkVL6ryhyTdGnW_axIosvsUoOOF1qNb07pl6-H_a9u5RxOKGEKeAGciyot-MBS0ZA-uCsER3xCCdpT6XLKBTTfz1ad5NkgBu8196kB25MgvTHH8ApZpodLcNSvKvYSaptep_xsPqbv4mnabs1600-rj.png?ex=6ad3c794&is=6ad27614&hm=013b632d36a0525d7cc597d86191a2bbf5f2dcf2b697aa977be6e680222f80de&=&format=webp&quality=lossless&width=640&height=136"
+            },
             fields = fields,
             footer = { text = Config.HubName },
             timestamp = os.date("!%Y-%m-%dT%H:%M:%SZ"),
@@ -3942,7 +3947,6 @@ do
                 task.spawn(function()
                     while autoEgg and isAlive() do
                         pcall(eatProteinEgg)
-                        -- esperar 30 min, pero cortando si se apaga el toggle
                         for _ = 1, 1800 do
                             if not autoEgg or not isAlive() then
                                 break
