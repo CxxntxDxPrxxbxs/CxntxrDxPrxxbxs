@@ -306,10 +306,10 @@ local Strings = {
         home_discord_desc = "Únete al servidor de la comunidad",
         home_discord_label = "Enlace de Discord",
 
-        farm_brawls = "Peleas (Brawls)",
-        farm_autojoin = "Auto unirse a Brawls",
+        farm_brawls = "Seccion de peleas",
+        farm_autojoin = "Auto unirse a la pelea",
         farm_autojoin_desc = "Se une automáticamente a las peleas cuando aparece el aviso",
-        farm_autowin = "Auto ganar Brawls",
+        farm_autowin = "Auto ganar peleas",
         farm_autowin_desc = "Gana las peleas automáticamente",
         farm_rocks = "Rocas",
         farm_timer = "Temporizador de farmeo",
@@ -324,7 +324,7 @@ local Strings = {
         farm_autotool = "Auto usar herramienta",
         farm_fasttools = "Herramientas rápidas",
         farm_autotrain = "Auto entrenar",
-        farm_autotrain_desc = "Entrena automáticamente con cualquier herramienta equipada o al sentarte en una máquina",
+        farm_autotrain_desc = "Entrena automáticamente con cualquier herramienta equipada",
         farm_combo_title = "Herramienta + Roca",
         farm_combo_desc = "Combina entrenamiento y daño a la roca",
         farm_select_combo = "Seleccionar combo",
@@ -374,7 +374,7 @@ local Strings = {
         pk_recommended = "Velocidad recomendada: 40",
         pk_reps_speed = "Velocidad de reps",
         pk_start = "Iniciar",
-        pk_egg = "Comer huevo (30 min)",
+        pk_egg = "Comer huevo cada 30 minutos",
         pk_spin = "Auto giro",
         pk_ind_squat = "Sentadilla Industrial",
         pk_hal_squat = "Sentadilla Hallowed",
@@ -386,8 +386,8 @@ local Strings = {
         pk_stopped = "Detenidas",
         pk_off = "Apagadas",
         pk_ping = "Ping",
-        pk_str_calc = "Fuerza (cálculo exacto)",
-        pk_dur_calc = "Durabilidad (cálculo exacto)",
+        pk_str_calc = "Calculadora de fuerza",
+        pk_dur_calc = "Calculadora de durabilidad",
         pk_totals = "Totales",
         pk_strength = "Fuerza",
         pk_durability = "Durabilidad",
@@ -405,7 +405,7 @@ local Strings = {
         pk_status = "Estatus",
         pk_active = "Activo",
         pk_inactive = "Inactivo",
-        pk_rb_calc = "Rebirths (cálculo exacto)",
+        pk_rb_calc = "Calculadora de renacimientos",
         pk_fast_rebirths = "Fast Rebirths",
         pk_ind_lift = "Levantamiento Industrial",
         pk_hal_lift = "Barra Hallowed",
@@ -3581,7 +3581,7 @@ do
             title = "Boss Spawned",
             color = 0x7C3AED,
             image = {
-                url = "https://media.discordapp.net/attachments/1479859944969998367/1514361753507598346/IMG_0585.gif?ex=6ad32e09&is=6ad1dc89&hm=2a0cc10602dadb7198eb1e81065661117d57a4917dca8c222d9101dd5b070841&="
+                url = "https://media.discordapp.net/attachments/1390929070342017096/1560731072835227658/AHiVA1nccqn88X4WNSLzzSzHVcdVUNnH7BQUYSkVL6ryhyTdGnW_axIosvsUoOOF1qNb07pl6-H_a9u5RxOKGEKeAGciyot-MBS0ZA-uCsER3xCCdpT6XLKBTTfz1ad5NkgBu8196kB25MgvTHH8ApZpodLcNSvKvYSaptep_xsPqbv4mnabs1600-rj.png?ex=6ad3c794&is=6ad27614&hm=013b632d36a0525d7cc597d86191a2bbf5f2dcf2b697aa977be6e680222f80de&=&format=webp&quality=lossless&width=1536&height=327"
             },
             fields = fields,
             footer = { text = Config.HubName },
@@ -3635,7 +3635,7 @@ do
             title = "Halloween boss spawned: " .. name,
             color = 0xF97316,
             image = {
-                url = "https://media.discordapp.net/attachments/1390929070342017096/1560731072835227658/AHiVA1nccqn88X4WNSLzzSzHVcdVUNnH7BQUYSkVL6ryhyTdGnW_axIosvsUoOOF1qNb07pl6-H_a9u5RxOKGEKeAGciyot-MBS0ZA-uCsER3xCCdpT6XLKBTTfz1ad5NkgBu8196kB25MgvTHH8ApZpodLcNSvKvYSaptep_xsPqbv4mnabs1600-rj.png?ex=6ad3c794&is=6ad27614&hm=013b632d36a0525d7cc597d86191a2bbf5f2dcf2b697aa977be6e680222f80de&=&format=webp&quality=lossless&width=640&height=136"
+                url = "https://media.discordapp.net/attachments/1390929070342017096/1560731072835227658/AHiVA1nccqn88X4WNSLzzSzHVcdVUNnH7BQUYSkVL6ryhyTdGnW_axIosvsUoOOF1qNb07pl6-H_a9u5RxOKGEKeAGciyot-MBS0ZA-uCsER3xCCdpT6XLKBTTfz1ad5NkgBu8196kB25MgvTHH8ApZpodLcNSvKvYSaptep_xsPqbv4mnabs1600-rj.png?ex=6ad3c794&is=6ad27614&hm=013b632d36a0525d7cc597d86191a2bbf5f2dcf2b697aa977be6e680222f80de&=&format=webp&quality=lossless&width=1536&height=327"
             },
             fields = fields,
             footer = { text = Config.HubName },
