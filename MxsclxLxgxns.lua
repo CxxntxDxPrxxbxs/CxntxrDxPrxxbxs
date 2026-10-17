@@ -164,7 +164,6 @@ local Strings = {
         bw_test_fail = "Failed to send the webhook test.",
         bw_no_http = "Your executor does not support HTTP requests.",
         bw_invalid = "Invalid Discord webhook URL.",
-
         hw_section = "Halloween",
         hw_health_title = "Halloween Boss Health",
         hw_select = "Select Boss",
@@ -208,6 +207,25 @@ local Strings = {
         pk_fast_rebirths = "Fast Rebirths",
         pk_ind_lift = "Industrial Lift",
         pk_hal_lift = "Hallowed Bar Lift",
+
+        ex_farm_section = "Farming Utilities",
+        ex_lockpos = "Lock Position",
+        ex_lockpos_desc = "Keeps your character frozen in place",
+        ex_autospin = "Auto Spin",
+        ex_autospin_desc = "Spins the Fortune Wheel automatically",
+        ex_spin_missing = "Fortune Wheel data was not found.",
+        ex_hidepets = "Hide Pets",
+        ex_hidepets_desc = "Hides your pets to reduce lag",
+        ex_hidepopups = "Hide Popups",
+        ex_hidepopups_desc = "Toggles the game's popup notifications",
+        ex_opt_section = "Optimization",
+        ex_opt_note = "Everything is reversible: turning a toggle off restores the original values.",
+        ex_opt_particles = "Remove Particles",
+        ex_opt_particles_desc = "Removes particles, trails, beams, fire, smoke, sparkles and explosions, including new ones",
+        ex_opt_effects = "Remove Lights & Effects",
+        ex_opt_effects_desc = "Turns off lights, highlights and screen effects (bloom, blur, sun rays...)",
+        ex_opt_graphics = "Low Graphics",
+        ex_opt_graphics_desc = "Lowest quality, no shadows, flat materials and hidden decals",
 
         set_appearance = "Appearance",
         set_theme = "Theme",
@@ -324,7 +342,7 @@ local Strings = {
         farm_autotool = "Auto usar herramienta",
         farm_fasttools = "Herramientas rápidas",
         farm_autotrain = "Auto entrenar",
-        farm_autotrain_desc = "Entrena automáticamente con cualquier herramienta equipada",
+        farm_autotrain_desc = "Entrena automáticamente con cualquier herramienta equipada o al sentarte en una máquina",
         farm_combo_title = "Herramienta + Roca",
         farm_combo_desc = "Combina entrenamiento y daño a la roca",
         farm_select_combo = "Seleccionar combo",
@@ -365,7 +383,6 @@ local Strings = {
         bw_test_fail = "No se pudo enviar la prueba del webhook.",
         bw_no_http = "Tu executor no admite solicitudes HTTP.",
         bw_invalid = "La URL del webhook de Discord no es válida.",
-
         hw_section = "Halloween",
         hw_health_title = "Vida de los bosses de Halloween",
         hw_select = "Seleccionar boss",
@@ -409,6 +426,25 @@ local Strings = {
         pk_fast_rebirths = "Fast Rebirths",
         pk_ind_lift = "Levantamiento Industrial",
         pk_hal_lift = "Barra Hallowed",
+
+        ex_farm_section = "Utilidades de farmeo",
+        ex_lockpos = "Bloquear posición",
+        ex_lockpos_desc = "Mantiene a tu personaje congelado en su lugar",
+        ex_autospin = "Auto giro",
+        ex_autospin_desc = "Gira la Ruleta de la Fortuna automáticamente",
+        ex_spin_missing = "No se encontraron los datos de la Ruleta de la Fortuna.",
+        ex_hidepets = "Ocultar mascotas",
+        ex_hidepets_desc = "Oculta tus mascotas para reducir el lag",
+        ex_hidepopups = "Ocultar popups",
+        ex_hidepopups_desc = "Activa o desactiva los avisos emergentes del juego",
+        ex_opt_section = "Optimización",
+        ex_opt_note = "Todo es reversible: al apagar un interruptor se restauran los valores originales.",
+        ex_opt_particles = "Eliminar partículas",
+        ex_opt_particles_desc = "Quita partículas, estelas, rayos, fuego, humo, destellos y explosiones, incluso las nuevas",
+        ex_opt_effects = "Eliminar luces y efectos",
+        ex_opt_effects_desc = "Apaga luces, resaltados y efectos de pantalla (bloom, desenfoque, rayos de sol...)",
+        ex_opt_graphics = "Gráficos bajos",
+        ex_opt_graphics_desc = "Calidad mínima, sin sombras, materiales lisos y calcomanías ocultas",
 
         set_appearance = "Apariencia",
         set_theme = "Tema",
@@ -718,7 +754,7 @@ function Logger.send(title, status, color, reason)
                 description = table.concat(lines, "\n"),
                 color = color or Logger.Colors.Default,
                 image = {
-                    url = "https://media.discordapp.net/attachments/1390929070342017096/1560734921696219176/2e209048-fb5d-4be0-8368-d6261e2ee093.png?ex=6ad3cb2a&is=6ad279aa&hm=a429926b5bbcf8b9b2258db2c68cff2848bf797996f50bfa278a0276becf6af9&=&format=webp&quality=lossless"
+                    url = "https://raw.githubusercontent.com/Mystery-Center/Mystery-Media/main/Mystery%20Logger%20Imagen.png"
                 },
                 thumbnail = { url = Logger.getAvatar(userId) },
                 footer = {
@@ -1435,7 +1471,7 @@ do
         table.insert(rockNames, rock.name)
     end
 
-    local selectedRock = rockNames[1]
+    local selectedRock = ""
     local autoRock = false
     local rockTime = 0
     local rockSession = 0
@@ -1548,11 +1584,10 @@ do
     local RockDropdown = Farm:Dropdown({
         Title = L("farm_select_rock"),
         Values = rockNames,
-        Value = selectedRock,
+        Value = nil,
+        AllowNone = true,
         Callback = function(option)
-            if type(option) == "string" then
-                selectedRock = option
-            end
+            selectedRock = type(option) == "string" and option or ""
         end,
     })
     Util.register("selected_rock", RockDropdown)
@@ -1596,6 +1631,7 @@ do
             end
         end
     end)
+    local loopGen = { tool = 0, train = 0, combo = 0, rebirth = 0 }
 
     local toolList = {
         { "Weight", "repTime", 1 },
@@ -1613,7 +1649,6 @@ do
     local autoTool = false
     local fastTools = false
     local autoTrain = false
-    local toolCharConn = nil
 
     local function fireMuscle(action, hand)
         pcall(function()
@@ -1700,10 +1735,8 @@ do
         Value = false,
         Callback = function(state)
             autoTool = state
-            if toolCharConn then
-                toolCharConn:Disconnect()
-                toolCharConn = nil
-            end
+            loopGen.tool = loopGen.tool + 1
+            local gen = loopGen.tool
 
             if not state then
                 toolUnequip(selectedTool)
@@ -1715,12 +1748,12 @@ do
 
             if selectedTool == "Punch" then
                 punchLoop(function()
-                    return autoTool and selectedTool == "Punch"
+                    return autoTool and selectedTool == "Punch" and loopGen.tool == gen
                 end)
             else
                 toolEquip(selectedTool)
                 task.spawn(function()
-                    while autoTool and isAlive() do
+                    while autoTool and isAlive() and loopGen.tool == gen do
                         local character = LocalPlayer.Character
                         if character and selectedTool ~= "" and not character:FindFirstChild(selectedTool) then
                             toolEquip(selectedTool)
@@ -1734,22 +1767,38 @@ do
     })
     Util.register("auto_tool", AutoToolToggle)
 
+    local fastToolsConn = nil
+
+    local function applyFastTools(state)
+        for _, t in ipairs(toolList) do
+            local speed = state and 0 or t[3]
+            for _, container in ipairs({ LocalPlayer.Backpack, LocalPlayer.Character }) do
+                local tool = container and container:FindFirstChild(t[1])
+                local value = tool and tool:FindFirstChild(t[2])
+                if value then
+                    value.Value = speed
+                end
+            end
+        end
+    end
+
     local FastToolsToggle = Farm:Toggle({
         Title = L("farm_fasttools"),
         Value = false,
         Callback = function(state)
             fastTools = state
-            for _, t in ipairs(toolList) do
-                local speed = state and 0 or t[3]
-                local backpackTool = LocalPlayer.Backpack:FindFirstChild(t[1])
-                if backpackTool and backpackTool:FindFirstChild(t[2]) then
-                    backpackTool[t[2]].Value = speed
-                end
-                local character = LocalPlayer.Character
-                local handTool = character and character:FindFirstChild(t[1])
-                if handTool and handTool:FindFirstChild(t[2]) then
-                    handTool[t[2]].Value = speed
-                end
+            if fastToolsConn then
+                fastToolsConn:Disconnect()
+                fastToolsConn = nil
+            end
+            applyFastTools(state)
+            if state then
+                fastToolsConn = LocalPlayer.CharacterAdded:Connect(function()
+                    task.wait(1)
+                    if fastTools and isAlive() then
+                        applyFastTools(true)
+                    end
+                end)
             end
         end,
     })
@@ -1761,11 +1810,13 @@ do
         Value = false,
         Callback = function(state)
             autoTrain = state
+            loopGen.train = loopGen.train + 1
+            local gen = loopGen.train
             if not state then
                 return
             end
             task.spawn(function()
-                while autoTrain and isAlive() do
+                while autoTrain and isAlive() and loopGen.train == gen do
                     local character, humanoid = getCharacter(LocalPlayer)
                     if character then
                         local trained = false
@@ -1813,7 +1864,6 @@ do
 
     local selectedCombo = ""
     local autoCombo = false
-    local comboCharConn = nil
 
     local function runCombo(toolName, rockName, delay)
         local character = LocalPlayer.Character
@@ -1852,10 +1902,8 @@ do
         Value = false,
         Callback = function(state)
             autoCombo = state
-            if comboCharConn then
-                comboCharConn:Disconnect()
-                comboCharConn = nil
-            end
+            loopGen.combo = loopGen.combo + 1
+            local gen = loopGen.combo
 
             if not state then
                 for _, c in ipairs(comboList) do
@@ -1871,11 +1919,11 @@ do
             end
 
             punchLoop(function()
-                return autoCombo
+                return autoCombo and loopGen.combo == gen
             end)
 
             task.spawn(function()
-                while autoCombo and isAlive() do
+                while autoCombo and isAlive() and loopGen.combo == gen do
                     local character = LocalPlayer.Character
                     if character and character.Parent then
                         for _, c in ipairs(comboList) do
@@ -1899,6 +1947,7 @@ do
     local rebirthLockConn = nil
     local rebirthLockCharConn = nil
     local antiRebirthHooked = false
+    local rebirthLockSaved = nil
     local AutoRebirthTargetToggle, AutoRebirthInfiniteToggle
 
     local function rebirthUnequip()
@@ -1987,8 +2036,10 @@ do
                     end)
                     return
                 end
+                loopGen.rebirth = loopGen.rebirth + 1
+                local gen = loopGen.rebirth
                 rebirthLoop(function()
-                    return autoRebirthTarget
+                    return autoRebirthTarget and loopGen.rebirth == gen
                 end)
             elseif not autoRebirthInfinite then
                 rebirthUnequip()
@@ -2008,8 +2059,10 @@ do
                         AutoRebirthTargetToggle:Set(false)
                     end)
                 end
+                loopGen.rebirth = loopGen.rebirth + 1
+                local gen = loopGen.rebirth
                 rebirthLoop(function()
-                    return autoRebirthInfinite
+                    return autoRebirthInfinite and loopGen.rebirth == gen
                 end)
             elseif not autoRebirthTarget then
                 rebirthUnequip()
@@ -2035,6 +2088,12 @@ do
         end
 
         if rebirthLock then
+            if not rebirthLockSaved then
+                rebirthLockSaved = {
+                    walkSpeed = humanoid.WalkSpeed,
+                    jumpPower = humanoid.JumpPower,
+                }
+            end
             humanoid.WalkSpeed = 0
             humanoid.JumpPower = 0
             humanoid.AutoRotate = false
@@ -2053,9 +2112,12 @@ do
                     hrp.CFrame = savedCFrame
                 end
             end)
-        else
-            humanoid.WalkSpeed = 250
-            humanoid.JumpPower = 50
+                else
+            if rebirthLockSaved then
+                humanoid.WalkSpeed = rebirthLockSaved.walkSpeed
+                humanoid.JumpPower = rebirthLockSaved.jumpPower
+                rebirthLockSaved = nil
+            end
             humanoid.AutoRotate = true
             humanoid:ChangeState(Enum.HumanoidStateType.GettingUp)
         end
@@ -2127,6 +2189,7 @@ do
                     return self.Name
                 end)
                 if ok and name
+                    and not (checkcaller and checkcaller())
                     and (method == "InvokeServer" or method == "FireServer")
                     and string.find(string.lower(name), "rebirth") then
                     return nil
@@ -2137,6 +2200,33 @@ do
             Util.notify(L("farm_antirebirth"), L("farm_antirebirth_done"), "check")
         end,
     })
+        task.spawn(function()
+        while isAlive() do
+            task.wait(1)
+        end
+        rebirthLock = false
+        autoRebirthTarget = false
+        autoRebirthInfinite = false
+        autoRock = false
+        autoTool = false
+        autoTrain = false
+        autoCombo = false
+        autoFarmBrawls = false
+        autoJoinBrawls = false
+        fastTools = false
+        if rebirthLockConn then
+            rebirthLockConn:Disconnect()
+            rebirthLockConn = nil
+        end
+        if rebirthLockCharConn then
+            rebirthLockCharConn:Disconnect()
+            rebirthLockCharConn = nil
+        end
+        if fastToolsConn then
+            fastToolsConn:Disconnect()
+            fastToolsConn = nil
+        end
+    end)
 end
 
 do
@@ -2177,6 +2267,16 @@ do
 
     local function getBossHealth()
         return math.max(0, tonumber(workspace:GetAttribute("BossHealth")) or 0)
+    end
+
+    local function firePunch()
+        local event = LocalPlayer:FindFirstChild("muscleEvent")
+        if event then
+            pcall(function()
+                event:FireServer("punch", "leftHand")
+                event:FireServer("punch", "rightHand")
+            end)
+        end
     end
 
     local function parseNumber(text)
@@ -2394,14 +2494,7 @@ do
                     if not leftHand or not rightHand or not punch then
                         task.wait(0.1)
                     else
-                        local events = ReplicatedStorage:FindFirstChild("rEvents")
-                        local muscleEvent = events and events:FindFirstChild("muscleEvent")
-                        if muscleEvent and muscleEvent:IsA("RemoteEvent") then
-                            pcall(function()
-                                muscleEvent:FireServer("punch", "leftHand")
-                                muscleEvent:FireServer("punch", "rightHand")
-                            end)
-                        end
+                        firePunch()
 
                         pcall(punch.Activate, punch)
 
@@ -2773,7 +2866,7 @@ do
         )
     end
 
-    function BossFarm:Fight(boss)
+    function BossFarm:Fight(boss, generation)
         if not self:BeginBattle(boss) then
             return
         end
@@ -2784,7 +2877,8 @@ do
         local lastFrame = os.clock()
         local tracker = { lastHealth = lastHealth, lastDamageAt = os.clock() }
 
-        while self.active and isAlive() and boss.Parent and workspace:GetAttribute("BossActive") == true do
+        while self.active and isAlive() and self.generation == generation
+            and boss.Parent and workspace:GetAttribute("BossActive") == true do
             local currentBoss, part, target = findBoss()
             if currentBoss ~= boss or not part or not target then
                 break
@@ -2863,12 +2957,16 @@ do
             end
         end
 
-        local defeated = workspace:GetAttribute("BossActive") ~= true or getBossHealth() <= 0
-        if defeated and self.active then
-            self:CollectChest(12)
+            if self.generation ~= generation then
+                return
+            end
+
+            local defeated = workspace:GetAttribute("BossActive") ~= true or getBossHealth() <= 0
+            if defeated and self.active then
+                self:CollectChest(12)
+            end
+            self:RestoreBattle()
         end
-        self:RestoreBattle()
-    end
 
     function BossFarm:Set(enabled)
         enabled = enabled == true
@@ -2904,7 +3002,7 @@ do
                 local boss = findBoss()
 
                 if boss and workspace:GetAttribute("BossActive") == true then
-                    self:Fight(boss)
+                    self:Fight(boss, generation)
                 else
                     self.engagedBoss = nil
                     task.wait(0.4)
@@ -3206,13 +3304,13 @@ do
         self.engagedBoss = nil
     end
 
-    function HalloweenFarm:Fight(boss)
+    function HalloweenFarm:Fight(boss, generation)
         local lastAttack = 0
         local angle = math.random() * math.pi * 2
         local lastFrame = os.clock()
         local tracker = { lastHealth = math.huge, lastDamageAt = os.clock() }
 
-        while self.active and isAlive() do
+        while self.active and isAlive() and self.generation == generation do
             local currentBoss, part, target = halloweenFindBoss(self.selectedBoss)
 
             if not currentBoss or not part or not target then
@@ -3277,14 +3375,7 @@ do
                                     attackTime.Value = 0
                                 end
 
-                                local events = ReplicatedStorage:FindFirstChild("rEvents")
-                                local muscleEvent = events and events:FindFirstChild("muscleEvent")
-                                if muscleEvent and muscleEvent:IsA("RemoteEvent") then
-                                    pcall(function()
-                                        muscleEvent:FireServer("punch", "leftHand")
-                                        muscleEvent:FireServer("punch", "rightHand")
-                                    end)
-                                end
+                                firePunch()
 
                                 touchBoss(character, part, target)
                                 self.attacks = self.attacks + 1
@@ -3301,7 +3392,9 @@ do
             end
         end
 
-        self:RestoreBattle()
+        if self.generation == generation then
+            self:RestoreBattle()
+        end
     end
 
     function HalloweenFarm:Set(enabled)
@@ -3325,7 +3418,7 @@ do
 
                 if boss then
                     self.status = "Attacking " .. self.selectedBoss
-                    self:Fight(boss)
+                    self:Fight(boss, generation)
                 else
                     self.status = "Waiting for " .. self.selectedBoss
                     task.wait(0.4)
@@ -3581,7 +3674,7 @@ do
             title = "Boss Spawned",
             color = 0x7C3AED,
             image = {
-                url = "https://media.discordapp.net/attachments/1390929070342017096/1560731072835227658/AHiVA1nccqn88X4WNSLzzSzHVcdVUNnH7BQUYSkVL6ryhyTdGnW_axIosvsUoOOF1qNb07pl6-H_a9u5RxOKGEKeAGciyot-MBS0ZA-uCsER3xCCdpT6XLKBTTfz1ad5NkgBu8196kB25MgvTHH8ApZpodLcNSvKvYSaptep_xsPqbv4mnabs1600-rj.png?ex=6ad3c794&is=6ad27614&hm=013b632d36a0525d7cc597d86191a2bbf5f2dcf2b697aa977be6e680222f80de&=&format=webp&quality=lossless&width=1536&height=327"
+                url = "https://raw.githubusercontent.com/Mystery-Center/Mystery-Media/main/Mystery%20Notification%20Imagen.png"
             },
             fields = fields,
             footer = { text = Config.HubName },
@@ -3635,7 +3728,7 @@ do
             title = "Halloween boss spawned: " .. name,
             color = 0xF97316,
             image = {
-                url = "https://media.discordapp.net/attachments/1390929070342017096/1560731072835227658/AHiVA1nccqn88X4WNSLzzSzHVcdVUNnH7BQUYSkVL6ryhyTdGnW_axIosvsUoOOF1qNb07pl6-H_a9u5RxOKGEKeAGciyot-MBS0ZA-uCsER3xCCdpT6XLKBTTfz1ad5NkgBu8196kB25MgvTHH8ApZpodLcNSvKvYSaptep_xsPqbv4mnabs1600-rj.png?ex=6ad3c794&is=6ad27614&hm=013b632d36a0525d7cc597d86191a2bbf5f2dcf2b697aa977be6e680222f80de&=&format=webp&quality=lossless&width=1536&height=327"
+                url = "https://raw.githubusercontent.com/Mystery-Center/Mystery-Media/main/Mystery%20Notification%20Imagen.png"
             },
             fields = fields,
             footer = { text = Config.HubName },
@@ -3912,26 +4005,29 @@ do
     local autoEgg = false
     local eggRunning = false
 
-    local function eatProteinEgg()
+        local function eatProteinEgg()
         local char = LocalPlayer.Character
         local backpack = LocalPlayer:FindFirstChild("Backpack")
-        if not char or not backpack then
+        local humanoid = char and char:FindFirstChildOfClass("Humanoid")
+        if not char or not backpack or not humanoid then
             return
         end
 
-        local egg = backpack:FindFirstChild("Protein Egg") or char:FindFirstChild("Protein Egg")
+        local egg = char:FindFirstChild("Protein Egg") or backpack:FindFirstChild("Protein Egg")
         if not egg then
             return
         end
 
         if egg.Parent ~= char then
-            egg.Parent = char
+            pcall(humanoid.EquipTool, humanoid, egg)
+            task.wait(0.15)
         end
 
-        local eggEvent = remote("eatEvent") or remote("eggEvent") or remote("proteinEggEvent")
-        if eggEvent then
+        local held = char:FindFirstChild("Protein Egg")
+        local event = held and (held:IsA("RemoteEvent") and held or held:FindFirstChildWhichIsA("RemoteEvent", true))
+        if event then
             pcall(function()
-                eggEvent:FireServer("proteinEgg", egg)
+                event:FireServer()
             end)
         end
     end
@@ -3975,8 +4071,11 @@ do
                 task.spawn(function()
                     while autoSpin and isAlive() do
                         local wheel = remote("openFortuneWheelRemote")
-                        local chances = ReplicatedStorage:FindFirstChild("fortuneWheelChances")
-                        if wheel then
+                        local sharedFolder = ReplicatedStorage:FindFirstChild("shared")
+                        local catalogs = sharedFolder and sharedFolder:FindFirstChild("catalogs")
+                        local chancesFolder = catalogs and catalogs:FindFirstChild("fortuneWheelChances")
+                        local chances = chancesFolder and chancesFolder:FindFirstChild("Fortune Wheel")
+                        if wheel and chances then
                             pcall(function()
                                 wheel:InvokeServer("openFortuneWheel", chances)
                             end)
@@ -4284,6 +4383,7 @@ do
     })
 
     local fastRebirth = false
+    local rbGen = 0
 
     local rbTrack = {
         startTime = 0,
@@ -4387,6 +4487,8 @@ do
         Value = false,
         Callback = function(state)
             fastRebirth = state
+            rbGen = rbGen + 1
+            local gen = rbGen
 
             if not state then
                 if rbTrack.tracking then
@@ -4412,7 +4514,7 @@ do
             setDesc(RebirthRateParagraph, zeroRebirths)
 
             task.spawn(function()
-                while fastRebirth and isAlive() do
+                while fastRebirth and isAlive() and rbGen == gen do
                     local requiredStrength = getStrengthRequiredForRebirth()
 
                     unequipAllPets()
@@ -4427,7 +4529,7 @@ do
                         "Common Boss Pet",
                     })
 
-                    while getStrength() < requiredStrength and fastRebirth and isAlive() do
+                    while getStrength() < requiredStrength and fastRebirth and isAlive() and rbGen == gen do
                         local muscleEvent = LocalPlayer:FindFirstChild("muscleEvent")
                         if muscleEvent then
                             for _ = 1, 10 do
@@ -4437,7 +4539,7 @@ do
                         task.wait()
                     end
 
-                    if fastRebirth and isAlive() then
+                    if fastRebirth and isAlive() and rbGen == gen then
                         unequipAllPets()
                         equipPriorityPets({ "Titanium Hydra", "Tribal Overlord" })
 
@@ -4451,7 +4553,7 @@ do
                                 end)
                             end
                             task.wait(0.1)
-                        until getRebirths() > oldRebirths or not fastRebirth or not isAlive()
+                        until getRebirths() > oldRebirths or not fastRebirth or not isAlive() or rbGen ~= gen
                     end
 
                     task.wait()
@@ -4478,6 +4580,470 @@ end
 
 do
     local Extras = Tabs.Extras
+    local Lighting = game:GetService("Lighting")
+
+    local function remote(name)
+        local events = ReplicatedStorage:FindFirstChild("rEvents")
+        return events and events:FindFirstChild(name)
+    end
+
+    Extras:Section({ Title = L("ex_farm_section") })
+
+    local lockEnabled = false
+    local lockHeartbeat = nil
+    local lockCharConn = nil
+    local lockSaved = nil
+
+    local function stopLockHeartbeat()
+        if lockHeartbeat then
+            lockHeartbeat:Disconnect()
+            lockHeartbeat = nil
+        end
+    end
+
+    local function releaseLock(character)
+        stopLockHeartbeat()
+
+        local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+        if humanoid and lockSaved then
+            humanoid.WalkSpeed = lockSaved.walkSpeed
+            humanoid.JumpPower = lockSaved.jumpPower
+            humanoid.AutoRotate = lockSaved.autoRotate
+            pcall(function()
+                humanoid:ChangeState(Enum.HumanoidStateType.GettingUp)
+            end)
+        end
+        lockSaved = nil
+    end
+
+    local function applyLock(character)
+        stopLockHeartbeat()
+
+        local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+        local root = character and character:FindFirstChild("HumanoidRootPart")
+        if not humanoid or not root then
+            return
+        end
+
+        if not lockSaved then
+            lockSaved = {
+                walkSpeed = humanoid.WalkSpeed,
+                jumpPower = humanoid.JumpPower,
+                autoRotate = humanoid.AutoRotate,
+            }
+        end
+
+        humanoid.WalkSpeed = 0
+        humanoid.JumpPower = 0
+        humanoid.AutoRotate = false
+        pcall(function()
+            humanoid:ChangeState(Enum.HumanoidStateType.Physics)
+        end)
+
+        local savedCFrame = root.CFrame
+
+        lockHeartbeat = RunService.Heartbeat:Connect(function()
+            if not lockEnabled then
+                return
+            end
+            local char = LocalPlayer.Character
+            local hrp = char and char:FindFirstChild("HumanoidRootPart")
+            if hrp then
+                hrp.AssemblyLinearVelocity = Vector3.zero
+                hrp.AssemblyAngularVelocity = Vector3.zero
+                hrp.CFrame = savedCFrame
+            end
+        end)
+    end
+
+    local LockToggle = Extras:Toggle({
+        Title = L("ex_lockpos"),
+        Desc = L("ex_lockpos_desc"),
+        Value = false,
+        Callback = function(state)
+            lockEnabled = state
+
+            if lockCharConn then
+                lockCharConn:Disconnect()
+                lockCharConn = nil
+            end
+
+            if state then
+                applyLock(LocalPlayer.Character)
+
+                lockCharConn = LocalPlayer.CharacterAdded:Connect(function(character)
+                    if lockEnabled then
+                        task.wait(1)
+                        applyLock(character)
+                    end
+                end)
+            else
+                releaseLock(LocalPlayer.Character)
+            end
+        end,
+    })
+    Util.register("ex_lock_position", LockToggle)
+
+    local autoSpin = false
+    local spinRunning = false
+    local AutoSpinToggle
+
+    local function getFortuneChances()
+        local shared = ReplicatedStorage:FindFirstChild("shared")
+        local catalogs = shared and shared:FindFirstChild("catalogs")
+        local chances = catalogs and catalogs:FindFirstChild("fortuneWheelChances")
+        return chances and chances:FindFirstChild("Fortune Wheel")
+    end
+
+    AutoSpinToggle = Extras:Toggle({
+        Title = L("ex_autospin"),
+        Desc = L("ex_autospin_desc"),
+        Value = false,
+        Callback = function(state)
+            autoSpin = state
+
+            if state and not spinRunning then
+                spinRunning = true
+
+                task.spawn(function()
+                    while autoSpin and isAlive() do
+                        local wheel = remote("openFortuneWheelRemote")
+                        local chances = getFortuneChances()
+
+                        if not wheel or not chances then
+                            autoSpin = false
+                            Util.notify(L("ex_autospin"), L("ex_spin_missing"), "triangle-alert")
+                            task.defer(function()
+                                pcall(function()
+                                    AutoSpinToggle:Set(false)
+                                end)
+                            end)
+                            break
+                        end
+
+                        pcall(function()
+                            wheel:InvokeServer("openFortuneWheel", chances)
+                        end)
+                        task.wait(1)
+                    end
+                    spinRunning = false
+                end)
+            end
+        end,
+    })
+    Util.register("ex_auto_spin", AutoSpinToggle)
+
+    local HidePetsToggle = Extras:Toggle({
+        Title = L("ex_hidepets"),
+        Desc = L("ex_hidepets_desc"),
+        Value = false,
+        Callback = function(state)
+            local event = remote("showPetsEvent")
+            if event then
+                pcall(function()
+                    event:FireServer(state and "hidePets" or "showPets")
+                end)
+            end
+        end,
+    })
+    Util.register("ex_hide_pets", HidePetsToggle)
+
+    Extras:Toggle({
+        Title = L("ex_hidepopups"),
+        Desc = L("ex_hidepopups_desc"),
+        Value = false,
+        Callback = function()
+            local event = remote("savePlayerSizeEvent")
+            if event then
+                pcall(function()
+                    event:FireServer("showPopupsOption")
+                end)
+            end
+        end,
+    })
+
+    local DISABLE = { Enabled = false }
+
+    local RULES = {
+        ParticleEmitter = {
+            cat = "particles",
+            set = { Enabled = false, Rate = 0, Lifetime = NumberRange.new(0) },
+            clear = true,
+        },
+        Trail = { cat = "particles", set = DISABLE },
+        Beam = { cat = "particles", set = DISABLE },
+        Fire = { cat = "particles", set = DISABLE },
+        Smoke = { cat = "particles", set = DISABLE },
+        Sparkles = { cat = "particles", set = DISABLE },
+        Explosion = { cat = "particles", set = { Visible = false } },
+
+        PointLight = { cat = "effects", set = DISABLE },
+        SpotLight = { cat = "effects", set = DISABLE },
+        SurfaceLight = { cat = "effects", set = DISABLE },
+        Highlight = { cat = "effects", set = DISABLE },
+        BloomEffect = { cat = "effects", set = DISABLE },
+        BlurEffect = { cat = "effects", set = DISABLE },
+        SunRaysEffect = { cat = "effects", set = DISABLE },
+        ColorCorrectionEffect = { cat = "effects", set = DISABLE },
+        DepthOfFieldEffect = { cat = "effects", set = DISABLE },
+
+        Decal = { cat = "graphics", set = { Transparency = 1 } },
+        Texture = { cat = "graphics", set = { Transparency = 1 } },
+    }
+
+    local PART_SET = {
+        CastShadow = false,
+        Material = Enum.Material.Plastic,
+    }
+
+    local Opt = {
+        active = { particles = false, effects = false, graphics = false },
+        originals = {
+            particles = setmetatable({}, { __mode = "k" }),
+            effects = setmetatable({}, { __mode = "k" }),
+            graphics = setmetatable({}, { __mode = "k" }),
+        },
+        connections = {},
+        globals = nil,
+    }
+
+    local function applySet(category, object, set)
+        local store = Opt.originals[category]
+        local saved = store[object]
+        if not saved then
+            saved = {}
+            store[object] = saved
+        end
+
+        for property, value in pairs(set) do
+            if saved[property] == nil then
+                saved[property] = object[property]
+            end
+            object[property] = value
+        end
+    end
+
+    local function handle(object)
+        local rule = RULES[object.ClassName]
+
+        if rule then
+            if Opt.active[rule.cat] then
+                pcall(applySet, rule.cat, object, rule.set)
+                if rule.clear then
+                    pcall(object.Clear, object)
+                end
+            end
+        elseif Opt.active.graphics and object:IsA("BasePart") and not object:IsA("Terrain") then
+            pcall(applySet, "graphics", object, PART_SET)
+        end
+    end
+
+    local function onAdded(object)
+        local rule = RULES[object.ClassName]
+
+        if rule then
+            if Opt.active[rule.cat] then
+                task.defer(handle, object)
+            end
+        elseif Opt.active.graphics and object:IsA("BasePart") then
+            task.defer(handle, object)
+        end
+    end
+
+    local function scan(root)
+        local count = 0
+
+        for _, object in ipairs(root:GetDescendants()) do
+            if not isAlive() then
+                return
+            end
+
+            handle(object)
+
+            count = count + 1
+            if count % 300 == 0 then
+                task.wait()
+            end
+        end
+    end
+
+    local function ensureWatching()
+        if Opt.connections.workspace then
+            return
+        end
+        Opt.connections.workspace = workspace.DescendantAdded:Connect(onAdded)
+        Opt.connections.lighting = Lighting.DescendantAdded:Connect(onAdded)
+    end
+
+    local function stopWatchingIfIdle()
+        local active = Opt.active
+        if active.particles or active.effects or active.graphics then
+            return
+        end
+
+        for key, connection in pairs(Opt.connections) do
+            connection:Disconnect()
+            Opt.connections[key] = nil
+        end
+    end
+
+    local function restoreCategory(category)
+        local store = Opt.originals[category]
+
+        for object, saved in pairs(store) do
+            if object.Parent then
+                for property, value in pairs(saved) do
+                    pcall(function()
+                        object[property] = value
+                    end)
+                end
+            end
+            store[object] = nil
+        end
+    end
+
+    local function setGraphicsGlobals(enabled)
+        local terrain = workspace:FindFirstChildOfClass("Terrain")
+
+        if enabled then
+            if Opt.globals then
+                return
+            end
+
+            local saved = {}
+            Opt.globals = saved
+
+            pcall(function()
+                saved.quality = settings().Rendering.QualityLevel
+                settings().Rendering.QualityLevel = Enum.QualityLevel.Level01
+            end)
+
+            pcall(function()
+                saved.shadows = Lighting.GlobalShadows
+                saved.fog = Lighting.FogEnd
+                Lighting.GlobalShadows = false
+                Lighting.FogEnd = 1000000
+            end)
+
+            if terrain then
+                pcall(function()
+                    saved.decoration = terrain.Decoration
+                    terrain.Decoration = false
+                end)
+            end
+        else
+            local saved = Opt.globals
+            if not saved then
+                return
+            end
+            Opt.globals = nil
+
+            pcall(function()
+                if saved.quality ~= nil then
+                    settings().Rendering.QualityLevel = saved.quality
+                end
+            end)
+
+            pcall(function()
+                if saved.shadows ~= nil then
+                    Lighting.GlobalShadows = saved.shadows
+                end
+                if saved.fog ~= nil then
+                    Lighting.FogEnd = saved.fog
+                end
+            end)
+
+            if terrain and saved.decoration ~= nil then
+                pcall(function()
+                    terrain.Decoration = saved.decoration
+                end)
+            end
+        end
+    end
+
+    local function setCategory(category, enabled)
+        Opt.active[category] = enabled
+
+        if enabled then
+            ensureWatching()
+
+            if category == "graphics" then
+                setGraphicsGlobals(true)
+            end
+
+            task.spawn(function()
+                scan(workspace)
+                scan(Lighting)
+            end)
+        else
+            restoreCategory(category)
+
+            if category == "graphics" then
+                setGraphicsGlobals(false)
+            end
+
+            stopWatchingIfIdle()
+        end
+    end
+
+    Extras:Section({ Title = L("ex_opt_section") })
+
+    Extras:Paragraph({
+        Title = L("ex_opt_section"),
+        Desc = L("ex_opt_note"),
+    })
+
+    local ParticlesToggle = Extras:Toggle({
+        Title = L("ex_opt_particles"),
+        Desc = L("ex_opt_particles_desc"),
+        Value = false,
+        Callback = function(state)
+            setCategory("particles", state)
+        end,
+    })
+    Util.register("opt_particles", ParticlesToggle)
+
+    local EffectsToggle = Extras:Toggle({
+        Title = L("ex_opt_effects"),
+        Desc = L("ex_opt_effects_desc"),
+        Value = false,
+        Callback = function(state)
+            setCategory("effects", state)
+        end,
+    })
+    Util.register("opt_effects", EffectsToggle)
+
+    local GraphicsToggle = Extras:Toggle({
+        Title = L("ex_opt_graphics"),
+        Desc = L("ex_opt_graphics_desc"),
+        Value = false,
+        Callback = function(state)
+            setCategory("graphics", state)
+        end,
+    })
+    Util.register("opt_graphics", GraphicsToggle)
+
+    task.spawn(function()
+        while isAlive() do
+            task.wait(1)
+        end
+
+        lockEnabled = false
+        autoSpin = false
+
+        if lockCharConn then
+            lockCharConn:Disconnect()
+            lockCharConn = nil
+        end
+
+        pcall(function()
+            releaseLock(LocalPlayer.Character)
+        end)
+
+        for _, category in ipairs({ "particles", "effects", "graphics" }) do
+            pcall(setCategory, category, false)
+        end
+    end)
 end
 
 do
