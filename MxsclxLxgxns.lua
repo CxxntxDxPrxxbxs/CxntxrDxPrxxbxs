@@ -226,6 +226,85 @@ local Strings = {
         ex_opt_effects_desc = "Turns off lights, highlights and screen effects (bloom, blur, sun rays...)",
         ex_opt_graphics = "Low Graphics",
         ex_opt_graphics_desc = "Lowest quality, no shadows, flat materials and hidden decals",
+        ex_player_section = "Player Settings",
+        ex_speed_input = "Speed value",
+        ex_speed_toggle = "Change Speed",
+        ex_speed_desc = "Applies the typed WalkSpeed",
+        ex_jump_input = "Jump value",
+        ex_jump_toggle = "Change Jump",
+        ex_jump_desc = "Applies the typed JumpPower",
+        ex_gravity_input = "Gravity value",
+        ex_gravity_toggle = "Change Gravity",
+        ex_gravity_desc = "Applies the typed gravity (default 196.2)",
+        ex_external_section = "External Scripts",
+        ex_external_fail = "Could not load the script.",
+        ex_server_section = "Server System",
+        ex_server_autoreconnect = "Auto Reconnect",
+        ex_server_autoreconnect_desc = "Rejoins the same server when an error message appears",
+        ex_server_autoreconnect_auto = "Auto Reconnect (Automatic)",
+        ex_server_autoreconnect_auto_desc = "Rejoins when you get kicked or disconnected",
+        ex_server_hop_low = "Server Hop Low",
+        ex_server_hop_low_desc = "Joins the public server with the fewest players",
+        ex_server_hop_full = "Server Hop Full",
+        ex_server_hop_full_desc = "Joins the fullest public server that still has space",
+        ex_server_rejoin = "Reconnect Same Server",
+        ex_server_joining = "Joining a server with %d players...",
+        ex_server_none = "No available servers were found.",
+
+        st_select_player = "Select Player",
+        st_player_stats = "Player Stats",
+        st_strength = "Strength",
+        st_gems = "Gems",
+        st_agility = "Agility",
+        st_rebirths = "Rebirths",
+        st_durability = "Durability",
+        st_kills = "Kills",
+        st_brawls = "Brawls",
+        st_mk_time = "Muscle King Time",
+        st_map = "Current Map",
+        st_evil = "Evil Karma",
+        st_good = "Good Karma",
+        st_advanced = "Advanced Stats",
+        st_enemy_health = "Enemy Health",
+        st_your_damage = "Your Damage",
+        st_hits = "Hits to Kill",
+        st_not_found = "Player not found",
+        st_no_data = "No data",
+        st_fake_section = "Fake Stats (Visual Only)",
+        st_fake_title = "Fake Stats",
+        st_fake_desc = "Visually changes the selected stats. Leave a box empty to restore that stat. Accepts suffixes like 5K, 2.5M, 1B.",
+        st_fake_restore = "Restore Fake Stats",
+        st_fake_restored = "Fake stats restored.",
+        st_fake_invalid = "Invalid value or stat not found.",
+        st_info_section = "Player Info Webhook",
+        st_info_send = "Send Player Info",
+        st_info_send_desc = "Sends your player info, stats and server data to your webhook",
+        st_notify_section = "Notification Webhook",
+        st_notify_minutes = "Minutes between reports",
+        st_notify_toggle = "Enable Periodic Notifications",
+        st_notify_toggle_desc = "Sends a full stats and farming report every X minutes until you turn it off",
+        st_notify_test = "Send Test Report",
+        st_notify_need_minutes = "Type the minutes first (1 or more).",
+        st_notify_started = "Reports every %s min started.",
+        st_notify_stopped = "Periodic reports stopped.",
+        st_hook_sent = "Webhook sent successfully.",
+        st_hook_failed = "Failed to send the webhook.",
+
+        tp_work_section = "Workout Locations",
+        tp_select_workout = "Select Workout",
+        tp_select_location = "Select Location",
+        tp_tp_workout = "Teleport to Workout",
+        tp_treadmill_section = "Treadmill Locations",
+        tp_select_treadmill = "Select Treadmill",
+        tp_tp_treadmill = "Teleport to Treadmill",
+        tp_island_section = "Islands",
+        tp_select_island = "Select Island",
+        tp_tp_island = "Teleport to Island",
+        tp_brawl_section = "Brawl Islands",
+        tp_select_brawl = "Select Brawl Island",
+        tp_tp_brawl = "Teleport to Brawl Island",
+        tp_failed = "Could not teleport: character not found.",
+        tp_no_location = "That location is not available for this workout.",
 
         set_appearance = "Appearance",
         set_theme = "Theme",
@@ -445,6 +524,85 @@ local Strings = {
         ex_opt_effects_desc = "Apaga luces, resaltados y efectos de pantalla (bloom, desenfoque, rayos de sol...)",
         ex_opt_graphics = "Gráficos bajos",
         ex_opt_graphics_desc = "Calidad mínima, sin sombras, materiales lisos y calcomanías ocultas",
+        ex_player_section = "Configuración de jugador",
+        ex_speed_input = "Valor de velocidad",
+        ex_speed_toggle = "Cambiar velocidad",
+        ex_speed_desc = "Aplica el WalkSpeed que escribiste",
+        ex_jump_input = "Valor de salto",
+        ex_jump_toggle = "Cambiar salto",
+        ex_jump_desc = "Aplica el JumpPower que escribiste",
+        ex_gravity_input = "Valor de gravedad",
+        ex_gravity_toggle = "Cambiar gravedad",
+        ex_gravity_desc = "Aplica la gravedad que escribiste (normal: 196.2)",
+        ex_external_section = "Scripts externos",
+        ex_external_fail = "No se pudo cargar el script.",
+        ex_server_section = "Sistema de servidores",
+        ex_server_autoreconnect = "Auto reconectar",
+        ex_server_autoreconnect_desc = "Reentra al mismo servidor cuando aparece un mensaje de error",
+        ex_server_autoreconnect_auto = "Auto reconectar (Automático)",
+        ex_server_autoreconnect_auto_desc = "Reentra cuando te sacan o te desconectas",
+        ex_server_hop_low = "Server Hop Low",
+        ex_server_hop_low_desc = "Entra al servidor público con menos jugadores",
+        ex_server_hop_full = "Server Hop Full",
+        ex_server_hop_full_desc = "Entra al servidor público más lleno que todavía tenga espacio",
+        ex_server_rejoin = "Reconectar al mismo servidor",
+        ex_server_joining = "Entrando a un servidor con %d jugadores...",
+        ex_server_none = "No se encontraron servidores disponibles.",
+
+        st_select_player = "Seleccionar jugador",
+        st_player_stats = "Estadísticas del jugador",
+        st_strength = "Fuerza",
+        st_gems = "Gemas",
+        st_agility = "Agilidad",
+        st_rebirths = "Rebirths",
+        st_durability = "Durabilidad",
+        st_kills = "Kills",
+        st_brawls = "Brawls",
+        st_mk_time = "Tiempo de Muscle King",
+        st_map = "Mapa actual",
+        st_evil = "Karma malo",
+        st_good = "Karma bueno",
+        st_advanced = "Estadísticas avanzadas",
+        st_enemy_health = "Vida del enemigo",
+        st_your_damage = "Tu daño",
+        st_hits = "Golpes para matar",
+        st_not_found = "Jugador no encontrado",
+        st_no_data = "Sin datos",
+        st_fake_section = "Fake Stats (Solo visuales)",
+        st_fake_title = "Fake Stats",
+        st_fake_desc = "Cambia visualmente las estadísticas elegidas. Deja una casilla vacía para restaurar esa estadística. Acepta sufijos como 5K, 2.5M, 1B.",
+        st_fake_restore = "Restaurar Fake Stats",
+        st_fake_restored = "Fake stats restauradas.",
+        st_fake_invalid = "Valor inválido o estadística no encontrada.",
+        st_info_section = "Webhook de información del jugador",
+        st_info_send = "Enviar info del jugador",
+        st_info_send_desc = "Envía tu info, stats y datos del servidor a tu webhook",
+        st_notify_section = "Webhook de notificaciones",
+        st_notify_minutes = "Minutos entre reportes",
+        st_notify_toggle = "Activar notificaciones periódicas",
+        st_notify_toggle_desc = "Envía un reporte completo de stats y farmeo cada X minutos hasta que lo apagues",
+        st_notify_test = "Enviar reporte de prueba",
+        st_notify_need_minutes = "Escribe primero los minutos (1 o más).",
+        st_notify_started = "Reportes cada %s min iniciados.",
+        st_notify_stopped = "Reportes periódicos detenidos.",
+        st_hook_sent = "Webhook enviado correctamente.",
+        st_hook_failed = "No se pudo enviar el webhook.",
+
+        tp_work_section = "Ubicaciones de ejercicio",
+        tp_select_workout = "Seleccionar ejercicio",
+        tp_select_location = "Seleccionar ubicación",
+        tp_tp_workout = "Teletransportar al ejercicio",
+        tp_treadmill_section = "Ubicaciones de cinta",
+        tp_select_treadmill = "Seleccionar cinta",
+        tp_tp_treadmill = "Teletransportar a la cinta",
+        tp_island_section = "Islas",
+        tp_select_island = "Seleccionar isla",
+        tp_tp_island = "Teletransportar a la isla",
+        tp_brawl_section = "Islas de peleas",
+        tp_select_brawl = "Seleccionar isla de peleas",
+        tp_tp_brawl = "Teletransportar a la isla de peleas",
+        tp_failed = "No se pudo teletransportar: no se encontró el personaje.",
+        tp_no_location = "Esa ubicación no está disponible para este ejercicio.",
 
         set_appearance = "Apariencia",
         set_theme = "Tema",
@@ -2876,6 +3034,7 @@ do
         local angle = math.random() * math.pi * 2
         local lastFrame = os.clock()
         local tracker = { lastHealth = lastHealth, lastDamageAt = os.clock() }
+        local lastCharacter = self.originalCharacter
 
         while self.active and isAlive() and self.generation == generation
             and boss.Parent and workspace:GetAttribute("BossActive") == true do
@@ -2887,83 +3046,87 @@ do
             local character = getChar()
             local root = getRoot()
             local humanoid = getHum()
-            local punch = equipBossPunch()
 
-            if not character or not root or not humanoid or humanoid.Health <= 0 or not punch then
+            if not character or not root or not humanoid or humanoid.Health <= 0 then
                 task.wait(0.25)
                 lastFrame = os.clock()
+
+            elseif character ~= lastCharacter then
+                task.wait(0.6)
+                local newChar, newRoot = self:WaitForReadyCharacter(8)
+                if newChar and newRoot then
+                    lastCharacter = newChar
+                    self.originalCharacter = newChar
+                    self.originalPivot = newChar:GetPivot()
+                    self.originalRootAnchored = newRoot.Anchored
+                    setCharacterSize(1)
+                    task.wait(0.55)
+                    lastFrame = os.clock()
+                end
+
             else
-                if self.lastPlayerHealth and humanoid.Health < self.lastPlayerHealth then
-                    self.safetyTriggered = true
-                    self.active = false
-                    self:StopDurability()
-                    self:SetAntiLag(false)
-                    Util.notify(L("boss_section"), L("boss_safety"), "triangle-alert")
-                    task.defer(function()
-                        pcall(function()
-                            AutoBossToggle:Set(false)
-                        end)
-                    end)
-                    break
-                end
+                local punch = equipBossPunch()
 
-                self.lastPlayerHealth = humanoid.Health
-
-                local now = os.clock()
-                local delta = math.min(now - lastFrame, 0.1)
-                lastFrame = now
-
-                local attackPosition, aimPosition, radius = orbitPosition(self, part, angle)
-                angle = angle + math.clamp(
-                    ORBIT.speed / math.max(radius, 0.5),
-                    0.4,
-                    ORBIT.maxAngularSpeed
-                ) * delta
-
-                self.cameraOffset = Vector3.new(0, 30 + radius * 0.6, 40 + radius * 1.1)
-                if self.cameraFocusPosition then
-                    self.cameraFocusPosition = self.cameraFocusPosition:Lerp(aimPosition, 0.1)
+                if not punch then
+                   task.wait(0.1)
+                   lastFrame = os.clock()
                 else
-                    self.cameraFocusPosition = aimPosition
-                end
+                   local now = os.clock()
+                    local delta = math.min(now - lastFrame, 0.1)
+                    lastFrame = now
 
-                character:PivotTo(CFrame.lookAt(attackPosition, aimPosition))
-                root.AssemblyLinearVelocity = Vector3.zero
-                root.AssemblyAngularVelocity = Vector3.zero
+                    local attackPosition, aimPosition, radius = orbitPosition(self, part, angle)
+                    angle = angle + math.clamp(
+                        ORBIT.speed / math.max(radius, 0.5),
+                        0.4,
+                        ORBIT.maxAngularSpeed
+                    ) * delta
 
-                if now - lastAttack >= self.hitInterval then
-                    lastAttack = now
-                    pcall(punch.Deactivate, punch)
-                    pcall(punch.Activate, punch)
-
-                    local attackTime = punch:FindFirstChild("attackTime")
-                    if attackTime and attackTime:IsA("ValueBase") then
-                        attackTime.Value = 0
+                    self.cameraOffset = Vector3.new(0, 30 + radius * 0.6, 40 + radius * 1.1)
+                    if self.cameraFocusPosition then
+                        self.cameraFocusPosition = self.cameraFocusPosition:Lerp(aimPosition, 0.1)
+                    else
+                        self.cameraFocusPosition = aimPosition
                     end
 
-                    touchBoss(character, part, target)
-                    self.attacks = self.attacks + 1
+                    character:PivotTo(CFrame.lookAt(attackPosition, aimPosition))
+                    root.AssemblyLinearVelocity = Vector3.zero
+                    root.AssemblyAngularVelocity = Vector3.zero
+
+                    if now - lastAttack >= self.hitInterval then
+                        lastAttack = now
+                        pcall(punch.Deactivate, punch)
+                        pcall(punch.Activate, punch)
+
+                        local attackTime = punch:FindFirstChild("attackTime")
+                        if attackTime and attackTime:IsA("ValueBase") then
+                            attackTime.Value = 0
+                        end
+
+                        touchBoss(character, part, target)
+                        self.attacks = self.attacks + 1
+                    end
+
+                    local health = getBossHealth()
+                    if health < lastHealth then
+                        self.confirmedDamage = self.confirmedDamage + (lastHealth - health)
+                    end
+                    lastHealth = health
+
+                    updateStall(self, tracker, health, now)
+
+                    RunService.Heartbeat:Wait()
                 end
-
-                local health = getBossHealth()
-                if health < lastHealth then
-                    self.confirmedDamage = self.confirmedDamage + (lastHealth - health)
-                end
-                lastHealth = health
-
-                updateStall(self, tracker, health, now)
-
-                RunService.Heartbeat:Wait()
             end
         end
 
-            if self.generation ~= generation then
-                return
-            end
+        if self.generation ~= generation then
+            return
+        end
 
             local defeated = workspace:GetAttribute("BossActive") ~= true or getBossHealth() <= 0
             if defeated and self.active then
-                self:CollectChest(12)
+                self:CollectChest(25)
             end
             self:RestoreBattle()
         end
@@ -5044,6 +5207,378 @@ do
             pcall(setCategory, category, false)
         end
     end)
+
+    Extras:Section({ Title = L("ex_player_section") })
+
+    local PlayerCfg = {
+        speed = { enabled = false, value = 16, original = nil },
+        jump = { enabled = false, value = 50, original = nil, originalUse = nil },
+        gravity = { enabled = false, value = 196.2, original = nil },
+    }
+
+    local function getHumanoid()
+        local character = LocalPlayer.Character
+        return character and character:FindFirstChildOfClass("Humanoid")
+    end
+
+    local function parseInput(text, min, max)
+        local n = tonumber(text)
+        if not n then
+            return nil
+         end
+        return math.clamp(n, min, max)
+    end
+
+    local function applyPlayerCfg()
+        local humanoid = getHumanoid()
+        if humanoid then
+            if PlayerCfg.speed.enabled then
+                humanoid.WalkSpeed = PlayerCfg.speed.value
+            end
+            if PlayerCfg.jump.enabled then
+                humanoid.UseJumpPower = true
+                humanoid.JumpPower = PlayerCfg.jump.value
+            end
+        end
+        if PlayerCfg.gravity.enabled then
+            workspace.Gravity = PlayerCfg.gravity.value
+        end
+    end
+
+    local playerCfgConn = RunService.Heartbeat:Connect(function()
+        if not isAlive() then
+            return
+        end
+        pcall(applyPlayerCfg)
+    end)
+
+    Extras:Input({
+        Title = L("ex_speed_input"),
+        Placeholder = "16",
+        Value = "",
+        Callback = function(text)
+            local n = parseInput(text, 0, 1000)
+            if n then
+                PlayerCfg.speed.value = n
+            end
+        end,
+    })
+
+    local SpeedToggle = Extras:Toggle({
+        Title = L("ex_speed_toggle"),
+        Desc = L("ex_speed_desc"),
+        Value = false,
+        Callback = function(state)
+            PlayerCfg.speed.enabled = state
+            local humanoid = getHumanoid()
+            if state then
+                PlayerCfg.speed.original = humanoid and humanoid.WalkSpeed or 16
+            elseif humanoid then
+                humanoid.WalkSpeed = PlayerCfg.speed.original or 16
+            end
+        end,
+    })
+    Util.register("ex_speed", SpeedToggle)
+
+    Extras:Input({
+        Title = L("ex_jump_input"),
+        Placeholder = "50",
+        Value = "",
+        Callback = function(text)
+            local n = parseInput(text, 0, 1000)
+            if n then
+                PlayerCfg.jump.value = n
+            end
+       end,
+    })
+
+    local JumpToggle = Extras:Toggle({
+        Title = L("ex_jump_toggle"),
+        Desc = L("ex_jump_desc"),
+        Value = false,
+        Callback = function(state)
+            PlayerCfg.jump.enabled = state
+            local humanoid = getHumanoid()
+            if state then
+                PlayerCfg.jump.original = humanoid and humanoid.JumpPower or 50
+                PlayerCfg.jump.originalUse = humanoid and humanoid.UseJumpPower
+            elseif humanoid then
+                humanoid.JumpPower = PlayerCfg.jump.original or 50
+                if PlayerCfg.jump.originalUse ~= nil then
+                    humanoid.UseJumpPower = PlayerCfg.jump.originalUse
+                end
+            end
+        end,
+    })
+    Util.register("ex_jump", JumpToggle)
+
+    Extras:Input({
+        Title = L("ex_gravity_input"),
+        Placeholder = "196.2",
+        Value = "",
+        Callback = function(text)
+            local n = parseInput(text, 0, 1000)
+            if n then
+                PlayerCfg.gravity.value = n
+            end
+        end,
+    })
+
+    local GravityToggle = Extras:Toggle({
+        Title = L("ex_gravity_toggle"),
+        Desc = L("ex_gravity_desc"),
+        Value = false,
+        Callback = function(state)
+            PlayerCfg.gravity.enabled = state
+            if state then
+                PlayerCfg.gravity.original = workspace.Gravity
+            else
+                workspace.Gravity = PlayerCfg.gravity.original or 196.2
+            end
+        end,
+    })
+    Util.register("ex_gravity", GravityToggle)
+
+    task.spawn(function()
+        while isAlive() do
+            task.wait(1)
+        end
+        PlayerCfg.speed.enabled = false
+        PlayerCfg.jump.enabled = false
+        PlayerCfg.gravity.enabled = false
+        if playerCfgConn then
+            playerCfgConn:Disconnect()
+        end
+        pcall(function()
+            local humanoid = getHumanoid()
+            if humanoid then
+                humanoid.WalkSpeed = PlayerCfg.speed.original or 16
+                humanoid.JumpPower = PlayerCfg.jump.original or 50
+                if PlayerCfg.jump.originalUse ~= nil then
+                    humanoid.UseJumpPower = PlayerCfg.jump.originalUse
+                end
+            end
+            workspace.Gravity = PlayerCfg.gravity.original or 196.2
+        end)
+    end)
+
+    Extras:Section({ Title = L("ex_external_section") })
+
+    local function runExternal(url)
+        task.spawn(function()
+            local ok = pcall(function()
+                loadstring(game:HttpGet(url))()
+            end)
+            if not ok then
+                Util.notify(L("error"), L("ex_external_fail"), "triangle-alert")
+            end
+        end)
+    end
+
+    Extras:Button({
+        Title = "Infinite Yield",
+        Icon = "terminal",
+        Callback = function()
+            runExternal("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source")
+        end,
+    })
+
+    Extras:Button({
+        Title = "Permanent Shiftlock",
+        Icon = "lock",
+        Callback = function()
+            runExternal("https://pastebin.com/raw/CjNsnSDy")
+        end,
+    })
+
+    Extras:Button({
+        Title = "All Emotes",
+        Icon = "smile",
+        Callback = function()
+            runExternal("https://raw.githubusercontent.com/7yd7/Hub/refs/heads/Branch/GUIS/Emotes.lua")
+        end,
+    })
+
+    Extras:Section({ Title = L("ex_server_section") })
+
+    local GuiService = game:GetService("GuiService")
+    local CoreGui = game:GetService("CoreGui")
+
+    local ServerSys = {
+       autoReconnect = false,
+        autoReconnectAuto = false,
+        errorConn = nil,
+        ancestryConn = nil,
+        promptConn = nil,
+        lastTeleport = 0,
+        hopping = false,
+    }
+
+   local function rejoinSameServer()
+        if os.clock() - ServerSys.lastTeleport < 3 then
+            return
+        end
+        ServerSys.lastTeleport = os.clock()
+
+        local ok = pcall(function()
+            TeleportService:TeleportToPlaceInstance(game.PlaceId, game.JobId, LocalPlayer)
+       end)
+        if not ok then
+            pcall(function()
+                TeleportService:Teleport(game.PlaceId, LocalPlayer)
+            end)
+        end
+    end
+
+    local function serverHop(descending)
+        if ServerSys.hopping then
+            return
+        end
+        ServerSys.hopping = true
+
+        task.spawn(function()
+            local ok, result = pcall(function()
+                local url = "https://games.roblox.com/v1/games/" .. game.PlaceId
+                    .. "/servers/Public?sortOrder=" .. (descending and "Desc" or "Asc")
+                    .. "&limit=100"
+                return HttpService:JSONDecode(game:HttpGet(url))
+            end)
+
+            local best = nil
+            if ok and type(result) == "table" and type(result.data) == "table" then
+                for _, server in ipairs(result.data) do
+                    local playing = tonumber(server.playing)
+                    local maxPlayers = tonumber(server.maxPlayers)
+
+                    if server.id ~= game.JobId and playing and maxPlayers and playing < maxPlayers then
+                        if not best
+                            or (descending and playing > best.playing)
+                            or (not descending and playing < best.playing) then
+                            best = { id = server.id, playing = playing }
+                        end
+                    end
+                end
+            end
+
+            if best then
+                Util.notify(L("ex_server_section"), L("ex_server_joining", best.playing), "server")
+                pcall(function()
+                    TeleportService:TeleportToPlaceInstance(game.PlaceId, best.id, LocalPlayer)
+                end)
+            else
+                Util.notify(L("ex_server_section"), L("ex_server_none"), "triangle-alert")
+            end
+
+            task.wait(3)
+            ServerSys.hopping = false
+        end)
+    end
+
+    local AutoReconnectToggle = Extras:Toggle({
+        Title = L("ex_server_autoreconnect"),
+        Desc = L("ex_server_autoreconnect_desc"),
+        Value = false,
+        Callback = function(state)
+            ServerSys.autoReconnect = state
+
+            if state then
+                if not ServerSys.errorConn then
+                    ServerSys.errorConn = GuiService.ErrorMessageChanged:Connect(function()
+                        if ServerSys.autoReconnect and isAlive() then
+                            rejoinSameServer()
+                        end
+                    end)
+                end
+            elseif ServerSys.errorConn then
+                ServerSys.errorConn:Disconnect()
+                ServerSys.errorConn = nil
+            end
+        end,
+    })
+    Util.register("server_auto_reconnect", AutoReconnectToggle)
+
+    local AutoReconnectAutoToggle = Extras:Toggle({
+        Title = L("ex_server_autoreconnect_auto"),
+        Desc = L("ex_server_autoreconnect_auto_desc"),
+        Value = false,
+        Callback = function(state)
+            ServerSys.autoReconnectAuto = state
+
+            if state then
+               if not ServerSys.ancestryConn then
+                    ServerSys.ancestryConn = LocalPlayer.AncestryChanged:Connect(function(_, parent)
+                        if not parent and ServerSys.autoReconnectAuto then
+                            rejoinSameServer()
+                        end
+                    end)
+                end
+
+                if not ServerSys.promptConn then
+                    pcall(function()
+                        local gui = CoreGui:WaitForChild("RobloxPromptGui", 5)
+                        local overlay = gui and gui:WaitForChild("promptOverlay", 5)
+                        if overlay then
+                            ServerSys.promptConn = overlay.ChildAdded:Connect(function(child)
+                                if child.Name == "ErrorPrompt" and ServerSys.autoReconnectAuto and isAlive() then
+                                    rejoinSameServer()
+                                end
+                           end)
+                        end
+                    end)
+                end
+            else
+                if ServerSys.ancestryConn then
+                    ServerSys.ancestryConn:Disconnect()
+                    ServerSys.ancestryConn = nil
+                end
+                if ServerSys.promptConn then
+                    ServerSys.promptConn:Disconnect()
+                    ServerSys.promptConn = nil
+                end
+            end
+        end,
+    })
+    Util.register("server_auto_reconnect_auto", AutoReconnectAutoToggle)
+
+    Extras:Button({
+        Title = L("ex_server_hop_low"),
+        Desc = L("ex_server_hop_low_desc"),
+        Icon = "arrow-down",
+        Callback = function()
+            serverHop(false)
+        end,
+    })
+
+    Extras:Button({
+        Title = L("ex_server_hop_full"),
+        Desc = L("ex_server_hop_full_desc"),
+        Icon = "arrow-up",
+        Callback = function()
+            serverHop(true)
+        end,
+    })
+
+    Extras:Button({
+        Title = L("ex_server_rejoin"),
+        Icon = "refresh-cw",
+        Callback = function()
+            rejoinSameServer()
+        end,
+    })
+
+    task.spawn(function()
+        while isAlive() do
+            task.wait(1)
+        end
+        ServerSys.autoReconnect = false
+        ServerSys.autoReconnectAuto = false
+        for _, key in ipairs({ "errorConn", "ancestryConn", "promptConn" }) do
+            if ServerSys[key] then
+                ServerSys[key]:Disconnect()
+                ServerSys[key] = nil
+            end
+        end
+    end)
 end
 
 do
@@ -5056,6 +5591,1009 @@ end
 
 do
     local Stats = Tabs.Stats
+
+    local Spy = {
+        selectedName = "",
+        lastText = "",
+        connections = {},
+    }
+
+    local SPY_UNITS = {
+        { 1e33, "DC" },
+        { 1e30, "NO" },
+        { 1e27, "OC" },
+        { 1e24, "SP" },
+        { 1e21, "SX" },
+        { 1e18, "QI" },
+        { 1e15, "QA" },
+        { 1e12, "T" },
+        { 1e9, "B" },
+        { 1e6, "M" },
+        { 1e3, "K" },
+    }
+
+    local function formatSpy(value)
+        value = tonumber(value) or 0
+
+        local digits = string.format("%.0f", value)
+        local grouped = digits:reverse():gsub("(%d%d%d)", "%1,")
+        grouped = grouped:reverse()
+        grouped = grouped:gsub("^,", "")
+
+        local short = tostring(math.floor(value))
+        for _, unit in ipairs(SPY_UNITS) do
+            if value >= unit[1] then
+                short = string.format("%.2f%s", value / unit[1], unit[2])
+                break
+            end
+        end
+
+        return "[ " .. grouped .. " | " .. short .. " ]"
+    end
+
+    local function buildPlayerList()
+        local list = {}
+        for _, player in ipairs(Players:GetPlayers()) do
+            table.insert(list, player.Name .. " - " .. player.DisplayName)
+        end
+        return list
+    end
+
+    local PlayerDropdown = Stats:Dropdown({
+        Title = L("st_select_player"),
+        Values = buildPlayerList(),
+        Value = nil,
+        SearchBarEnabled = true,
+        AllowNone = true,
+        Callback = function(option)
+            if type(option) == "string" and option ~= "" then
+                Spy.selectedName = option:match("^(%S+)") or ""
+            else
+                Spy.selectedName = ""
+            end
+        end,
+    })
+
+    local function refreshPlayers()
+        pcall(function()
+            PlayerDropdown:Refresh(buildPlayerList())
+        end)
+    end
+
+    table.insert(Spy.connections, Players.PlayerAdded:Connect(refreshPlayers))
+    table.insert(Spy.connections, Players.PlayerRemoving:Connect(function(player)
+        if player.Name == Spy.selectedName then
+            Spy.selectedName = ""
+        end
+        task.delay(0.5, refreshPlayers)
+    end))
+
+    local spyFields = {
+        { obj = "Strength", label = "st_strength", leader = true },
+        { obj = "Gems", label = "st_gems" },
+        { obj = "Agility", label = "st_agility" },
+        { obj = "Rebirths", label = "st_rebirths", leader = true },
+        { obj = "Durability", label = "st_durability" },
+        { obj = "Kills", label = "st_kills", leader = true },
+        { obj = "muscleKingTime", label = "st_mk_time" },
+        { obj = "currentMap", label = "st_map", raw = true },
+        { obj = "evilKarma", label = "st_evil" },
+        { obj = "goodKarma", label = "st_good" },
+    }
+
+    local function countPets(entity, a, b)
+        local pets = entity and entity:FindFirstChild("equippedPets")
+        if not pets then
+            return 0
+        end
+
+        local count = 0
+        for _, pet in ipairs(pets:GetChildren()) do
+            local ref = pet:FindFirstChild("petReference")
+            local name = ref and tostring(ref.Value):lower()
+            if name and name:match(a) and name:match(b) then
+                count = count + 1
+            end
+        end
+        return count
+    end
+
+    local function getPlayerHealth(entity)
+        local character = entity and entity.Character
+        local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+        return humanoid and humanoid.MaxHealth or 0
+    end
+
+    local function getMyDamage()
+        local leaderstats = LocalPlayer:FindFirstChild("leaderstats")
+        local strength = leaderstats and leaderstats:FindFirstChild("Strength")
+        if not strength then
+            return 0
+        end
+        return strength.Value * 0.1 * (1 + countPets(LocalPlayer, "wild", "wizard") / 3)
+    end
+
+    local function hitsToKill(health, damage)
+        if damage <= 0 then
+            return "∞"
+        end
+        local hits = math.ceil(health / damage)
+        if hits > 50 then
+            return "∞"
+        end
+        return tostring(math.max(hits, 1))
+    end
+
+    local function buildText()
+        local selected = Spy.selectedName
+        local target = nil
+        if selected ~= "" then
+            target = Players:FindFirstChild(selected)
+        end
+
+        local lines = {}
+
+        for _, field in ipairs(spyFields) do
+            local value
+
+            if selected == "" then
+                value = field.raw and "N/A" or "0"
+            elseif not target then
+                value = L("st_not_found")
+            else
+                local source = target
+                if field.leader then
+                    source = target:FindFirstChild("leaderstats")
+                end
+
+                local object = source and source:FindFirstChild(field.obj)
+                if not object then
+                    value = field.raw and L("st_no_data") or "N/A"
+                elseif field.raw then
+                    value = tostring(object.Value)
+                else
+                    value = formatSpy(object.Value)
+                end
+            end
+
+            table.insert(lines, L(field.label) .. ": " .. value)
+        end
+
+        local enemyHealth, yourDamage, hits = "N/A", "N/A", "N/A"
+        if target then
+            local health = getPlayerHealth(target)
+            local damage = getMyDamage()
+            enemyHealth = formatSpy(health)
+            yourDamage = formatSpy(damage)
+            hits = hitsToKill(health, damage)
+        end
+
+        table.insert(lines, "")
+        table.insert(lines, L("st_advanced"))
+        table.insert(lines, L("st_enemy_health") .. ": " .. enemyHealth)
+        table.insert(lines, L("st_your_damage") .. ": " .. yourDamage)
+        table.insert(lines, L("st_hits") .. ": " .. hits)
+
+        return table.concat(lines, "\n")
+    end
+
+    local SpyParagraph = Stats:Paragraph({
+        Title = L("st_player_stats"),
+        Desc = L("home_loading"),
+    })
+
+    task.spawn(function()
+        while isAlive() do
+            local ok, text = pcall(buildText)
+            if ok and text ~= Spy.lastText then
+                Spy.lastText = text
+                pcall(function()
+                    SpyParagraph:SetDesc(text)
+                end)
+            end
+            task.wait(0.25)
+        end
+    end)
+
+    local Fake = {
+        records = {},
+        originals = setmetatable({}, { __mode = "k" }),
+        applying = false,
+        presenting = false,
+        inputs = {},
+    }
+
+    local fakeDefinitions = {
+        { key = "Strength", names = { "Strength", "Fuerza" }, title = "st_strength" },
+        { key = "Rebirths", names = { "Rebirths", "Rebirth" }, title = "st_rebirths" },
+        { key = "Kills", names = { "Kills" }, title = "st_kills" },
+        { key = "Fights", names = { "Brawls", "Fights", "Fight" }, title = "st_brawls" },
+        { key = "Durability", names = { "Durability", "Durabilidad" }, title = "st_durability" },
+        { key = "Gems", names = { "Gems", "Gemas" }, title = "st_gems" },
+    }
+
+    local FAKE_MULTIPLIERS = {
+        K = 1e3,
+        M = 1e6,
+        B = 1e9,
+        T = 1e12,
+        QA = 1e15,
+        QI = 1e18,
+        SX = 1e21,
+        SP = 1e24,
+        OC = 1e27,
+        NO = 1e30,
+        DC = 1e33,
+    }
+
+    local FAKE_UNITS = {
+        { 1e33, "DC" },
+        { 1e30, "NO" },
+        { 1e27, "OC" },
+        { 1e24, "SP" },
+        { 1e21, "SX" },
+        { 1e18, "QI" },
+        { 1e15, "QA" },
+        { 1e12, "T" },
+        { 1e9, "B" },
+        { 1e6, "M" },
+        { 1e3, "K" },
+    }
+
+    local function parseFakeNumber(text)
+        text = tostring(text or ""):upper():gsub("%s+", "")
+
+        local number, suffix = text:match("^([%d%.]+)(%a*)$")
+        number = tonumber(number)
+        if not number or number < 0 or number ~= number then
+            return nil
+        end
+
+        local multiplier = 1
+        if suffix ~= "" then
+            multiplier = FAKE_MULTIPLIERS[suffix]
+        end
+        if not multiplier then
+            return nil
+        end
+
+        return math.floor(number * multiplier + 0.5)
+    end
+
+    local function formatFakeNumber(value)
+        value = tonumber(value) or 0
+
+        for _, unit in ipairs(FAKE_UNITS) do
+            if value >= unit[1] then
+                local n = value / unit[1]
+                local pattern = "%.2f%s"
+                if n >= 100 then
+                    pattern = "%.0f%s"
+                elseif n >= 10 then
+                    pattern = "%.1f%s"
+                end
+                return string.format(pattern, n, unit[2])
+            end
+        end
+
+        return string.format("%.0f", value)
+    end
+
+    local function findFakeStat(names)
+        local leaderstats = LocalPlayer:FindFirstChild("leaderstats")
+
+        for _, name in ipairs(names) do
+            local stat = leaderstats and leaderstats:FindFirstChild(name)
+            if stat and (stat:IsA("IntValue") or stat:IsA("NumberValue")) then
+                return stat
+            end
+        end
+
+        for _, name in ipairs(names) do
+            local stat = LocalPlayer:FindFirstChild(name)
+            if stat and (stat:IsA("IntValue") or stat:IsA("NumberValue")) then
+                return stat
+            end
+        end
+
+        return nil
+    end
+
+    local function captureLabels(key, record)
+        local playerGui = LocalPlayer:FindFirstChild("PlayerGui")
+        local gameGui = playerGui and playerGui:FindFirstChild("gameGui")
+        if not gameGui then
+            return
+        end
+
+        local currencyRoot = gameGui:FindFirstChild("currencyFrameGui")
+        local currency = currencyRoot and currencyRoot:FindFirstChild("currencyFrame")
+        local statsMenu = gameGui:FindFirstChild("statsMenu")
+        local statsList = statsMenu and statsMenu:FindFirstChild("statsList")
+        local bottom = statsMenu and statsMenu:FindFirstChild("bottomStatList")
+        local hud = gameGui:FindFirstChild("hudNewMenu")
+        local top = hud and hud:FindFirstChild("Top")
+        local slots = top and top:FindFirstChild("InfoSlots")
+
+        local specs = {
+            Strength = {
+                { statsList, "strengthFrame", "amountLabel" },
+                { currency, "strengthFrame", "amountLabel" },
+                { slots, "StrengthSlot", "Amnt" },
+            },
+            Gems = {
+                { currency, "gemsFrame", "amountLabel" },
+                { slots, "GemSlot", "Amnt" },
+            },
+            Rebirths = { { bottom, "rebirthsFrame", "statLabel" } },
+            Fights = { { bottom, "brawlsFrame", "statLabel" } },
+            Kills = { { bottom, "killsFrame", "statLabel" } },
+            Durability = {
+                { statsList, "durabilityFrame", "amountLabel" },
+                { currency, "durabilityFrame", "amountLabel" },
+                { slots, "DurabilitySlot", "Amnt" },
+            },
+        }
+
+        for _, spec in ipairs(specs[key] or {}) do
+            local holder = spec[1] and spec[1]:FindFirstChild(spec[2])
+            local label = holder and holder:FindFirstChild(spec[3])
+
+            if label and label:IsA("TextLabel") then
+                if not Fake.originals[label] then
+                    Fake.originals[label] = {
+                        Text = label.Text,
+                        TextTransparency = label.TextTransparency,
+                        TextStrokeTransparency = label.TextStrokeTransparency,
+                    }
+                end
+                if not table.find(record.labels, label) then
+                    table.insert(record.labels, label)
+                end
+            end
+        end
+    end
+
+    local function restoreLabel(label)
+        local original = Fake.originals[label]
+        if label and label.Parent and original then
+            label.Text = original.Text
+            label.TextTransparency = original.TextTransparency
+            label.TextStrokeTransparency = original.TextStrokeTransparency
+        end
+        Fake.originals[label] = nil
+    end
+
+    local function applyLabels()
+        for key, record in pairs(Fake.records) do
+            local text = formatFakeNumber(record.value)
+
+            if key == "Fights" then
+                text = "Brawls - " .. text
+            elseif key == "Kills" then
+                text = "KOs - " .. text
+            elseif key == "Rebirths" then
+                text = "Rebirths - " .. text
+            end
+
+            for _, label in ipairs(record.labels) do
+                if label and label.Parent then
+                    label.Text = text
+                end
+            end
+        end
+    end
+
+    local function startPresentation()
+        if Fake.presenting then
+            return
+        end
+        Fake.presenting = true
+
+        task.spawn(function()
+            while isAlive() and next(Fake.records) ~= nil do
+                if not Fake.applying then
+                    for key, record in pairs(Fake.records) do
+                        captureLabels(key, record)
+                    end
+                    applyLabels()
+                end
+                task.wait(0.5)
+            end
+            Fake.presenting = false
+        end)
+    end
+
+    local function clearStat(key)
+        local record = Fake.records[key]
+        if not record then
+            return
+        end
+        Fake.records[key] = nil
+
+        if record.connection then
+            record.connection:Disconnect()
+        end
+
+        if record.object and record.object.Parent then
+            Fake.applying = true
+            pcall(function()
+                record.object.Value = record.realValue
+            end)
+            Fake.applying = false
+        end
+
+        for _, label in ipairs(record.labels) do
+            restoreLabel(label)
+        end
+    end
+
+    local function changeStat(definition, text)
+        if not text or tostring(text):match("^%s*$") then
+            clearStat(definition.key)
+            return
+        end
+
+        local value = parseFakeNumber(text)
+        local stat = findFakeStat(definition.names)
+        if not value or not stat then
+            Util.notify(L("error"), L("st_fake_invalid"), "triangle-alert")
+            return
+        end
+
+        clearStat(definition.key)
+
+        local record = {
+            object = stat,
+            realValue = stat.Value,
+            value = value,
+            labels = {},
+        }
+        Fake.records[definition.key] = record
+
+        captureLabels(definition.key, record)
+
+        record.connection = stat:GetPropertyChangedSignal("Value"):Connect(function()
+            if Fake.applying or not isAlive() or Fake.records[definition.key] ~= record then
+                return
+            end
+            if stat.Value ~= value then
+                record.realValue = stat.Value
+                Fake.applying = true
+                pcall(function()
+                    stat.Value = value
+                end)
+                Fake.applying = false
+            end
+        end)
+
+        Fake.applying = true
+        pcall(function()
+            stat.Value = value
+        end)
+        Fake.applying = false
+
+        applyLabels()
+        startPresentation()
+    end
+
+    local function restoreAll()
+        for key in pairs(Fake.records) do
+            clearStat(key)
+        end
+        for label in pairs(Fake.originals) do
+            restoreLabel(label)
+        end
+    end
+
+    Stats:Section({ Title = L("st_fake_section") })
+
+    Stats:Paragraph({
+        Title = L("st_fake_title"),
+        Desc = L("st_fake_desc"),
+    })
+
+    for _, definition in ipairs(fakeDefinitions) do
+        Fake.inputs[definition.key] = Stats:Input({
+            Title = L(definition.title),
+            Placeholder = "",
+            Value = "",
+            Callback = function(text)
+                changeStat(definition, text)
+            end,
+        })
+    end
+
+    Stats:Button({
+        Title = L("st_fake_restore"),
+        Icon = "rotate-ccw",
+        Callback = function()
+            restoreAll()
+            for _, input in pairs(Fake.inputs) do
+                pcall(function()
+                    input:Set("")
+                end)
+            end
+            Util.notify(L("st_fake_title"), L("st_fake_restored"), "check")
+        end,
+    })
+
+    task.spawn(function()
+        while isAlive() do
+            task.wait(1)
+        end
+        for _, connection in ipairs(Spy.connections) do
+            pcall(function()
+                connection:Disconnect()
+            end)
+        end
+        pcall(restoreAll)
+    end)
+
+        local NOTIFY_COLOR = 0x170158
+    local NOTIFY_NAME = "Mystery Notification"
+    local NOTIFY_IMAGE = "https://raw.githubusercontent.com/Mystery-Center/Mystery-Media/main/Mystery%20Notification%20Imagen.png"
+
+    local hubStart = os.clock()
+
+    local hookHosts = {
+        ["discord.com"] = true,
+        ["discordapp.com"] = true,
+        ["ptb.discord.com"] = true,
+        ["canary.discord.com"] = true,
+    }
+
+    local function isValidHook(url)
+        if type(url) ~= "string" then
+            return false
+        end
+        local host = url:match("^https://([%w%.]+)/api/webhooks/%d+/[%w_%-]+$")
+        return host ~= nil and hookHosts[host] == true
+    end
+
+    local function clip(text, limit)
+        text = tostring(text)
+        if #text > limit then
+            return string.sub(text, 1, limit - 3) .. "..."
+        end
+        return text
+    end
+
+    local function shortNumber(value)
+        value = tonumber(value) or 0
+        for _, unit in ipairs(SPY_UNITS) do
+            if value >= unit[1] then
+                return string.format("%.2f%s", value / unit[1], unit[2])
+            end
+        end
+        return string.format("%.0f", value)
+    end
+
+    local avatarCache = nil
+
+    local function getAvatarUrl()
+        if not avatarCache then
+            avatarCache = Logger.getAvatar(LocalPlayer.UserId)
+        end
+        return avatarCache
+    end
+
+    local function postHook(url, embed)
+        local request = Logger.getRequest()
+        if not request or not isValidHook(url) then
+            return false
+        end
+
+        local encodeOk, body = pcall(function()
+            return HttpService:JSONEncode({
+                username = NOTIFY_NAME,
+                embeds = { embed },
+            })
+        end)
+        if not encodeOk then
+            return false
+        end
+
+        local ok, response = pcall(request, {
+            Url = url,
+            Method = "POST",
+            Headers = { ["Content-Type"] = "application/json" },
+            Body = body,
+        })
+        if not ok then
+            return false
+        end
+
+        if type(response) == "table" then
+            local code = tonumber(response.StatusCode or response.Status)
+            return code ~= nil and code >= 200 and code < 300
+        end
+        return true
+    end
+
+    local reportFields = {
+        { names = { "Strength", "Fuerza" }, name = "Strength", track = true },
+        { names = { "Durability", "Durabilidad" }, name = "Durability", track = true },
+        { names = { "Gems", "Gemas" }, name = "Gems", track = true },
+        { names = { "Agility" }, name = "Agility", track = true },
+        { names = { "Rebirths", "Rebirth" }, name = "Rebirths", track = true },
+        { names = { "Kills" }, name = "Kills", track = true },
+        { names = { "Brawls", "Fights", "Fight" }, name = "Brawls", track = true },
+        { names = { "muscleKingTime" }, name = "Muscle King Time" },
+        { names = { "evilKarma" }, name = "Evil Karma" },
+        { names = { "goodKarma" }, name = "Good Karma" },
+    }
+
+    local function readReal(object)
+        for _, record in pairs(Fake.records) do
+            if record.object == object then
+                return tonumber(record.realValue) or 0
+            end
+        end
+        return tonumber(object.Value) or 0
+    end
+
+    local function collectStats()
+        local list = {}
+        for _, field in ipairs(reportFields) do
+            local object = findFakeStat(field.names)
+            if object then
+                table.insert(list, {
+                    name = field.name,
+                    value = readReal(object),
+                    track = field.track,
+                })
+            end
+        end
+        return list
+    end
+
+    local function statsText(list)
+        local lines = {}
+        for _, stat in ipairs(list) do
+            table.insert(lines, "**" .. stat.name .. ":** " .. formatSpy(stat.value))
+        end
+        local map = LocalPlayer:FindFirstChild("currentMap")
+        if map then
+            table.insert(lines, "**Current Map:** " .. tostring(map.Value))
+        end
+        return table.concat(lines, "\n")
+    end
+
+    local function petsText()
+        local pets = LocalPlayer:FindFirstChild("equippedPets")
+        if not pets then
+            return nil
+        end
+
+        local counts = {}
+        local order = {}
+        for _, pet in ipairs(pets:GetChildren()) do
+            local ref = pet:FindFirstChild("petReference")
+            local name = ref and tostring(ref.Value) or pet.Name
+            if not counts[name] then
+                counts[name] = 0
+                table.insert(order, name)
+            end
+            counts[name] = counts[name] + 1
+        end
+
+        if #order == 0 then
+            return nil
+        end
+
+        table.sort(order)
+        local lines = {}
+        for _, name in ipairs(order) do
+            table.insert(lines, "• " .. name .. " x" .. counts[name])
+        end
+        return table.concat(lines, "\n")
+    end
+
+    local function playerText()
+        local executor, version = Util.getExecutor("Unknown")
+        local membership = LocalPlayer.MembershipType == Enum.MembershipType.Premium and "Premium" or "No Premium"
+        local profile = "https://www.roblox.com/users/" .. LocalPlayer.UserId .. "/profile"
+
+        return table.concat({
+            "**Username:** [`" .. LocalPlayer.Name .. "`](" .. profile .. ")",
+            "**Display Name:** " .. LocalPlayer.DisplayName,
+            "**User ID:** `" .. LocalPlayer.UserId .. "`",
+            "**Account Age:** " .. Logger.formatAge(LocalPlayer.AccountAge),
+            "**Membership:** " .. membership,
+            "**Platform:** " .. Logger.getPlatform(),
+            "**Executor:** " .. executor .. " (" .. version .. ")",
+        }, "\n")
+    end
+
+    local function serverText()
+        local jobId = tostring(game.JobId)
+        local joinUrl = "https://www.roblox.com/games/start?placeId=" .. game.PlaceId
+            .. "&gameInstanceId=" .. jobId
+
+        return table.concat({
+            "Players: " .. #Players:GetPlayers() .. "/" .. Players.MaxPlayers,
+            "Ping: " .. Util.getPing() .. " ms",
+            "Memory: " .. math.floor(StatsService:GetTotalMemoryUsageMb()) .. " MB",
+            "Place ID: " .. game.PlaceId,
+            "Server ID: `" .. jobId .. "`",
+            "[Click To Join](" .. joinUrl .. ")",
+        }, "\n")
+    end
+
+    local function baseEmbed(title)
+        return {
+            title = title,
+            color = NOTIFY_COLOR,
+            image = { url = NOTIFY_IMAGE },
+            thumbnail = { url = getAvatarUrl() },
+            timestamp = os.date("!%Y-%m-%dT%H:%M:%SZ"),
+        }
+    end
+
+    local function buildInfoEmbed()
+        local embed = baseEmbed("Player Report")
+        embed.footer = { text = NOTIFY_NAME .. " • " .. Config.HubName }
+
+        local gameUrl = "https://www.roblox.com/games/" .. game.PlaceId
+        local gameText = "[" .. Util.getGameName("Unknown") .. "](" .. gameUrl .. ")\nGame ID: " .. game.GameId
+
+        embed.fields = {
+            { name = "Player Info", value = clip(playerText(), 1024), inline = false },
+            { name = "Stats", value = clip(statsText(collectStats()), 1024), inline = false },
+        }
+
+        local pets = petsText()
+        if pets then
+            table.insert(embed.fields, { name = "Equipped Pets", value = clip(pets, 1024), inline = false })
+        end
+
+        table.insert(embed.fields, { name = "Game", value = clip(gameText, 1024), inline = false })
+        table.insert(embed.fields, { name = "Server", value = clip(serverText(), 1024), inline = false })
+
+        return embed
+    end
+
+    local Notify = {
+        url = "",
+        minutes = 0,
+        enabled = false,
+        generation = 0,
+        startTime = 0,
+        sent = 0,
+        gains = {},
+        last = {},
+    }
+
+    local function sampleGains()
+        for _, stat in ipairs(collectStats()) do
+            if stat.track then
+                local last = Notify.last[stat.name]
+                if last ~= nil and stat.value > last then
+                    Notify.gains[stat.name] = (Notify.gains[stat.name] or 0) + (stat.value - last)
+                end
+                Notify.last[stat.name] = stat.value
+            end
+        end
+    end
+
+    local function buildNotifyEmbed(isTest)
+        local list = collectStats()
+        local running = Notify.enabled
+        local elapsed = 0
+        if running then
+            elapsed = os.clock() - Notify.startTime
+        end
+
+        local embed = baseEmbed(isTest and "Test Report" or "Farm Report")
+        embed.description = "[`" .. LocalPlayer.Name .. "`](https://www.roblox.com/users/"
+            .. LocalPlayer.UserId .. "/profile) • ID `" .. LocalPlayer.UserId .. "`"
+
+        local footer = NOTIFY_NAME
+        if not isTest then
+            footer = footer .. " • Report #" .. Notify.sent
+        end
+        embed.footer = { text = footer }
+
+        local timeLines = {
+            "**Farming Time:** " .. (running and Util.formatTime(elapsed) or "Not running"),
+            "**Hub Session:** " .. Util.formatTime(os.clock() - hubStart),
+        }
+        if running then
+            table.insert(timeLines, "**Interval:** every " .. Notify.minutes .. " min")
+        end
+
+        local gainLines = {}
+        local rateLines = {}
+        if running then
+            for _, stat in ipairs(list) do
+                if stat.track then
+                    local gained = Notify.gains[stat.name] or 0
+                    table.insert(gainLines, "**" .. stat.name .. ":** +" .. shortNumber(gained))
+                    if elapsed >= 60 and gained > 0 then
+                        table.insert(
+                            rateLines,
+                            "**" .. stat.name .. ":** " .. shortNumber(gained / (elapsed / 3600)) .. "/h"
+                        )
+                    end
+                end
+            end
+        end
+
+        embed.fields = {
+            { name = "Farm Time", value = clip(table.concat(timeLines, "\n"), 1024), inline = false },
+            { name = "Stats", value = clip(statsText(list), 1024), inline = false },
+        }
+
+        if #gainLines > 0 then
+            table.insert(embed.fields, { name = "Gained Since Start", value = clip(table.concat(gainLines, "\n"), 1024), inline = true })
+        end
+        if #rateLines > 0 then
+            table.insert(embed.fields, { name = "Per Hour", value = clip(table.concat(rateLines, "\n"), 1024), inline = true })
+        end
+
+        local pets = petsText()
+        if pets then
+            table.insert(embed.fields, { name = "Equipped Pets", value = clip(pets, 1024), inline = false })
+        end
+
+        table.insert(embed.fields, { name = "Server", value = clip(serverText(), 1024), inline = false })
+
+        return embed
+    end
+
+    local function sendWithNotice(url, builder, section)
+        if not Logger.getRequest() then
+            Util.notify(section, L("bw_no_http"), "triangle-alert")
+            return
+        end
+        if not isValidHook(url) then
+            Util.notify(section, L("bw_invalid"), "triangle-alert")
+            return
+        end
+
+        task.spawn(function()
+            local ok, embed = pcall(builder)
+            local sent = ok and postHook(url, embed)
+            if sent then
+                Util.notify(section, L("st_hook_sent"), "check")
+            else
+                Util.notify(section, L("st_hook_failed"), "triangle-alert")
+            end
+        end)
+    end
+
+    Stats:Section({ Title = L("st_info_section") })
+
+    local infoUrl = ""
+
+    local InfoUrlInput = Stats:Input({
+        Title = L("bw_input"),
+        Placeholder = "https://discord.com/api/webhooks/...",
+        Value = "",
+        Callback = function(text)
+            local clean = tostring(text or ""):gsub("%s+", "")
+            infoUrl = clean
+        end,
+    })
+    Util.register("stats_info_webhook_url", InfoUrlInput)
+
+    Stats:Button({
+        Title = L("st_info_send"),
+        Desc = L("st_info_send_desc"),
+        Icon = "send",
+        Callback = function()
+            sendWithNotice(infoUrl, buildInfoEmbed, L("st_info_section"))
+        end,
+    })
+
+    Stats:Section({ Title = L("st_notify_section") })
+
+    local NotifyUrlInput = Stats:Input({
+        Title = L("bw_input"),
+        Placeholder = "https://discord.com/api/webhooks/...",
+        Value = "",
+        Callback = function(text)
+            local clean = tostring(text or ""):gsub("%s+", "")
+            Notify.url = clean
+        end,
+    })
+    Util.register("stats_notify_webhook_url", NotifyUrlInput)
+
+    local NotifyMinutesInput = Stats:Input({
+        Title = L("st_notify_minutes"),
+        Placeholder = "10",
+        Value = "",
+        Callback = function(text)
+            local n = tonumber(text)
+            if n and n > 0 then
+                Notify.minutes = math.clamp(n, 1, 1440)
+            end
+        end,
+    })
+    Util.register("stats_notify_minutes", NotifyMinutesInput)
+
+    local NotifyToggle
+
+    local function rejectNotify(message)
+        Notify.enabled = false
+        Util.notify(L("st_notify_section"), message, "triangle-alert")
+        task.defer(function()
+            pcall(function()
+                NotifyToggle:Set(false)
+            end)
+        end)
+    end
+
+    local function startNotify()
+        Notify.generation = Notify.generation + 1
+        local generation = Notify.generation
+
+        Notify.startTime = os.clock()
+        Notify.sent = 0
+        Notify.gains = {}
+        Notify.last = {}
+
+        task.spawn(function()
+            local lastSent = os.clock()
+
+            while Notify.enabled and isAlive() and Notify.generation == generation do
+                pcall(sampleGains)
+
+                if os.clock() - lastSent >= Notify.minutes * 60 then
+                    lastSent = os.clock()
+                    Notify.sent = Notify.sent + 1
+
+                    task.spawn(function()
+                        local ok, embed = pcall(buildNotifyEmbed, false)
+                        if not (ok and postHook(Notify.url, embed)) then
+                            Util.notify(L("st_notify_section"), L("st_hook_failed"), "triangle-alert")
+                        end
+                    end)
+                end
+
+                task.wait(1)
+            end
+        end)
+    end
+
+    NotifyToggle = Stats:Toggle({
+        Title = L("st_notify_toggle"),
+        Desc = L("st_notify_toggle_desc"),
+        Value = false,
+        Callback = function(state)
+            if not state then
+                if Notify.enabled then
+                    Notify.enabled = false
+                    Notify.generation = Notify.generation + 1
+                    Util.notify(L("st_notify_section"), L("st_notify_stopped"), "check")
+                end
+                return
+            end
+
+            if not Logger.getRequest() then
+                rejectNotify(L("bw_no_http"))
+            elseif not isValidHook(Notify.url) then
+                rejectNotify(L("bw_invalid"))
+            elseif Notify.minutes < 1 then
+                rejectNotify(L("st_notify_need_minutes"))
+            else
+                Notify.enabled = true
+                startNotify()
+                Util.notify(L("st_notify_section"), L("st_notify_started", Notify.minutes), "check")
+            end
+        end,
+    })
+
+    Stats:Button({
+        Title = L("st_notify_test"),
+        Icon = "send",
+        Callback = function()
+            sendWithNotice(Notify.url, function()
+                return buildNotifyEmbed(true)
+            end, L("st_notify_section"))
+        end,
+    })
 end
 
 do
@@ -5064,6 +6602,299 @@ end
 
 do
     local Teleport = Tabs.Teleport
+
+    local workoutTypes = { "Bench Press", "Squat", "Deadlift", "Pull Up", "Boulder" }
+
+    local locationOrder = {
+        "Starter Island",
+        "Legend Beach",
+        "Frost Gym",
+        "Mythical Gym",
+        "Eternal Gym",
+        "Legend Gym",
+        "Muscle King Gym",
+        "Jungle Gym",
+    }
+
+    local workoutPositions = {
+        ["Bench Press"] = {
+            ["Starter Island"] = CFrame.new(-17.0609932, 3.31417918, -2.48164988),
+            ["Legend Beach"] = CFrame.new(470.334656, 3.31417966, -321.053925),
+            ["Frost Gym"] = CFrame.new(-3013.24194, 39.2158546, -335.036926),
+            ["Mythical Gym"] = CFrame.new(2371.7356, 39.2158546, 1246.31555),
+            ["Legend Gym"] = CFrame.new(4111.91748, 1020.46674, -3799.97217),
+            ["Muscle King Gym"] = CFrame.new(-8590.06152, 46.0167427, -6043.34717),
+            ["Jungle Gym"] = CFrame.new(-8173, 64, 1898),
+        },
+        ["Squat"] = {
+            ["Starter Island"] = CFrame.new(-48.8711243, 3.31417918, -11.8831778),
+            ["Legend Beach"] = CFrame.new(470.334656, 3.31417966, -321.053925),
+            ["Frost Gym"] = CFrame.new(-2933.47998, 29.6399612, -579.946045),
+            ["Mythical Gym"] = CFrame.new(2489.21484, 3.67686629, 849.051025),
+            ["Eternal Gym"] = CFrame.new(-7176.19141, 45.394104, -1106.31421),
+            ["Legend Gym"] = CFrame.new(4304.99023, 987.829956, -4124.2334),
+            ["Muscle King Gym"] = CFrame.new(-8940.12402, 13.1642084, -5699.13477),
+            ["Jungle Gym"] = CFrame.new(-8352, 34, 2878),
+        },
+        ["Deadlift"] = {
+            ["Starter Island"] = CFrame.new(-48.8711243, 3.31417918, -11.8831778),
+            ["Legend Beach"] = CFrame.new(470.334656, 3.31417966, -321.053925),
+            ["Frost Gym"] = CFrame.new(-2933.47998, 29.6399612, -579.946045),
+            ["Mythical Gym"] = CFrame.new(2489.21484, 3.67686629, 849.051025),
+            ["Eternal Gym"] = CFrame.new(-7176.19141, 45.394104, -1106.31421),
+            ["Legend Gym"] = CFrame.new(4304.99023, 987.829956, -4124.2334),
+            ["Muscle King Gym"] = CFrame.new(-8940.12402, 13.1642084, -5699.13477),
+        },
+        ["Pull Up"] = {
+            ["Starter Island"] = CFrame.new(-33.3047485, 3.31417918, -11.8831778),
+            ["Legend Beach"] = CFrame.new(470.334656, 3.31417966, -321.053925),
+            ["Frost Gym"] = CFrame.new(-2933.47998, 29.6399612, -579.946045),
+            ["Mythical Gym"] = CFrame.new(2489.21484, 3.67686629, 849.051025),
+            ["Eternal Gym"] = CFrame.new(-7176.19141, 45.394104, -1106.31421),
+            ["Legend Gym"] = CFrame.new(4304.99023, 987.829956, -4124.2334),
+            ["Muscle King Gym"] = CFrame.new(-8940.12402, 13.1642084, -5699.13477),
+            ["Jungle Gym"] = CFrame.new(-8666, 34, 2070),
+        },
+        ["Boulder"] = {
+            ["Starter Island"] = CFrame.new(-33.3047485, 3.31417918, -11.8831778),
+            ["Legend Beach"] = CFrame.new(470.334656, 3.31417966, -321.053925),
+            ["Frost Gym"] = CFrame.new(-2933.47998, 29.6399612, -579.946045),
+            ["Mythical Gym"] = CFrame.new(2489.21484, 3.67686629, 849.051025),
+            ["Eternal Gym"] = CFrame.new(-7176.19141, 45.394104, -1106.31421),
+            ["Legend Gym"] = CFrame.new(4304.99023, 987.829956, -4124.2334),
+            ["Muscle King Gym"] = CFrame.new(-8940.12402, 13.1642084, -5699.13477),
+            ["Jungle Gym"] = CFrame.new(-8621, 34, 2684),
+        },
+    }
+
+    local treadmillOrder = {
+        "Tiny Island",
+        "Starter Island",
+        "Legend Beach",
+        "Frost Gym",
+        "Mythical Gym",
+        "Eternal Gym",
+        "Legend Gym",
+        "Jungle Gym",
+    }
+
+    local treadmillPositions = {
+        ["Tiny Island"] = CFrame.new(-31.8626194, 6.0588026, 2087.88672, -0.999396682, -9.72631931e-09, 0.034730725, -6.63278898e-09, 1, 8.91870684e-08, -0.034730725, 8.8902901e-08, -0.999396682),
+        ["Starter Island"] = CFrame.new(226.252472, 8.1526947, 219.366516, -0.00880406145, 3.58277887e-08, -0.999961257, -4.41204939e-08, 1, 3.62176351e-08, 0.999961257, 4.44376482e-08, -0.00880406145),
+        ["Legend Beach"] = CFrame.new(-365.798309, 44.5082932, -501.618591, 0.00878552441, -6.19950713e-09, 0.999961436, -4.37451603e-10, 1, 6.20358964e-09, -0.999961436, -4.91936492e-10, 0.00878552441),
+        ["Frost Gym"] = CFrame.new(-2933.47998, 29.6399612, -579.946045, 0.0345239155, -1.03010173e-07, 0.999403894, 1.03015294e-08, 1, 1.02715752e-07, -0.999403894, 6.74923806e-09, 0.0345239155),
+        ["Mythical Gym"] = CFrame.new(2659.50635, 21.6095238, 934.690613, 0.999999881, 4.98906161e-08, 0.000502891606, -4.98585742e-08, 1, -6.37288338e-08, -0.000502891606, 6.37037516e-08, 0.999999881),
+        ["Eternal Gym"] = CFrame.new(-7176.19141, 45.394104, -1106.31421, 0.971191287, -2.38377185e-09, 0.238301158, 1.41694778e-09, 1, 4.22844915e-09, -0.238301158, -3.76897269e-09, 0.971191287),
+        ["Legend Gym"] = CFrame.new(4446.91699, 1004.46698, -3983.76074, -0.999961317, -1.97616366e-08, 0.00879266672, -1.93830077e-08, 1, 4.31365149e-08, -0.00879266672, 4.29661292e-08, -0.999961317),
+        ["Jungle Gym"] = CFrame.new(-8137, 28, 2820),
+    }
+
+    local islandList = {
+        { name = "Spawn", cf = CFrame.new(2, 8, 115) },
+        { name = "Secret Area", cf = CFrame.new(1947, 2, 6191) },
+        { name = "Tiny Island", cf = CFrame.new(-34, 7, 1903) },
+        { name = "Frozen Island", cf = CFrame.new(-2600.00244, 3.67686558, -403.884369, 0.0873617008, 1.0482899e-09, 0.99617666, 3.07204253e-08, 1, -3.7464023e-09, -0.99617666, 3.09302628e-08, 0.0873617008) },
+        { name = "Mythical Island", cf = CFrame.new(2255, 7, 1071) },
+        { name = "Hell Island", cf = CFrame.new(-6768, 7, -1287) },
+        { name = "Legend Island", cf = CFrame.new(4604, 991, -3887) },
+        { name = "Muscle King Island", cf = CFrame.new(-8646, 17, -5738) },
+        { name = "Jungle Island", cf = CFrame.new(-8659, 6, 2384) },
+        { name = "Industrial Gym", cf = CFrame.new(-5563.2, 58.31, 4942.44) },
+        { name = "Halloween Gym", cf = CFrame.new(5558.16, 83.79, 5838.37) },
+    }
+
+    local brawlList = {
+        { name = "Brawl Lava", cf = CFrame.new(4471, 119, -8836) },
+        { name = "Brawl Desert", cf = CFrame.new(960, 17, -7398) },
+        { name = "Brawl Regular", cf = CFrame.new(-1849, 20, -6335) },
+    }
+
+    local function namesOf(list)
+        local names = {}
+        for _, entry in ipairs(list) do
+            table.insert(names, entry.name)
+        end
+        return names
+    end
+
+    local function findByName(list, name)
+        for _, entry in ipairs(list) do
+            if entry.name == name then
+                return entry.cf
+            end
+        end
+        return nil
+    end
+
+    local function getWorkoutLocations(workout)
+        local positions = workoutPositions[workout]
+        local list = {}
+        if positions then
+            for _, name in ipairs(locationOrder) do
+                if positions[name] then
+                    table.insert(list, name)
+                end
+            end
+        end
+        return list
+    end
+
+    local function teleportTo(cf)
+        local character = LocalPlayer.Character
+        local root = character and character:FindFirstChild("HumanoidRootPart")
+        if not root then
+            Util.notify(L("error"), L("tp_failed"), "triangle-alert")
+            return false
+        end
+        root.AssemblyLinearVelocity = Vector3.zero
+        root.CFrame = cf
+        return true
+    end
+
+    local selectedWorkout = workoutTypes[1]
+    local selectedLocation = "Starter Island"
+    local selectedTreadmill = treadmillOrder[1]
+    local islandNames = namesOf(islandList)
+    local brawlNames = namesOf(brawlList)
+    local selectedIsland = islandNames[1]
+    local selectedBrawl = brawlNames[1]
+
+    Teleport:Section({ Title = L("tp_work_section") })
+
+    local LocationDropdown
+
+    Teleport:Dropdown({
+        Title = L("tp_select_workout"),
+        Values = workoutTypes,
+        Value = selectedWorkout,
+        SearchBarEnabled = false,
+        AllowNone = false,
+        Callback = function(option)
+            if type(option) ~= "string" then
+                return
+            end
+            selectedWorkout = option
+
+            local locations = getWorkoutLocations(option)
+            if not table.find(locations, selectedLocation) then
+                selectedLocation = locations[1] or ""
+            end
+
+            pcall(function()
+                LocationDropdown:Refresh(locations)
+            end)
+            if selectedLocation ~= "" then
+                pcall(function()
+                    LocationDropdown:Select(selectedLocation)
+                end)
+            end
+        end,
+    })
+
+    LocationDropdown = Teleport:Dropdown({
+        Title = L("tp_select_location"),
+        Values = getWorkoutLocations(selectedWorkout),
+        Value = selectedLocation,
+        SearchBarEnabled = true,
+        AllowNone = false,
+        Callback = function(option)
+            if type(option) == "string" then
+                selectedLocation = option
+            end
+        end,
+    })
+
+    Teleport:Button({
+        Title = L("tp_tp_workout"),
+        Icon = "dumbbell",
+        Callback = function()
+            local positions = workoutPositions[selectedWorkout]
+            local cf = positions and positions[selectedLocation]
+            if cf then
+                teleportTo(cf)
+            else
+                Util.notify(L("error"), L("tp_no_location"), "triangle-alert")
+            end
+        end,
+    })
+
+    Teleport:Section({ Title = L("tp_treadmill_section") })
+
+    Teleport:Dropdown({
+        Title = L("tp_select_treadmill"),
+        Values = treadmillOrder,
+        Value = selectedTreadmill,
+        SearchBarEnabled = true,
+        AllowNone = false,
+        Callback = function(option)
+            if type(option) == "string" then
+                selectedTreadmill = option
+            end
+        end,
+    })
+
+    Teleport:Button({
+        Title = L("tp_tp_treadmill"),
+        Icon = "footprints",
+        Callback = function()
+            local cf = treadmillPositions[selectedTreadmill]
+            if cf then
+                teleportTo(cf)
+            end
+        end,
+    })
+
+    Teleport:Section({ Title = L("tp_island_section") })
+
+    Teleport:Dropdown({
+        Title = L("tp_select_island"),
+        Values = islandNames,
+        Value = selectedIsland,
+        SearchBarEnabled = true,
+        AllowNone = false,
+        Callback = function(option)
+            if type(option) == "string" then
+                selectedIsland = option
+            end
+        end,
+    })
+
+    Teleport:Button({
+        Title = L("tp_tp_island"),
+        Icon = "map-pin",
+        Callback = function()
+            local cf = findByName(islandList, selectedIsland)
+            if cf then
+                teleportTo(cf)
+            end
+        end,
+    })
+
+    Teleport:Section({ Title = L("tp_brawl_section") })
+
+    Teleport:Dropdown({
+        Title = L("tp_select_brawl"),
+        Values = brawlNames,
+        Value = selectedBrawl,
+        SearchBarEnabled = true,
+        AllowNone = false,
+        Callback = function(option)
+            if type(option) == "string" then
+                selectedBrawl = option
+            end
+        end,
+    })
+
+    Teleport:Button({
+        Title = L("tp_tp_brawl"),
+        Icon = "swords",
+        Callback = function()
+            local cf = findByName(brawlList, selectedBrawl)
+            if cf then
+                teleportTo(cf)
+            end
+        end,
+    })
 end
 
 do
@@ -5264,3 +7095,4 @@ end
 pcall(function()
     Tabs.Home:Select()
 end)
+
