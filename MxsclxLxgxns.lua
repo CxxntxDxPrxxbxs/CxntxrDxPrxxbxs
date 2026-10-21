@@ -4952,12 +4952,8 @@ do
         end
     end)
 
-        -- =========================================================
-    -- MOVIMIENTO Y MUNDO
-    -- =========================================================
     Extras:Section({ Title = L("ex_move_section") })
 
-    -- Walk on Water (una sola parte que sigue al jugador)
     local WATER_Y = -9.5
     local waterPart, waterConn = nil, nil
 
@@ -5005,7 +5001,6 @@ do
     })
     Util.register("ex_walk_water", WaterToggle)
 
-    -- Infinite Jump
     local infiniteJump = false
 
     local InfJumpToggle = Extras:Toggle({
@@ -5029,7 +5024,6 @@ do
         end
     end)
 
-    -- Change Time
     local TimeDropdown = Extras:Dropdown({
         Title = L("ex_time"),
         Values = { L("ex_time_day"), L("ex_time_night") },
@@ -5045,9 +5039,6 @@ do
     })
     Util.register("ex_time", TimeDropdown)
 
-    -- =========================================================
-    -- SHADERS
-    -- =========================================================
     Extras:Section({ Title = L("ex_shader_section") })
 
     local function rgb(r, g, b)
@@ -5243,7 +5234,6 @@ do
             return
         end
 
-        -- Evita que choque con las opciones de optimización
         local turnedOff = false
         for _, toggle in ipairs({ EffectsToggle, GraphicsToggle }) do
             local ok, value = pcall(function()
@@ -6908,12 +6898,7 @@ do
     })
 
     local GainedParagraph = Data:Paragraph({
-        Title = L("dt_gained_title"),
-        Desc = L("home_loading"),
-    })
-
-    local RateParagraph = Data:Paragraph({
-        Title = L("dt_hour_title"),
+        Title = L("dt_gained_title") .. " / " .. L("dt_hour_title"),
         Desc = L("home_loading"),
     })
 
@@ -6922,6 +6907,32 @@ do
         Desc = L("home_loading"),
     })
 
+    local function makeSetter(paragraph)
+        local last
+        return function(text)
+            if text == last then
+                return
+            end
+            last = text
+            pcall(paragraph.SetDesc, paragraph, text)
+        end
+    end
+
+    local setTime   = makeSetter(TimeParagraph)
+    local setGained = makeSetter(GainedParagraph)
+    local setTotals = makeSetter(TotalsParagraph)
+
+    local function refreshData()
+        local list, elapsed = collect()
+        setTime(L("pk_time") .. ": " .. Util.formatTime(elapsed))
+        setGained(
+            gainedText(list)
+            .. "\n\n" .. L("dt_hour_title") .. "\n"
+            .. rateText(list)
+        )
+        setTotals(totalsText(list))
+    end
+
     Data:Button({
         Title = L("dt_reset"),
         Desc = L("dt_reset_desc"),
@@ -6929,20 +6940,21 @@ do
         Callback = function()
             Session.start = os.clock()
             Session.base = {}
+            pcall(refreshData)
             Util.notify(L("dt_session_section"), L("dt_reset_done"), "check")
         end,
     })
 
     task.spawn(function()
+        task.wait(1)
+        pcall(refreshData)
+
         while isAlive() do
-            pcall(function()
-                local list, elapsed = collect()
-                TimeParagraph:SetDesc(L("pk_time") .. ": " .. Util.formatTime(elapsed))
-                GainedParagraph:SetDesc(gainedText(list))
-                RateParagraph:SetDesc(rateText(list))
-                TotalsParagraph:SetDesc(totalsText(list))
-            end)
-            task.wait(1)
+            task.wait(5)
+            if not isAlive() then
+                break
+            end
+            pcall(refreshData)
         end
     end)
 
