@@ -938,6 +938,15 @@ function Util.notify(title, content, icon)
     end)
 end
 
+function Util.makeSetter(paragraph)
+    local last
+    return function(text)
+        if text == last then return end
+        last = text
+        pcall(paragraph.SetDesc, paragraph, text)
+    end
+end
+
 function Util.copyText(text)
     local fn = setclipboard or toclipboard or (syn and syn.write_clipboard) or (Clipboard and Clipboard.set)
     if fn then
@@ -986,11 +995,13 @@ function Util.getExecutor(fallback)
 end
 
 function Util.getGameName(fallback)
+    if Util._gameName then return Util._gameName end
     local ok, info = pcall(function()
         return MarketplaceService:GetProductInfo(game.PlaceId)
     end)
     if ok and type(info) == "table" and info.Name then
-        return tostring(info.Name)
+        Util._gameName = tostring(info.Name)
+        return Util._gameName
     end
     return fallback or L("unknown")
 end
@@ -1238,8 +1249,27 @@ local function isAllowedGame()
     return false
 end
 
-local blacklistEntry = findUser(fetchUsers(Config.BlacklistUrl), LocalPlayer.UserId)
-local isWhitelisted = findUser(fetchUsers(Config.WhitelistUrl), LocalPlayer.UserId) ~= nil
+local blacklistUsers, whitelistUsers
+local pending = 2
+task.spawn(function()
+    blacklistUsers = fetchUsers(Config.BlacklistUrl)
+    pending = pending - 1
+end)
+task.spawn(function()
+    whitelistUsers = fetchUsers(Config.WhitelistUrl)
+    pending = pending - 1
+end)
+
+local waitStart = os.clock()
+while pending > 0 and os.clock() - waitStart < 10 do
+    task.wait()
+end
+
+blacklistUsers = blacklistUsers or {}
+whitelistUsers = whitelistUsers or {}
+
+local blacklistEntry = findUser(blacklistUsers, LocalPlayer.UserId)
+local isWhitelisted = findUser(whitelistUsers, LocalPlayer.UserId) ~= nil
 
 local accessStatus, accessColor, accessTitle
 if blacklistEntry then
@@ -1506,6 +1536,32 @@ for _, sectionData in ipairs(layout) do
     end
 end
 
+local pacedCount = 0
+function Util.pace(tab)
+    for _, name in ipairs({ "Section", "Paragraph", "Button", "Toggle", "Dropdown", "Input", "Divider" }) do
+        local original = tab[name]
+        if original then
+            pcall(function()
+                tab[name] = function(self, ...)
+                    local result = original(self, ...)
+                    pacedCount = pacedCount + 1
+                    if pacedCount % 4 == 0 then
+                        task.wait()
+                        if not isAlive() then
+                            error("hub reloaded", 0)
+                        end
+                    end
+                    return result
+                end
+            end)
+        end
+    end
+end
+
+for _, tab in pairs(Tabs) do
+    Util.pace(tab)
+end
+
 do
     local Home = Tabs.Home
 
@@ -1646,6 +1702,8 @@ do
     end)
 end
 
+pcall(function() Tabs.Home:Select() end)
+
 do
     local Farm = Tabs.Farm
 
@@ -1653,7 +1711,7 @@ do
     pcall(function()
         local node = ReplicatedStorage
         for _, name in ipairs({ "shared", "state", "Brawl" }) do
-            node = node:WaitForChild(name, 5)
+            node = node:WaitForChild(name, 1)
             if not node then
                 return
             end
@@ -3089,6 +3147,8 @@ do
         end
     end
 
+    local lastBossScan = 0
+
     local function findMainBoss()
         local model = nil
         for _, candidate in ipairs(CollectionService:GetTagged("BossEventBoss")) do
@@ -3099,14 +3159,18 @@ do
         end
 
         if not model then
-            local events = workspace:FindFirstChild("Events")
-            local folder = events and (events:FindFirstChild("BossEvent") or events:FindFirstChild("BossArena"))
-            if folder then
-                for _, candidate in ipairs(folder:GetDescendants()) do
-                    if candidate:IsA("Model")
-                        and (candidate:FindFirstChild("BossDamageHitbox") or CollectionService:HasTag(candidate, "BossEventBoss")) then
-                        model = candidate
-                        break
+            local now = os.clock()
+            if now - lastBossScan >= 2 then
+                lastBossScan = now
+                local events = workspace:FindFirstChild("Events")
+                local folder = events and (events:FindFirstChild("BossEvent") or events:FindFirstChild("BossArena"))
+                if folder then
+                    for _, candidate in ipairs(folder:GetDescendants()) do
+                        if candidate:IsA("Model")
+                            and (candidate:FindFirstChild("BossDamageHitbox") or CollectionService:HasTag(candidate, "BossEventBoss")) then
+                            model = candidate
+                            break
+                        end
                     end
                 end
             end
@@ -5417,8 +5481,11 @@ do
          end
         return math.clamp(n, min, max)
     end
-
+    
     local function applyPlayerCfg()
+    if not (PlayerCfg.speed.enabled or PlayerCfg.jump.enabled or PlayerCfg.gravity.enabled) then
+        return
+    end
         local humanoid = getHumanoid()
         if humanoid then
             if PlayerCfg.speed.enabled then
@@ -6438,9 +6505,9 @@ do
 
     local petShopFolder
     pcall(function()
-        petShopFolder = ReplicatedStorage:WaitForChild("shared", 5)
-            :WaitForChild("runtime", 5)
-            :WaitForChild("cPetShopFolder", 5)
+        petShopFolder = ReplicatedStorage:WaitForChild("shared", 1)
+            :WaitForChild("runtime", 1)
+            :WaitForChild("cPetShopFolder", 1)
     end)
     local petShopRemote = rEvent("cPetShopRemote")
 
@@ -9615,7 +9682,7 @@ do
 end
 
 if Util.autoLoad then
-    Util.autoLoad()
+    task.delay(2, Util.autoLoad)
 end
 
 pcall(function()
