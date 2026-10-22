@@ -290,7 +290,7 @@ local Strings = {
         sn_information = "Information",
         sn_info_text = "Interferes with Boosts you got gifted. Get on a machine for less lag!",
 
-                cr_none = "None",
+        cr_none = "None",
         cr_section = "Crystals",
         cr_hatch_title = "Hatch",
         cr_hatch_inactive = "Inactive",
@@ -387,6 +387,34 @@ local Strings = {
         st_notify_stopped = "Periodic reports stopped.",
         st_hook_sent = "Webhook sent successfully.",
         st_hook_failed = "Failed to send the webhook.",
+
+        kl_misc_section = "Miscellaneous",
+        kl_equip_damage = "Equip Pet Damage",
+        kl_equip_health = "Equip Pet Health",
+        kl_remove_anims = "Remove Attack Animations",
+        kl_remove_anims_desc = "Hides punch, equip and tool animations while keeping movement animations",
+        kl_karma_section = "Karma",
+        kl_karma_info_title = "Information",
+        kl_karma_info = "Blue players give Good Karma. Red players give Evil Karma.",
+        kl_karma_paint = "Paint Karma Players",
+        kl_karma_paint_desc = "Paints players blue (Good Karma) or red (Evil Karma). Turning it off removes the colors",
+        kl_spec_section = "Spectate",
+        kl_spec_choose = "Choose Player",
+        kl_spec_toggle = "Spectate",
+        kl_spec_toggle_desc = "Watch the selected player. Stays on even if you die or respawn",
+        kl_spec_need_player = "Choose a player first.",
+        kl_spec_left = "The spectated player left the server.",
+        kl_def_section = "Killing (Defense)",
+        kl_def_info_title = "Information",
+        kl_def_info = "Other players can't be blocked from teleporting to you. Spin and Auto Punch make you harder to hit and hit back. The alert tells you who teleported next to you.",
+        kl_def_speed = "Spin speed (degrees per second)",
+        kl_def_spin = "Fast Spin",
+        kl_def_spin_desc = "Spins your character in place. Keeps going after you die or respawn",
+        kl_def_punch = "Auto Punch (0.1s)",
+        kl_def_punch_desc = "Punches every 0.1 seconds. Keeps going after you die or respawn",
+        kl_def_alert = "Teleport Alert",
+        kl_def_alert_desc = "Notifies you when a player suddenly appears next to you",
+        kl_def_alert_msg = "%s (%s) teleported near you.",
 
         tp_work_section = "Workout Locations",
         tp_select_workout = "Select Workout",
@@ -686,7 +714,7 @@ local Strings = {
         sn_information = "Información",
         sn_info_text = "Interfiere con los boosts que te regalaron. ¡Siéntate en una máquina para tener menos lag!",
 
-                cr_none = "Ninguno",
+        cr_none = "Ninguno",
         cr_section = "Cristales",
         cr_hatch_title = "Apertura",
         cr_hatch_inactive = "Inactivo",
@@ -783,6 +811,34 @@ local Strings = {
         st_notify_stopped = "Reportes periódicos detenidos.",
         st_hook_sent = "Webhook enviado correctamente.",
         st_hook_failed = "No se pudo enviar el webhook.",
+
+        kl_misc_section = "Misceláneo",
+        kl_equip_damage = "Equipar pets de daño",
+        kl_equip_health = "Equipar pets de vida",
+        kl_remove_anims = "Quitar animaciones de ataque",
+        kl_remove_anims_desc = "Oculta las animaciones de punch, equipar y herramienta, manteniendo las de movimiento",
+        kl_karma_section = "Karma",
+        kl_karma_info_title = "Información",
+        kl_karma_info = "Los jugadores azules dan Good Karma. Los jugadores rojos dan Evil Karma.",
+        kl_karma_paint = "Pintar jugadores de karma",
+        kl_karma_paint_desc = "Pinta a los jugadores de azul (Good Karma) o rojo (Evil Karma). Al desactivarlo se quitan los colores",
+        kl_spec_section = "Espectear",
+        kl_spec_choose = "Elegir jugador",
+        kl_spec_toggle = "Espectear",
+        kl_spec_toggle_desc = "Observa al jugador elegido. Sigue activo aunque mueras o reaparezcas",
+        kl_spec_need_player = "Elige primero un jugador.",
+        kl_spec_left = "El jugador que espectabas salió del servidor.",
+        kl_def_section = "Killing (Defensa)",
+        kl_def_info_title = "Información",
+        kl_def_info = "No se puede impedir que otros jugadores se teletransporten a ti. El giro y el Auto Punch te hacen más difícil de golpear y te defienden. La alerta te avisa quién se teletransportó a tu lado.",
+        kl_def_speed = "Velocidad de giro (grados por segundo)",
+        kl_def_spin = "Giro rápido",
+        kl_def_spin_desc = "Gira tu personaje en su lugar. Sigue activo aunque mueras o reaparezcas",
+        kl_def_punch = "Auto Punch (0.1s)",
+        kl_def_punch_desc = "Golpea cada 0.1 segundos. Sigue activo aunque mueras o reaparezcas",
+        kl_def_alert = "Alerta de teletransporte",
+        kl_def_alert_desc = "Te avisa cuando un jugador aparece de golpe junto a ti",
+        kl_def_alert_msg = "%s (%s) se teletransportó cerca de ti.",
 
         tp_work_section = "Ubicaciones de ejercicio",
         tp_select_workout = "Seleccionar ejercicio",
@@ -8116,6 +8172,862 @@ end
 
 do
     local Killer = Tabs.Killer
+
+    Killer:Section({ Title = L("kl_misc_section") })
+
+    local equipBusy = false
+
+    local function equipBestStatPets(priority)
+        if equipBusy then
+            return
+        end
+        equipBusy = true
+
+        task.spawn(function()
+            pcall(function()
+                local folder = LocalPlayer:FindFirstChild("petsFolder")
+                local events = ReplicatedStorage:FindFirstChild("rEvents")
+                local equipEvent = events and events:FindFirstChild("equipPetEvent")
+                if not folder or not equipEvent then
+                    return
+                end
+
+                for _, group in ipairs(folder:GetChildren()) do
+                    if group:IsA("Folder") then
+                        for _, pet in ipairs(group:GetChildren()) do
+                            equipEvent:FireServer("unequipPet", pet)
+                        end
+                    end
+                end
+
+                task.wait(0.2)
+
+                local petsByName = {}
+                for _, name in ipairs(priority) do
+                    petsByName[name] = {}
+                end
+
+                for _, group in ipairs(folder:GetChildren()) do
+                    if group:IsA("Folder") then
+                        for _, pet in ipairs(group:GetChildren()) do
+                            if petsByName[pet.Name] then
+                                table.insert(petsByName[pet.Name], pet)
+                            end
+                        end
+                    end
+                end
+
+                local equipped = 0
+                for _, name in ipairs(priority) do
+                    for _, pet in ipairs(petsByName[name]) do
+                        if equipped >= 9 or not isAlive() then
+                            return
+                        end
+                        equipEvent:FireServer("equipPet", pet)
+                        equipped = equipped + 1
+                        task.wait(0.1)
+                    end
+                end
+            end)
+            equipBusy = false
+        end)
+    end
+
+    Killer:Button({
+        Title = L("kl_equip_damage"),
+        Icon = "swords",
+        Callback = function()
+            equipBestStatPets({ "Wild Wizard", "Chaos Sorcerer", "Mighty Monster", "Small Fry" })
+        end,
+    })
+
+    Killer:Button({
+        Title = L("kl_equip_health"),
+        Icon = "heart",
+        Callback = function()
+            equipBestStatPets({ "Mighty Monster", "Small Fry", "Wild Wizard", "Chaos Sorcerer" })
+        end,
+    })
+
+    local BLOCKED_IDS = {
+        ["3638729053"] = true,
+        ["3638767427"] = true,
+        ["507768375"] = true,
+        ["522635514"] = true,
+        ["522638767"] = true,
+        ["182393478"] = true,
+        ["129967390"] = true,
+        ["129967478"] = true,
+    }
+
+    local BLOCKED_WORDS = { "punch", "attack", "right", "equip", "tool", "hold" }
+    local MOVEMENT_WORDS = { "idle", "walk", "run", "jump", "fall", "climb", "swim", "sit" }
+    local TOOL_WORDS = { "tool", "punch", "attack", "equip", "hold" }
+
+    local Anim = {
+        enabled = false,
+        conns = {},
+        charConns = {},
+        toolConns = {},
+    }
+
+    local function hasWord(text, words)
+        for _, word in ipairs(words) do
+            if string.find(text, word, 1, true) then
+                return true
+            end
+        end
+        return false
+    end
+
+    local function disconnectList(list)
+        for _, connection in ipairs(list) do
+            pcall(function()
+                connection:Disconnect()
+            end)
+        end
+        table.clear(list)
+    end
+
+    local function shouldBlock(track)
+        if not track or not track.Animation then
+            return false
+        end
+        local id = tostring(track.Animation.AnimationId):match("%d+")
+        local name = string.lower((track.Name or "") .. " " .. (track.Animation.Name or ""))
+        return BLOCKED_IDS[id] == true or hasWord(name, BLOCKED_WORDS)
+    end
+
+    local function isAttackTool(tool)
+        if not tool or not tool:IsA("Tool") then
+            return false
+        end
+        return hasWord(string.lower(tool.Name), { "punch", "attack", "right" })
+    end
+
+    local function hasAttackToolEquipped(character)
+        if not character then
+            return false
+        end
+        for _, child in ipairs(character:GetChildren()) do
+            if isAttackTool(child) then
+                return true
+            end
+        end
+        return false
+    end
+
+    local function isMovementAnimation(track, character)
+        local animation = track and track.Animation
+        local animate = character and character:FindFirstChild("Animate")
+        if not animation or not animate or not animation:IsDescendantOf(animate) then
+            return false
+        end
+
+        local path = ""
+        local current = animation
+        while current and current ~= animate.Parent do
+            path = path .. " " .. string.lower(current.Name)
+            if current == animate then
+                break
+            end
+            current = current.Parent
+        end
+
+        if hasWord(path, TOOL_WORDS) then
+            return false
+        end
+        return hasWord(path, MOVEMENT_WORDS)
+    end
+
+    local function getTracks(character)
+        local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+        return humanoid and humanoid:GetPlayingAnimationTracks() or {}
+    end
+
+    local function stopBlockedAnimations(character)
+        for _, track in ipairs(getTracks(character)) do
+            if shouldBlock(track) then
+                track:Stop(0)
+            end
+        end
+    end
+
+    local function stopEquipAnimations(character)
+        for _, track in ipairs(getTracks(character)) do
+            local priority = track.Priority
+            if shouldBlock(track)
+                or not isMovementAnimation(track, character)
+                or priority == Enum.AnimationPriority.Action
+                or priority == Enum.AnimationPriority.Action2
+                or priority == Enum.AnimationPriority.Action3
+                or priority == Enum.AnimationPriority.Action4 then
+                track:Stop(0)
+            end
+        end
+    end
+
+    local function processTool(tool)
+        if not isAttackTool(tool) then
+            return
+        end
+
+        if not tool:GetAttribute("ActivatedOverride") then
+            tool:SetAttribute("ActivatedOverride", true)
+
+            Anim.toolConns[tool] = {
+                tool.Activated:Connect(function()
+                    task.wait(0.05)
+                    stopBlockedAnimations(LocalPlayer.Character)
+                end),
+                tool.Equipped:Connect(function()
+                    for _, delayTime in ipairs({ 0, 0.03, 0.08, 0.15, 0.25 }) do
+                        task.delay(delayTime, function()
+                            if Anim.enabled then
+                                stopEquipAnimations(LocalPlayer.Character)
+                            end
+                        end)
+                    end
+                end),
+            }
+        end
+
+        if tool.Parent == LocalPlayer.Character then
+            stopEquipAnimations(LocalPlayer.Character)
+        end
+    end
+
+    local function setupCharacter()
+        disconnectList(Anim.charConns)
+
+        local character = LocalPlayer.Character
+        local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+        if not character or not humanoid then
+            return
+        end
+
+        stopBlockedAnimations(character)
+
+        table.insert(Anim.charConns, humanoid.AnimationPlayed:Connect(function(track)
+            if shouldBlock(track)
+                or (hasAttackToolEquipped(character) and not isMovementAnimation(track, character)) then
+                track:Stop(0)
+            end
+        end))
+
+        local backpack = LocalPlayer:FindFirstChild("Backpack")
+        if backpack then
+            for _, tool in ipairs(backpack:GetChildren()) do
+                processTool(tool)
+            end
+            table.insert(Anim.charConns, backpack.ChildAdded:Connect(function(child)
+                if child:IsA("Tool") then
+                    task.wait(0.1)
+                    processTool(child)
+                end
+            end))
+        end
+
+        for _, tool in ipairs(character:GetChildren()) do
+            if tool:IsA("Tool") then
+                processTool(tool)
+            end
+        end
+        table.insert(Anim.charConns, character.ChildAdded:Connect(function(child)
+            if child:IsA("Tool") then
+                task.wait(0.1)
+                processTool(child)
+            end
+        end))
+    end
+
+    local function disableAnimBlock()
+        Anim.enabled = false
+        disconnectList(Anim.conns)
+        disconnectList(Anim.charConns)
+
+        for tool, connections in pairs(Anim.toolConns) do
+            for _, connection in ipairs(connections) do
+                pcall(function()
+                    connection:Disconnect()
+                end)
+            end
+            pcall(function()
+                if tool and tool.Parent then
+                    tool:SetAttribute("ActivatedOverride", nil)
+                end
+            end)
+            Anim.toolConns[tool] = nil
+        end
+    end
+
+    local function enableAnimBlock()
+        Anim.enabled = true
+
+        table.insert(Anim.conns, RunService.RenderStepped:Connect(function()
+            if not Anim.enabled or not isAlive() then
+                return
+            end
+            local character = LocalPlayer.Character
+            if hasAttackToolEquipped(character) then
+                stopEquipAnimations(character)
+            else
+                stopBlockedAnimations(character)
+            end
+        end))
+
+        table.insert(Anim.conns, LocalPlayer.CharacterAdded:Connect(function()
+            task.wait(1)
+            if Anim.enabled and isAlive() then
+                setupCharacter()
+            end
+        end))
+
+        setupCharacter()
+    end
+
+    local RemoveAnimToggle = Killer:Toggle({
+        Title = L("kl_remove_anims"),
+        Desc = L("kl_remove_anims_desc"),
+        Value = false,
+        Callback = function(state)
+            if state then
+                if not Anim.enabled then
+                    enableAnimBlock()
+                end
+            else
+                disableAnimBlock()
+            end
+        end,
+    })
+    Util.register("killer_remove_anims", RemoveAnimToggle)
+
+    task.spawn(function()
+        while isAlive() do
+            task.wait(1)
+        end
+        pcall(disableAnimBlock)
+    end)
+
+    Killer:Section({ Title = L("kl_karma_section") })
+
+    Killer:Paragraph({
+        Title = L("kl_karma_info_title"),
+        Desc = L("kl_karma_info"),
+    })
+
+    local KARMA_RED = Color3.fromRGB(255, 40, 40)
+    local KARMA_BLUE = Color3.fromRGB(40, 120, 255)
+
+    local Karma = {
+        enabled = false,
+        generation = 0,
+        highlights = {},
+        conns = {},
+    }
+
+    local function getKarmaColorKind(player)
+        local goodObj = player:FindFirstChild("goodKarma")
+        local evilObj = player:FindFirstChild("evilKarma")
+        if not goodObj or not evilObj then
+            return nil
+        end
+
+        local good = tonumber(goodObj.Value) or 0
+        local evil = tonumber(evilObj.Value) or 0
+        if good + evil < 5 then
+            return nil
+        end
+
+        if good > evil then
+            return "red"
+        elseif evil > good then
+            return "blue"
+        end
+        return nil
+    end
+
+    local function removeHighlight(player)
+        local entry = Karma.highlights[player]
+        if entry then
+            pcall(function()
+                entry.highlight:Destroy()
+            end)
+            Karma.highlights[player] = nil
+        end
+    end
+
+    local function paintPlayer(player)
+        local character = player.Character
+        local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+        local kind = getKarmaColorKind(player)
+
+        if not character or not humanoid or humanoid.Health <= 0 or not kind then
+            removeHighlight(player)
+            return
+        end
+
+        local entry = Karma.highlights[player]
+
+        if entry and (not entry.highlight.Parent or entry.character ~= character) then
+            removeHighlight(player)
+            entry = nil
+        end
+
+        if not entry then
+            local highlight = Instance.new("Highlight")
+            highlight.Name = "MysteryKarmaHighlight"
+            highlight.Adornee = character
+            highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+            highlight.FillTransparency = 0.45
+            highlight.OutlineTransparency = 0
+            highlight.Parent = character
+            entry = { highlight = highlight, character = character, kind = nil }
+            Karma.highlights[player] = entry
+        end
+
+        if entry.kind ~= kind then
+            entry.kind = kind
+            local color = kind == "red" and KARMA_RED or KARMA_BLUE
+            entry.highlight.FillColor = color
+            entry.highlight.OutlineColor = color
+        end
+    end
+
+    local function clearAllHighlights()
+        for player in pairs(Karma.highlights) do
+            removeHighlight(player)
+        end
+    end
+
+    local function stopKarma()
+        Karma.enabled = false
+        Karma.generation = Karma.generation + 1
+        for _, connection in ipairs(Karma.conns) do
+            pcall(function()
+                connection:Disconnect()
+            end)
+        end
+        table.clear(Karma.conns)
+        clearAllHighlights()
+    end
+
+    local function startKarma()
+        Karma.enabled = true
+        Karma.generation = Karma.generation + 1
+        local gen = Karma.generation
+
+        table.insert(Karma.conns, Players.PlayerRemoving:Connect(removeHighlight))
+
+        task.spawn(function()
+            while Karma.enabled and isAlive() and Karma.generation == gen do
+                for _, player in ipairs(Players:GetPlayers()) do
+                    if player ~= LocalPlayer then
+                        pcall(paintPlayer, player)
+                    end
+                end
+                task.wait(0.5)
+            end
+        end)
+    end
+
+    local KarmaToggle = Killer:Toggle({
+        Title = L("kl_karma_paint"),
+        Desc = L("kl_karma_paint_desc"),
+        Value = false,
+        Callback = function(state)
+            if state then
+                if not Karma.enabled then
+                    startKarma()
+                end
+            else
+                stopKarma()
+            end
+        end,
+    })
+    Util.register("killer_karma_paint", KarmaToggle)
+
+    task.spawn(function()
+        while isAlive() do
+            task.wait(1)
+        end
+        pcall(stopKarma)
+    end)
+
+    Killer:Section({ Title = L("kl_spec_section") })
+
+    local Spec = {
+        enabled = false,
+        targetName = nil,
+        labels = {},
+        conn = nil,
+    }
+
+    local function getCamera()
+        return workspace.CurrentCamera
+    end
+
+    local function restoreCamera()
+        local camera = getCamera()
+        local character = LocalPlayer.Character
+        local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+        if camera and humanoid then
+            camera.CameraSubject = humanoid
+            camera.CameraType = Enum.CameraType.Custom
+        end
+    end
+
+    local function buildSpecList()
+        Spec.labels = {}
+        local list = {}
+        for _, player in ipairs(Players:GetPlayers()) do
+            if player ~= LocalPlayer then
+                local label = player.DisplayName .. " - " .. player.Name
+                Spec.labels[label] = player.Name
+                table.insert(list, label)
+            end
+        end
+        table.sort(list)
+        return list
+    end
+
+    local SpecToggle
+
+    local function stopSpectate()
+        Spec.enabled = false
+        if Spec.conn then
+            Spec.conn:Disconnect()
+            Spec.conn = nil
+        end
+        restoreCamera()
+    end
+
+    local function turnOffToggle()
+        task.defer(function()
+            pcall(function()
+                SpecToggle:Set(false)
+            end)
+        end)
+    end
+
+    local function startSpectate()
+        Spec.enabled = true
+        if Spec.conn then
+            Spec.conn:Disconnect()
+        end
+
+        Spec.conn = RunService.RenderStepped:Connect(function()
+            if not Spec.enabled or not isAlive() then
+                return
+            end
+
+            local target = Spec.targetName and Players:FindFirstChild(Spec.targetName)
+            local character = target and target.Character
+            local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+            local camera = getCamera()
+
+            if camera and humanoid and camera.CameraSubject ~= humanoid then
+                camera.CameraSubject = humanoid
+            end
+        end)
+    end
+
+    local SpecDropdown = Killer:Dropdown({
+        Title = L("kl_spec_choose"),
+        Values = buildSpecList(),
+        Value = nil,
+        SearchBarEnabled = true,
+        AllowNone = true,
+        Callback = function(option)
+            if type(option) == "string" and option ~= "" then
+                Spec.targetName = Spec.labels[option]
+            else
+                Spec.targetName = nil
+            end
+        end,
+    })
+
+    local function refreshSpecPlayers()
+        local list = buildSpecList()
+        pcall(function()
+            SpecDropdown:Refresh(list)
+        end)
+
+        if Spec.targetName then
+            for label, name in pairs(Spec.labels) do
+                if name == Spec.targetName then
+                    pcall(function()
+                        SpecDropdown:Select(label)
+                    end)
+                    break
+                end
+            end
+        end
+    end
+
+    local specConns = {}
+
+    table.insert(specConns, Players.PlayerAdded:Connect(function()
+        task.delay(0.5, refreshSpecPlayers)
+    end))
+
+    table.insert(specConns, Players.PlayerRemoving:Connect(function(player)
+        if player.Name == Spec.targetName then
+            Spec.targetName = nil
+            if Spec.enabled then
+                stopSpectate()
+                Util.notify(L("kl_spec_section"), L("kl_spec_left"), "info")
+                turnOffToggle()
+            end
+        end
+        task.delay(0.5, refreshSpecPlayers)
+    end))
+
+    SpecToggle = Killer:Toggle({
+        Title = L("kl_spec_toggle"),
+        Desc = L("kl_spec_toggle_desc"),
+        Value = false,
+        Callback = function(state)
+            if not state then
+                stopSpectate()
+                return
+            end
+
+            local target = Spec.targetName and Players:FindFirstChild(Spec.targetName)
+            if not target then
+                Util.notify(L("kl_spec_section"), L("kl_spec_need_player"), "triangle-alert")
+                turnOffToggle()
+                return
+            end
+
+            startSpectate()
+        end,
+    })
+
+    task.spawn(function()
+        while isAlive() do
+            task.wait(1)
+        end
+        pcall(stopSpectate)
+        for _, connection in ipairs(specConns) do
+            pcall(function()
+                connection:Disconnect()
+            end)
+        end
+    end)
+
+    Killer:Section({ Title = L("kl_def_section") })
+
+    Killer:Paragraph({
+        Title = L("kl_def_info_title"),
+        Desc = L("kl_def_info"),
+    })
+
+    local Def = {
+        spin = false,
+        punch = false,
+        speed = 1800,
+        spinConn = nil,
+        punchGen = 0,
+        alert = false,
+        alertGen = 0,
+    }
+
+    local function getDefChar()
+        local character = LocalPlayer.Character
+        local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+        local root = character and character:FindFirstChild("HumanoidRootPart")
+        if humanoid and root and humanoid.Health > 0 then
+            return character, humanoid, root
+        end
+        return nil
+    end
+
+    local function stopSpin()
+        Def.spin = false
+        if Def.spinConn then
+            Def.spinConn:Disconnect()
+            Def.spinConn = nil
+        end
+        local humanoid = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+        if humanoid then
+            humanoid.AutoRotate = true
+        end
+    end
+
+    local function startSpin()
+        Def.spin = true
+        if Def.spinConn then
+            Def.spinConn:Disconnect()
+        end
+
+        Def.spinConn = RunService.Heartbeat:Connect(function(dt)
+            if not Def.spin or not isAlive() then
+                return
+            end
+            local _, humanoid, root = getDefChar()
+            if not root then
+                return
+            end
+            if humanoid.AutoRotate then
+                humanoid.AutoRotate = false
+            end
+            root.AssemblyAngularVelocity = Vector3.zero
+            root.CFrame = root.CFrame * CFrame.Angles(0, math.rad(Def.speed * dt), 0)
+        end)
+    end
+
+    Killer:Input({
+        Title = L("kl_def_speed"),
+        Placeholder = "1800",
+        Value = "",
+        Callback = function(text)
+            local n = tonumber(text)
+            if n then
+                Def.speed = math.clamp(n, 360, 7200)
+            end
+        end,
+    })
+
+    local SpinToggle = Killer:Toggle({
+        Title = L("kl_def_spin"),
+        Desc = L("kl_def_spin_desc"),
+        Value = false,
+        Callback = function(state)
+            if state then
+                if not Def.spin then
+                    startSpin()
+                end
+            else
+                stopSpin()
+            end
+        end,
+    })
+    Util.register("killer_def_spin", SpinToggle)
+
+    local function startPunch()
+        Def.punchGen = Def.punchGen + 1
+        local gen = Def.punchGen
+
+        task.spawn(function()
+            while Def.punch and isAlive() and Def.punchGen == gen do
+                local character, humanoid = getDefChar()
+                if character then
+                    local backpack = LocalPlayer:FindFirstChild("Backpack")
+                    local punch = character:FindFirstChild("Punch") or (backpack and backpack:FindFirstChild("Punch"))
+
+                    if punch then
+                        if punch.Parent ~= character then
+                            pcall(function()
+                                humanoid:EquipTool(punch)
+                            end)
+                        end
+
+                        local attackTime = punch:FindFirstChild("attackTime")
+                        if attackTime then
+                            attackTime.Value = 0
+                        end
+
+                        local event = LocalPlayer:FindFirstChild("muscleEvent")
+                        pcall(function()
+                            if event then
+                                event:FireServer("punch", "rightHand")
+                                event:FireServer("punch", "leftHand")
+                            end
+                            if punch.Parent == character then
+                                punch:Activate()
+                            end
+                        end)
+                    end
+                end
+                task.wait(0.1)
+            end
+        end)
+    end
+
+    local PunchToggle = Killer:Toggle({
+        Title = L("kl_def_punch"),
+        Desc = L("kl_def_punch_desc"),
+        Value = false,
+        Callback = function(state)
+            Def.punch = state
+            Def.punchGen = Def.punchGen + 1
+            if state then
+                startPunch()
+            end
+        end,
+    })
+    Util.register("killer_def_punch", PunchToggle)
+
+    local function startAlert()
+        Def.alertGen = Def.alertGen + 1
+        local gen = Def.alertGen
+
+        task.spawn(function()
+            local last = {}
+            local cooldown = {}
+
+            while Def.alert and isAlive() and Def.alertGen == gen do
+                local _, _, myRoot = getDefChar()
+
+                if myRoot then
+                    for _, player in ipairs(Players:GetPlayers()) do
+                        if player ~= LocalPlayer then
+                            local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+                            if root then
+                                local previous = last[player]
+                                local distance = (root.Position - myRoot.Position).Magnitude
+
+                                if previous then
+                                    local moved = (root.Position - previous.pos).Magnitude
+                                    if previous.dist > 60 and distance < 25 and moved > 50
+                                        and os.clock() - (cooldown[player] or 0) > 5 then
+                                        cooldown[player] = os.clock()
+                                        Util.notify(
+                                            L("kl_def_section"),
+                                            L("kl_def_alert_msg", player.DisplayName, player.Name),
+                                            "triangle-alert"
+                                        )
+                                    end
+                                end
+
+                                last[player] = { pos = root.Position, dist = distance }
+                            else
+                                last[player] = nil
+                            end
+                        end
+                    end
+                end
+
+                task.wait(0.1)
+            end
+        end)
+    end
+
+    local AlertToggle = Killer:Toggle({
+        Title = L("kl_def_alert"),
+        Desc = L("kl_def_alert_desc"),
+        Value = false,
+        Callback = function(state)
+            Def.alert = state
+            Def.alertGen = Def.alertGen + 1
+            if state then
+                startAlert()
+            end
+        end,
+    })
+    Util.register("killer_def_alert", AlertToggle)
+
+    task.spawn(function()
+        while isAlive() do
+            task.wait(1)
+        end
+        Def.punch = false
+        Def.alert = false
+        Def.punchGen = Def.punchGen + 1
+        Def.alertGen = Def.alertGen + 1
+        pcall(stopSpin)
+    end)
 end
 
 do
