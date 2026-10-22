@@ -4409,11 +4409,8 @@ do
         end
     end)
 
-    local RebirthFolder = Packs:Section({
-        Title = L("pk_rebirth_section"),
-        Icon = "repeat",
-        Opened = true,
-    })
+    Packs:Section({ Title = L("pk_rebirth_section") })
+    local RebirthFolder = Packs
 
     RebirthFolder:Paragraph({
         Title = L("pk_important_title"),
