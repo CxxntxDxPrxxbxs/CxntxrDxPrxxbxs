@@ -1235,16 +1235,42 @@ local function isAlive()
 end
 
 do
+    local VirtualInputManager = game:GetService("VirtualInputManager")
+
+    local function antiAfkPulse()
+        pcall(function()
+            VirtualUser:CaptureController()
+            VirtualUser:ClickButton2(Vector2.new(0, 0))
+        end)
+        pcall(function()
+            VirtualInputManager:SendMouseMoveEvent(5, 5, game)
+            VirtualInputManager:SendMouseButtonEvent(5, 5, 1, true, game, 0)
+            VirtualInputManager:SendMouseButtonEvent(5, 5, 1, false, game, 0)
+        end)
+    end
+
+    pcall(function()
+        if getconnections then
+            for _, c in ipairs(getconnections(LocalPlayer.Idled)) do
+                pcall(function() c:Disable() end)
+            end
+        end
+    end)
+
     local idleConnection
     idleConnection = LocalPlayer.Idled:Connect(function()
         if not isAlive() then
             idleConnection:Disconnect()
             return
         end
-        pcall(function()
-            VirtualUser:CaptureController()
-            VirtualUser:ClickButton2(Vector2.zero)
-        end)
+        antiAfkPulse()
+    end)
+
+    task.spawn(function()
+        while isAlive() do
+            task.wait(60)
+            antiAfkPulse()
+        end
     end)
 end
 
@@ -8587,3 +8613,4 @@ end
 pcall(function()
     Tabs.Home:Select()
 end)
+
