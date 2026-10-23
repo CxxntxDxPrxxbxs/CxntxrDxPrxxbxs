@@ -23,7 +23,7 @@ end
 local Config = {
     HubName = "Mystery Hub - Muscle Legends",
     Key = "MHONTOP",
-    DiscordLink = "https://discord.gg/yXgJzeRCn",
+    DiscordLink = "https://discord.gg/g8NGM8VUD8",
     AllowedGameId = 1268927906,
     AllowedPlaceIds = { 3623096087 },
     WhitelistUrl = "https://raw.githubusercontent.com/Mystery-Center/Mystery-Control/refs/heads/main/Whitelist.json",
@@ -393,6 +393,10 @@ local Strings = {
         kl_equip_health = "Equip Pet Health",
         kl_remove_anims = "Remove Attack Animations",
         kl_remove_anims_desc = "Hides punch, equip and tool animations while keeping movement animations",
+        kl_packspam = "Pack Spam",
+        kl_packspam_desc = "Spams equip/unequip with 7 Mighty Monsters",
+        kl_showhp = "Show Everyone's Health",
+        kl_showhp_desc = "Shows a dark purple health bar above every player",
         kl_karma_section = "Karma",
         kl_karma_info_title = "Information",
         kl_karma_info = "Blue players give Good Karma. Red players give Evil Karma.",
@@ -817,6 +821,10 @@ local Strings = {
         kl_equip_health = "Equipar pets de vida",
         kl_remove_anims = "Quitar animaciones de ataque",
         kl_remove_anims_desc = "Oculta las animaciones de punch, equipar y herramienta, manteniendo las de movimiento",
+        kl_packspam = "Pack Spam",
+        kl_packspam_desc = "Equipa y desequipa 7 Mighty Monsters en bucle",
+        kl_showhp = "Ver vida de todos",
+        kl_showhp_desc = "Muestra una barra de vida morado oscuro sobre cada jugador",
         kl_karma_section = "Karma",
         kl_karma_info_title = "Información",
         kl_karma_info = "Los jugadores azules dan Good Karma. Los jugadores rojos dan Evil Karma.",
@@ -7064,7 +7072,7 @@ do
         end
     end
 
-    local setTime   = makeSetter(TimeParagraph)
+    local setTime = makeSetter(TimeParagraph)
     local setGained = makeSetter(GainedParagraph)
     local setTotals = makeSetter(TotalsParagraph)
 
@@ -8577,6 +8585,226 @@ do
     })
     Util.register("killer_remove_anims", RemoveAnimToggle)
 
+        local PackSpam = { enabled = false, gen = 0 }
+    local PackSpamToggle
+
+    PackSpamToggle = Killer:Toggle({
+        Title = L("kl_packspam"),
+        Desc = L("kl_packspam_desc"),
+        Value = false,
+        Callback = function(state)
+            PackSpam.enabled = state
+            PackSpam.gen = PackSpam.gen + 1
+            local gen = PackSpam.gen
+            if not state then
+                return
+            end
+
+            task.spawn(function()
+                local pets = LocalPlayer:FindFirstChild("petsFolder")
+                local unique = pets and pets:FindFirstChild("Unique")
+                local events = ReplicatedStorage:FindFirstChild("rEvents")
+                local remote = events and events:FindFirstChild("equipPetEvent")
+
+                if not pets or not unique or not remote then
+                    PackSpam.enabled = false
+                    task.defer(function()
+                        pcall(function()
+                            PackSpamToggle:Set(false)
+                        end)
+                    end)
+                    return
+                end
+
+                local function active()
+                    return PackSpam.enabled and isAlive() and PackSpam.gen == gen
+                end
+
+                while active() do
+                    for _, group in ipairs(pets:GetChildren()) do
+                        if group:IsA("Folder") then
+                            for _, pet in ipairs(group:GetChildren()) do
+                                pcall(remote.FireServer, remote, "unequipPet", pet)
+                            end
+                        end
+                    end
+                    task.wait()
+
+                    local mighty = {}
+                    for _, pet in ipairs(unique:GetChildren()) do
+                        if pet.Name == "Mighty Monster" then
+                            mighty[#mighty + 1] = pet
+                        end
+                    end
+
+                    for i = 1, math.min(7, #mighty) do
+                        if not active() then
+                            break
+                        end
+                        pcall(remote.FireServer, remote, "equipPet", mighty[i])
+                        task.wait()
+                    end
+                    task.wait()
+                end
+            end)
+        end,
+    })
+    Util.register("killer_pack_spam", PackSpamToggle)
+
+    local HP_FILL = Color3.fromRGB(88, 28, 135)
+    local HP_BACK = Color3.fromRGB(24, 8, 40)
+    local HP_UNITS = {
+        { 1e12, "T" }, { 1e9, "B" }, { 1e6, "M" }, { 1e3, "K" },
+    }
+
+    local function formatHP(value)
+        value = tonumber(value) or 0
+        for _, unit in ipairs(HP_UNITS) do
+            if value >= unit[1] then
+                return string.format("%.1f%s", value / unit[1], unit[2])
+            end
+        end
+        return string.format("%.0f", value)
+    end
+
+    local ShowHP = {
+        enabled = false,
+        conns = {},
+        humConns = {},
+        charConns = {},
+    }
+
+    local function removeHPBar(character)
+        local old = character and character:FindFirstChild("MysteryHPBillboard", true)
+        if old then
+            old:Destroy()
+        end
+    end
+
+    local function createHPBar(character)
+        if not ShowHP.enabled or not character then
+            return
+        end
+
+        local humanoid = character:WaitForChild("Humanoid", 5)
+        local head = character:WaitForChild("Head", 5)
+        if not humanoid or not head or not ShowHP.enabled then
+            return
+        end
+
+        removeHPBar(character)
+
+        local billboard = Instance.new("BillboardGui")
+        billboard.Name = "MysteryHPBillboard"
+        billboard.Size = UDim2.new(6, 0, 1.2, 0)
+        billboard.StudsOffset = Vector3.new(0, 3.5, 0)
+        billboard.AlwaysOnTop = true
+        billboard.MaxDistance = 200
+        billboard.Parent = head
+
+        local back = Instance.new("Frame")
+        back.BackgroundColor3 = HP_BACK
+        back.BackgroundTransparency = 0.2
+        back.BorderSizePixel = 0
+        back.Size = UDim2.new(1, 0, 1, 0)
+        back.Parent = billboard
+
+        local bar = Instance.new("Frame")
+        bar.BackgroundColor3 = HP_FILL
+        bar.BorderSizePixel = 0
+        bar.Size = UDim2.new(1, 0, 1, 0)
+        bar.Parent = back
+
+        local label = Instance.new("TextLabel")
+        label.BackgroundTransparency = 1
+        label.Size = UDim2.new(1, 0, 1, 0)
+        label.TextColor3 = Color3.new(1, 1, 1)
+        label.Font = Enum.Font.SourceSansBold
+        label.TextSize = 18
+        label.TextStrokeTransparency = 0.5
+        label.Parent = back
+
+        local function update()
+            if humanoid.Parent then
+                local hp = humanoid.Health
+                local max = math.max(humanoid.MaxHealth, 1)
+                bar.Size = UDim2.new(math.clamp(hp / max, 0, 1), 0, 1, 0)
+                label.Text = formatHP(hp) .. " / " .. formatHP(max)
+            end
+        end
+
+        if ShowHP.humConns[humanoid] then
+            ShowHP.humConns[humanoid]:Disconnect()
+        end
+        ShowHP.humConns[humanoid] = humanoid.HealthChanged:Connect(update)
+        update()
+    end
+
+    local function hookHPPlayer(player)
+        if player == LocalPlayer then
+            return
+        end
+        if player.Character then
+            task.spawn(createHPBar, player.Character)
+        end
+        if ShowHP.charConns[player] then
+            ShowHP.charConns[player]:Disconnect()
+        end
+        ShowHP.charConns[player] = player.CharacterAdded:Connect(function(character)
+            task.spawn(createHPBar, character)
+        end)
+    end
+
+    local function stopHP()
+        ShowHP.enabled = false
+        disconnectList(ShowHP.conns)
+        for _, connection in pairs(ShowHP.humConns) do
+            pcall(function()
+                connection:Disconnect()
+            end)
+        end
+        table.clear(ShowHP.humConns)
+        for _, connection in pairs(ShowHP.charConns) do
+            pcall(function()
+                connection:Disconnect()
+            end)
+        end
+        table.clear(ShowHP.charConns)
+        for _, player in ipairs(Players:GetPlayers()) do
+            removeHPBar(player.Character)
+        end
+    end
+
+    local function startHP()
+        ShowHP.enabled = true
+        for _, player in ipairs(Players:GetPlayers()) do
+            hookHPPlayer(player)
+        end
+        table.insert(ShowHP.conns, Players.PlayerAdded:Connect(hookHPPlayer))
+        table.insert(ShowHP.conns, Players.PlayerRemoving:Connect(function(player)
+            if ShowHP.charConns[player] then
+                ShowHP.charConns[player]:Disconnect()
+                ShowHP.charConns[player] = nil
+            end
+        end))
+    end
+
+    local ShowHPToggle = Killer:Toggle({
+        Title = L("kl_showhp"),
+        Desc = L("kl_showhp_desc"),
+        Value = false,
+        Callback = function(state)
+            if state then
+                if not ShowHP.enabled then
+                    startHP()
+                end
+            else
+                stopHP()
+            end
+        end,
+    })
+    Util.register("killer_show_hp", ShowHPToggle)
+
     Killer:Section({ Title = L("kl_karma_section") })
 
     Killer:Paragraph({
@@ -9177,10 +9405,14 @@ do
         Def.punchGen = Def.punchGen + 1
         Def.alertGen = Def.alertGen + 1
 
+        PackSpam.enabled = false
+        PackSpam.gen = PackSpam.gen + 1
+
         pcall(disableAnimBlock)
         pcall(stopKarma)
         pcall(stopSpectate)
         pcall(stopSpin)
+        pcall(stopHP)
         disconnectList(specPlayerConns)
 
         if Def.charConn then
