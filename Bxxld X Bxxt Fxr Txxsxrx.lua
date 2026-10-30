@@ -1225,7 +1225,7 @@ do
     local Farm = Tabs.Farm
 
     local CHEST_POSITION = Vector3.new(-53.337, -358.568, 9490.461)
-    local CHEST_TIMEOUT = 15
+    local CHEST_WAIT = 3
     local STAGE_TIMEOUT = 8
 
     local CaveFarm = {
@@ -1317,15 +1317,15 @@ do
             return CaveFarm.enabled and CaveFarm.token == token and isAlive()
         end
 
-        local function freeze()
-            local root = getRoot()
+        local function freeze(character)
+            local root = character and character:FindFirstChild("HumanoidRootPart")
             if root then
                 root.AssemblyLinearVelocity = Vector3.zero
                 root.AssemblyAngularVelocity = Vector3.zero
             end
         end
 
-        local function waitForSpawn(oldCharacter, extraDelay)
+        local function waitForSpawn(oldCharacter, delay)
             while active() do
                 local root, character = getRoot()
                 if root and character ~= oldCharacter and isCharacterAlive(character) then
@@ -1333,8 +1333,8 @@ do
                 end
                 task.wait(0.2)
             end
-            if active() and extraDelay and extraDelay > 0 then
-                task.wait(extraDelay)
+            if active() then
+                task.wait(delay or 1.5)
             end
         end
 
@@ -1352,7 +1352,7 @@ do
                 if humanoid then
                     humanoid.PlatformStand = true
                 end
-                freeze()
+                freeze(character)
                 task.wait(0.1)
             end
             return nil
@@ -1395,35 +1395,20 @@ do
             return "stopped"
         end
 
-        local function claimChest(character)
-            local deadline = os.clock() + CHEST_TIMEOUT
-            local nextFire = 0
-
-            while active() and os.clock() < deadline do
-                local root, current = getRoot()
-
-                if current ~= character then
-                    return true
+        local function holdAt(position, seconds, character)
+            local untilTime = os.clock() + seconds
+            while active() and os.clock() < untilTime do
+                RunService.Heartbeat:Wait()
+                if LocalPlayer.Character ~= character then
+                    return
                 end
-                if root and (root.Position - CHEST_POSITION).Magnitude > 150 then
-                    return true
+                local root = getRoot()
+                if root then
+                    root.AssemblyLinearVelocity = Vector3.zero
+                    root.AssemblyAngularVelocity = Vector3.zero
+                    root.CFrame = CFrame.new(position) * root.CFrame.Rotation
                 end
-
-                if os.clock() >= nextFire then
-                    nextFire = os.clock() + 2
-                    local event = workspace:FindFirstChild("ClaimRiverResultsGold")
-                    if event then
-                        pcall(function()
-                            event:FireServer()
-                        end)
-                    end
-                end
-
-                freeze()
-                task.wait(0.1)
             end
-
-            return false
         end
 
         local function killCharacter(character)
@@ -1438,16 +1423,25 @@ do
             end
         end
 
+        local function stopAll()
+            stopFarm()
+            pcall(function()
+                CaveToggle:Set(false)
+            end)
+            pcall(function()
+                ChestToggle:Set(false)
+            end)
+        end
+
         task.spawn(function()
             while active() do
-                waitForSpawn(nil, 0)
+                waitForSpawn(nil, 1.5)
                 if not active() then
                     return
                 end
 
                 local _, character = getRoot()
                 local result = "ok"
-                local visited = 0
 
                 for index = 1, 10 do
                     local target = waitForStage(index, character)
@@ -1459,24 +1453,26 @@ do
                         result = "died"
                         break
                     end
+                    if not target then
+                        result = (index == 1) and "nostages" or "missing"
+                        break
+                    end
 
-                    if target then
-                        visited = visited + 1
-
-                        local flight = flyTo(function()
-                            if target.Parent then
-                                return target.Position
-                            end
-                            return nil
-                        end, character)
-
-                        if flight == "stopped" then
-                            return
+                    local lastPosition = target.Position
+                    local flight = flyTo(function()
+                        local part = getDarknessPart(index)
+                        if part then
+                            lastPosition = part.Position
                         end
-                        if flight == "died" then
-                            result = "died"
-                            break
-                        end
+                        return lastPosition
+                    end, character)
+
+                    if flight == "stopped" then
+                        return
+                    end
+                    if flight == "died" then
+                        result = "died"
+                        break
                     end
                 end
 
@@ -1484,40 +1480,35 @@ do
                     return
                 end
 
-                if result == "ok" and visited == 0 then
+                if result == "nostages" then
                     Util.notify(L("farm_section"), L("farm_missing"), "triangle-alert")
-                    stopFarm()
-                    pcall(function()
-                        CaveToggle:Set(false)
-                    end)
-                    pcall(function()
-                        ChestToggle:Set(false)
-                    end)
+                    stopAll()
                     return
-                end
-
-                if result == "died" then
+                elseif result == "died" then
                     waitForSpawn(character, 1.5)
-                elseif mode == "chest" then
-                    local flight = flyTo(function()
-                        return CHEST_POSITION
-                    end, character)
-
-                    if flight == "stopped" then
-                        return
-                    end
-
-                    if flight == "died" then
-                        waitForSpawn(character, 1.5)
-                    elseif claimChest(character) then
-                        local _, current = getRoot()
-                        waitForSpawn(current ~= character and character or nil, 1)
-                    else
-                        killCharacter(character)
-                        waitForSpawn(character, 1.5)
-                    end
-                else
+                elseif result == "missing" then
                     killCharacter(character)
+                    waitForSpawn(character, 1.5)
+                else
+                    if mode == "chest" then
+                        local flight = flyTo(function()
+                            return CHEST_POSITION
+                        end, character)
+
+                        if flight == "stopped" then
+                            return
+                        end
+                        if flight == "ok" then
+                            holdAt(CHEST_POSITION, CHEST_WAIT, character)
+                        end
+                        if not active() then
+                            return
+                        end
+                    end
+
+                    if isCharacterAlive(character) then
+                        killCharacter(character)
+                    end
                     waitForSpawn(character, 1.5)
                 end
             end
