@@ -115,7 +115,7 @@ local Strings = {
         farm_speed_ph = "400",
         farm_missing = "The stages could not be found.",
         farm_chest = "Auto Farm + Treasure Chest",
-        farm_chest_desc = "Same as Auto Farm, but at the end it flies to the treasure chest to claim your rewards, then respawns and repeats",
+        farm_chest_desc = "Same as Auto Farm, but at the end it flies to the treasure chest to claim your rewards, then returns to the start and repeats",
 
         ex_farm_section = "Farming Utilities",
         ex_lockpos = "Lock Position",
@@ -292,7 +292,7 @@ local Strings = {
         farm_speed_ph = "400",
         farm_missing = "No se encontraron los stages.",
         farm_chest = "Auto Farm + Cofre del tesoro",
-        farm_chest_desc = "Igual que Auto Farm, pero al final vuela hasta el cofre del tesoro para reclamar tus recompensas, luego reaparece y repite",
+        farm_chest_desc = "Igual que Auto Farm, pero al final vuela hasta el cofre del tesoro para reclamar tus recompensas, luego vuelve al inicio y repite",
 
         ex_farm_section = "Utilidades de farmeo",
         ex_lockpos = "Bloquear posición",
@@ -1225,7 +1225,8 @@ do
     local Farm = Tabs.Farm
 
     local CHEST_POSITION = Vector3.new(-53.337, -358.568, 9490.461)
-    local CHEST_WAIT = 3
+    local CHEST_TIMEOUT = 15
+    local STAGE_TIMEOUT = 8
 
     local CaveFarm = {
         enabled = false,
@@ -1238,6 +1239,14 @@ do
     local function getRoot()
         local character = LocalPlayer.Character
         return character and character:FindFirstChild("HumanoidRootPart"), character
+    end
+
+    local function isCharacterAlive(character)
+        if not character or LocalPlayer.Character ~= character then
+            return false
+        end
+        local humanoid = character:FindFirstChildOfClass("Humanoid")
+        return humanoid ~= nil and humanoid.Health > 0
     end
 
     local function getDarknessPart(index)
@@ -1308,18 +1317,64 @@ do
             return CaveFarm.enabled and CaveFarm.token == token and isAlive()
         end
 
-        local function flyTo(getPosition)
+        local function freeze()
+            local root = getRoot()
+            if root then
+                root.AssemblyLinearVelocity = Vector3.zero
+                root.AssemblyAngularVelocity = Vector3.zero
+            end
+        end
+
+        local function waitForSpawn(oldCharacter, extraDelay)
+            while active() do
+                local root, character = getRoot()
+                if root and character ~= oldCharacter and isCharacterAlive(character) then
+                    break
+                end
+                task.wait(0.2)
+            end
+            if active() and extraDelay and extraDelay > 0 then
+                task.wait(extraDelay)
+            end
+        end
+
+        local function waitForStage(index, character)
+            local deadline = os.clock() + STAGE_TIMEOUT
+            while active() do
+                local part = getDarknessPart(index)
+                if part then
+                    return part
+                end
+                if os.clock() > deadline or not isCharacterAlive(character) then
+                    return nil
+                end
+                local humanoid = character:FindFirstChildOfClass("Humanoid")
+                if humanoid then
+                    humanoid.PlatformStand = true
+                end
+                freeze()
+                task.wait(0.1)
+            end
+            return nil
+        end
+
+        local function flyTo(getPosition, character)
             while active() do
                 local position = getPosition()
                 if not position then
-                    return true
+                    return "ok"
                 end
 
                 local dt = RunService.Heartbeat:Wait()
-                local root, character = getRoot()
-                local humanoid = character and character:FindFirstChildOfClass("Humanoid")
 
-                if root and humanoid and humanoid.Health > 0 then
+                if not isCharacterAlive(character) then
+                    return "died"
+                end
+
+                local root = character:FindFirstChild("HumanoidRootPart")
+                local humanoid = character:FindFirstChildOfClass("Humanoid")
+
+                if root and humanoid then
                     humanoid.PlatformStand = true
 
                     local diff = position - root.Position
@@ -1331,61 +1386,96 @@ do
 
                     if distance <= step then
                         root.CFrame = CFrame.new(position) * root.CFrame.Rotation
-                        return true
+                        return "ok"
                     end
 
                     root.CFrame = CFrame.new(root.Position + diff.Unit * step) * root.CFrame.Rotation
                 end
             end
+            return "stopped"
+        end
+
+        local function claimChest(character)
+            local deadline = os.clock() + CHEST_TIMEOUT
+            local nextFire = 0
+
+            while active() and os.clock() < deadline do
+                local root, current = getRoot()
+
+                if current ~= character then
+                    return true
+                end
+                if root and (root.Position - CHEST_POSITION).Magnitude > 150 then
+                    return true
+                end
+
+                if os.clock() >= nextFire then
+                    nextFire = os.clock() + 2
+                    local event = workspace:FindFirstChild("ClaimRiverResultsGold")
+                    if event then
+                        pcall(function()
+                            event:FireServer()
+                        end)
+                    end
+                end
+
+                freeze()
+                task.wait(0.1)
+            end
+
             return false
         end
 
-        local function holdAt(position, seconds)
-            local untilTime = os.clock() + seconds
-            while active() and os.clock() < untilTime do
-                RunService.Heartbeat:Wait()
-                local root = getRoot()
-                if root then
-                    root.AssemblyLinearVelocity = Vector3.zero
-                    root.AssemblyAngularVelocity = Vector3.zero
-                    root.CFrame = CFrame.new(position) * root.CFrame.Rotation
-                end
-            end
-        end
-
-        local function waitForRespawn(oldCharacter)
-            while active() do
-                task.wait(0.2)
-                local root, character = getRoot()
-                local humanoid = character and character:FindFirstChildOfClass("Humanoid")
-                if character and character ~= oldCharacter and root and humanoid and humanoid.Health > 0 then
-                    break
-                end
-            end
-            if active() then
-                task.wait(1.5)
+        local function killCharacter(character)
+            local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+            if humanoid then
+                humanoid.PlatformStand = false
+                humanoid.Health = 0
+            elseif character then
+                pcall(function()
+                    character:BreakJoints()
+                end)
             end
         end
 
         task.spawn(function()
             while active() do
+                waitForSpawn(nil, 0)
+                if not active() then
+                    return
+                end
+
+                local _, character = getRoot()
+                local result = "ok"
                 local visited = 0
 
                 for index = 1, 10 do
-                    local target = getDarknessPart(index)
+                    local target = waitForStage(index, character)
+
+                    if not active() then
+                        return
+                    end
+                    if not isCharacterAlive(character) then
+                        result = "died"
+                        break
+                    end
 
                     if target then
                         visited = visited + 1
 
-                        flyTo(function()
+                        local flight = flyTo(function()
                             if target.Parent then
                                 return target.Position
                             end
                             return nil
-                        end)
+                        end, character)
 
-                        if not active() then
+                        if flight == "stopped" then
                             return
+                        end
+                        if flight == "died" then
+                            result = "died"
+                            break
                         end
                     end
                 end
@@ -1394,7 +1484,7 @@ do
                     return
                 end
 
-                if visited == 0 then
+                if result == "ok" and visited == 0 then
                     Util.notify(L("farm_section"), L("farm_missing"), "triangle-alert")
                     stopFarm()
                     pcall(function()
@@ -1406,34 +1496,30 @@ do
                     return
                 end
 
-                if mode == "chest" then
-                    flyTo(function()
+                if result == "died" then
+                    waitForSpawn(character, 1.5)
+                elseif mode == "chest" then
+                    local flight = flyTo(function()
                         return CHEST_POSITION
-                    end)
+                    end, character)
 
-                    if not active() then
+                    if flight == "stopped" then
                         return
                     end
 
-                    holdAt(CHEST_POSITION, CHEST_WAIT)
-
-                    if not active() then
-                        return
+                    if flight == "died" then
+                        waitForSpawn(character, 1.5)
+                    elseif claimChest(character) then
+                        local _, current = getRoot()
+                        waitForSpawn(current ~= character and character or nil, 1)
+                    else
+                        killCharacter(character)
+                        waitForSpawn(character, 1.5)
                     end
+                else
+                    killCharacter(character)
+                    waitForSpawn(character, 1.5)
                 end
-
-                local _, character = getRoot()
-                local humanoid = character and character:FindFirstChildOfClass("Humanoid")
-                if humanoid then
-                    humanoid.PlatformStand = false
-                    humanoid.Health = 0
-                elseif character then
-                    pcall(function()
-                        character:BreakJoints()
-                    end)
-                end
-
-                waitForRespawn(character)
             end
         end)
     end
