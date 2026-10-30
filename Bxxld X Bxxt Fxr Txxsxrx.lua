@@ -108,6 +108,14 @@ local Strings = {
         home_discord_desc = "Join the community server",
         home_discord_label = "Discord link",
 
+        farm_section = "Auto Farm",
+        farm_cave = "Auto Cave Stages",
+        farm_cave_desc = "Flies through every DarknessPart of CaveStage1 to CaveStage10 and drops you at the end",
+        farm_speed_input = "Flight speed",
+        farm_speed_ph = "120",
+        farm_missing = "No CaveStage with a DarknessPart was found.",
+        farm_done = "Last stage reached. Dropping the character.",
+
         ex_farm_section = "Farming Utilities",
         ex_lockpos = "Lock Position",
         ex_lockpos_desc = "Keeps your character frozen in place",
@@ -275,6 +283,14 @@ local Strings = {
         home_copy_discord = "Copiar enlace de Discord",
         home_discord_desc = "Únete al servidor de la comunidad",
         home_discord_label = "Enlace de Discord",
+
+        farm_section = "Auto Farmeo",
+        farm_cave = "Auto Cave Stages",
+        farm_cave_desc = "Vuela por cada DarknessPart de CaveStage1 a CaveStage10 y te suelta al final",
+        farm_speed_input = "Velocidad de vuelo",
+        farm_speed_ph = "120",
+        farm_missing = "No se encontró ningún CaveStage con DarknessPart.",
+        farm_done = "Llegaste al último stage. Soltando al personaje.",
 
         ex_farm_section = "Utilidades de farmeo",
         ex_lockpos = "Bloquear posición",
@@ -1061,9 +1077,6 @@ for _, tab in pairs(Tabs) do
     Util.pace(tab)
 end
 
--- ============================================================
--- HOME
--- ============================================================
 do
     local Home = Tabs.Home
 
@@ -1206,58 +1219,203 @@ end
 
 pcall(function() Tabs.Home:Select() end)
 
--- ============================================================
--- FARM (vacío)
--- ============================================================
 do
     local Farm = Tabs.Farm
+
+    local CaveFarm = {
+        enabled = false,
+        speed = 120,
+        token = 0,
+        noclipConn = nil,
+    }
+
+    local function getRoot()
+        local character = LocalPlayer.Character
+        return character and character:FindFirstChild("HumanoidRootPart"), character
+    end
+
+    local function getDarknessPart(index)
+        local boatStages = workspace:FindFirstChild("BoatStages")
+        local normal = boatStages and boatStages:FindFirstChild("NormalStages")
+        local stage = normal and normal:FindFirstChild("CaveStage" .. index)
+        if not stage then
+            return nil
+        end
+        local part = stage:FindFirstChild("DarknessPart", true)
+        if part and part:IsA("BasePart") then
+            return part
+        end
+        return nil
+    end
+
+    local function startNoclip()
+        if CaveFarm.noclipConn then
+            return
+        end
+        CaveFarm.noclipConn = RunService.Stepped:Connect(function()
+            local character = LocalPlayer.Character
+            if not character then
+                return
+            end
+            for _, part in ipairs(character:GetDescendants()) do
+                if part:IsA("BasePart") then
+                    part.CanCollide = false
+                end
+            end
+        end)
+    end
+
+    local function stopFarm()
+        CaveFarm.enabled = false
+        CaveFarm.token = CaveFarm.token + 1
+
+        if CaveFarm.noclipConn then
+            CaveFarm.noclipConn:Disconnect()
+            CaveFarm.noclipConn = nil
+        end
+
+        local root, character = getRoot()
+        local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+        if humanoid then
+            humanoid.PlatformStand = false
+            pcall(function()
+                humanoid:ChangeState(Enum.HumanoidStateType.Freefall)
+            end)
+        end
+        if root then
+            root.AssemblyLinearVelocity = Vector3.zero
+            root.AssemblyAngularVelocity = Vector3.zero
+        end
+    end
+
+    local CaveToggle
+
+    local function startFarm()
+        CaveFarm.token = CaveFarm.token + 1
+        local token = CaveFarm.token
+        CaveFarm.enabled = true
+        startNoclip()
+
+        local function active()
+            return CaveFarm.enabled and CaveFarm.token == token and isAlive()
+        end
+
+        task.spawn(function()
+            local visited = 0
+
+            for index = 1, 10 do
+                local target = getDarknessPart(index)
+
+                if target then
+                    visited = visited + 1
+
+                    while active() and target.Parent do
+                        local dt = RunService.Heartbeat:Wait()
+                        local root, character = getRoot()
+                        local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+
+                        if root and humanoid and humanoid.Health > 0 then
+                            humanoid.PlatformStand = true
+
+                            local diff = target.Position - root.Position
+                            local distance = diff.Magnitude
+                            local step = CaveFarm.speed * dt
+
+                            root.AssemblyLinearVelocity = Vector3.zero
+                            root.AssemblyAngularVelocity = Vector3.zero
+
+                            if distance <= step then
+                                root.CFrame = CFrame.new(target.Position) * root.CFrame.Rotation
+                                break
+                            end
+
+                            root.CFrame = CFrame.new(root.Position + diff.Unit * step) * root.CFrame.Rotation
+                        end
+                    end
+
+                    if not active() then
+                        return
+                    end
+                end
+            end
+
+            if CaveFarm.token ~= token then
+                return
+            end
+
+            if visited == 0 then
+                Util.notify(L("farm_section"), L("farm_missing"), "triangle-alert")
+            else
+                Util.notify(L("farm_section"), L("farm_done"), "check")
+            end
+
+            stopFarm()
+            pcall(function()
+                CaveToggle:Set(false)
+            end)
+        end)
+    end
+
+    Farm:Section({ Title = L("farm_section") })
+
+    Farm:Input({
+        Title = L("farm_speed_input"),
+        Placeholder = L("farm_speed_ph"),
+        Value = "",
+        Callback = function(text)
+            local n = tonumber(text)
+            if n then
+                CaveFarm.speed = math.clamp(n, 10, 1000)
+            end
+        end,
+    })
+
+    CaveToggle = Farm:Toggle({
+        Title = L("farm_cave"),
+        Desc = L("farm_cave_desc"),
+        Value = false,
+        Callback = function(state)
+            if state then
+                startFarm()
+            else
+                stopFarm()
+            end
+        end,
+    })
+    Util.register("farm_cave_stages", CaveToggle)
+
+    task.spawn(function()
+        while isAlive() do
+            task.wait(1)
+        end
+        pcall(stopFarm)
+    end)
 end
 
--- ============================================================
--- DATA (vacío)
--- ============================================================
 do
     local Data = Tabs.Data
 end
 
--- ============================================================
--- BUILDER (vacío)
--- ============================================================
 do
     local Builder = Tabs.Builder
 end
 
--- ============================================================
--- SHOP (vacío)
--- ============================================================
 do
     local Shop = Tabs.Shop
 end
 
--- ============================================================
--- QUEST (vacío)
--- ============================================================
 do
     local Quest = Tabs.Quest
 end
 
--- ============================================================
--- TROLL (vacío)
--- ============================================================
 do
     local Troll = Tabs.Troll
 end
 
--- ============================================================
--- PLAYERS (vacío)
--- ============================================================
 do
     local PlayersTab = Tabs.Players
 end
 
--- ============================================================
--- EXTRAS (solo universal)
--- ============================================================
 do
     local Extras = Tabs.Extras
     local Lighting = game:GetService("Lighting")
@@ -2332,16 +2490,10 @@ do
     end)
 end
 
--- ============================================================
--- TELEPORT (vacío)
--- ============================================================
 do
     local Teleport = Tabs.Teleport
 end
 
--- ============================================================
--- SETTINGS
--- ============================================================
 do
     local Settings = Tabs.Settings
 
