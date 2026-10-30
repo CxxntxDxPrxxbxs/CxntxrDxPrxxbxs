@@ -1238,8 +1238,9 @@ do
     local CHEST_WAIT = 3
     local STAGE_TIMEOUT = 8
 
-    local TP_DWELL = 0.3
-    local TP_JITTER = 1.5
+    local TP_DWELL = 0.35
+    local TP_JITTER = 2
+    local TP_STEP = 300
 
     local CaveFarm = {
         enabled = false,
@@ -1409,15 +1410,15 @@ do
         end
 
         local function tpTo(getPosition, character)
-            local position = getPosition()
-            if not position then
-                return "ok"
-            end
-
-            local untilTime = os.clock() + TP_DWELL
             local frame = 0
+            local dwellUntil = nil
 
             while active() do
+                local position = getPosition()
+                if not position then
+                    return "ok"
+                end
+
                 RunService.Heartbeat:Wait()
 
                 if not isCharacterAlive(character) then
@@ -1429,22 +1430,32 @@ do
 
                 if root and humanoid then
                     humanoid.PlatformStand = true
-
-                    frame = frame + 1
-                    local angle = frame * 1.7
-                    local offset = Vector3.new(
-                        math.sin(angle) * TP_JITTER,
-                        0,
-                        math.cos(angle) * TP_JITTER
-                    )
-
                     root.AssemblyLinearVelocity = Vector3.zero
                     root.AssemblyAngularVelocity = Vector3.zero
-                    root.CFrame = CFrame.new(position + offset) * root.CFrame.Rotation
-                end
 
-                if os.clock() >= untilTime then
-                    return "ok"
+                    local diff = position - root.Position
+
+                    if diff.Magnitude > TP_STEP and not dwellUntil then
+                        root.CFrame = CFrame.new(root.Position + diff.Unit * TP_STEP) * root.CFrame.Rotation
+                    else
+                        if not dwellUntil then
+                            local pingSeconds = Util.getPing() / 1000
+                            dwellUntil = os.clock() + TP_DWELL + pingSeconds * 2
+                        end
+
+                        frame = frame + 1
+                        local angle = frame * 1.7
+                        local offset = Vector3.new(
+                            math.sin(angle) * TP_JITTER,
+                            math.sin(angle * 0.7) * TP_JITTER,
+                            math.cos(angle) * TP_JITTER
+                        )
+                        root.CFrame = CFrame.new(position + offset) * root.CFrame.Rotation
+
+                        if os.clock() >= dwellUntil then
+                            return "ok"
+                        end
+                    end
                 end
             end
             return "stopped"
