@@ -114,6 +114,8 @@ local Strings = {
         farm_speed_input = "Flight speed",
         farm_speed_ph = "400",
         farm_missing = "The stages could not be found.",
+        farm_chest = "Auto Farm + Treasure Chest",
+        farm_chest_desc = "Same as Auto Farm, but at the end it flies to the treasure chest to claim your rewards, then respawns and repeats",
 
         ex_farm_section = "Farming Utilities",
         ex_lockpos = "Lock Position",
@@ -289,6 +291,8 @@ local Strings = {
         farm_speed_input = "Velocidad de vuelo",
         farm_speed_ph = "400",
         farm_missing = "No se encontraron los stages.",
+        farm_chest = "Auto Farm + Cofre del tesoro",
+        farm_chest_desc = "Igual que Auto Farm, pero al final vuela hasta el cofre del tesoro para reclamar tus recompensas, luego reaparece y repite",
 
         ex_farm_section = "Utilidades de farmeo",
         ex_lockpos = "Bloquear posición",
@@ -1220,8 +1224,12 @@ pcall(function() Tabs.Home:Select() end)
 do
     local Farm = Tabs.Farm
 
+    local CHEST_POSITION = Vector3.new(-53.337, -358.568, 9490.461)
+    local CHEST_WAIT = 3
+
     local CaveFarm = {
         enabled = false,
+        mode = nil,
         speed = 400,
         token = 0,
         noclipConn = nil,
@@ -1265,6 +1273,7 @@ do
 
     local function stopFarm()
         CaveFarm.enabled = false
+        CaveFarm.mode = nil
         CaveFarm.token = CaveFarm.token + 1
 
         if CaveFarm.noclipConn then
@@ -1286,16 +1295,62 @@ do
         end
     end
 
-    local CaveToggle
+    local CaveToggle, ChestToggle
 
-    local function startFarm()
+    local function startFarm(mode)
         CaveFarm.token = CaveFarm.token + 1
         local token = CaveFarm.token
         CaveFarm.enabled = true
+        CaveFarm.mode = mode
         startNoclip()
 
         local function active()
             return CaveFarm.enabled and CaveFarm.token == token and isAlive()
+        end
+
+        local function flyTo(getPosition)
+            while active() do
+                local position = getPosition()
+                if not position then
+                    return true
+                end
+
+                local dt = RunService.Heartbeat:Wait()
+                local root, character = getRoot()
+                local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+
+                if root and humanoid and humanoid.Health > 0 then
+                    humanoid.PlatformStand = true
+
+                    local diff = position - root.Position
+                    local distance = diff.Magnitude
+                    local step = CaveFarm.speed * dt
+
+                    root.AssemblyLinearVelocity = Vector3.zero
+                    root.AssemblyAngularVelocity = Vector3.zero
+
+                    if distance <= step then
+                        root.CFrame = CFrame.new(position) * root.CFrame.Rotation
+                        return true
+                    end
+
+                    root.CFrame = CFrame.new(root.Position + diff.Unit * step) * root.CFrame.Rotation
+                end
+            end
+            return false
+        end
+
+        local function holdAt(position, seconds)
+            local untilTime = os.clock() + seconds
+            while active() and os.clock() < untilTime do
+                RunService.Heartbeat:Wait()
+                local root = getRoot()
+                if root then
+                    root.AssemblyLinearVelocity = Vector3.zero
+                    root.AssemblyAngularVelocity = Vector3.zero
+                    root.CFrame = CFrame.new(position) * root.CFrame.Rotation
+                end
+            end
         end
 
         local function waitForRespawn(oldCharacter)
@@ -1322,29 +1377,12 @@ do
                     if target then
                         visited = visited + 1
 
-                        while active() and target.Parent do
-                            local dt = RunService.Heartbeat:Wait()
-                            local root, character = getRoot()
-                            local humanoid = character and character:FindFirstChildOfClass("Humanoid")
-
-                            if root and humanoid and humanoid.Health > 0 then
-                                humanoid.PlatformStand = true
-
-                                local diff = target.Position - root.Position
-                                local distance = diff.Magnitude
-                                local step = CaveFarm.speed * dt
-
-                                root.AssemblyLinearVelocity = Vector3.zero
-                                root.AssemblyAngularVelocity = Vector3.zero
-
-                                if distance <= step then
-                                    root.CFrame = CFrame.new(target.Position) * root.CFrame.Rotation
-                                    break
-                                end
-
-                                root.CFrame = CFrame.new(root.Position + diff.Unit * step) * root.CFrame.Rotation
+                        flyTo(function()
+                            if target.Parent then
+                                return target.Position
                             end
-                        end
+                            return nil
+                        end)
 
                         if not active() then
                             return
@@ -1362,7 +1400,26 @@ do
                     pcall(function()
                         CaveToggle:Set(false)
                     end)
+                    pcall(function()
+                        ChestToggle:Set(false)
+                    end)
                     return
+                end
+
+                if mode == "chest" then
+                    flyTo(function()
+                        return CHEST_POSITION
+                    end)
+
+                    if not active() then
+                        return
+                    end
+
+                    holdAt(CHEST_POSITION, CHEST_WAIT)
+
+                    if not active() then
+                        return
+                    end
                 end
 
                 local _, character = getRoot()
@@ -1379,6 +1436,20 @@ do
                 waitForRespawn(character)
             end
         end)
+    end
+
+    local function setMode(mode, state, otherToggle)
+        if state then
+            if CaveFarm.mode and CaveFarm.mode ~= mode then
+                stopFarm()
+                pcall(function()
+                    otherToggle:Set(false)
+                end)
+            end
+            startFarm(mode)
+        elseif CaveFarm.mode == mode then
+            stopFarm()
+        end
     end
 
     Farm:Section({ Title = L("farm_section") })
@@ -1400,14 +1471,20 @@ do
         Desc = L("farm_cave_desc"),
         Value = false,
         Callback = function(state)
-            if state then
-                startFarm()
-            else
-                stopFarm()
-            end
+            setMode("normal", state, ChestToggle)
         end,
     })
     Util.register("farm_cave_stages", CaveToggle)
+
+    ChestToggle = Farm:Toggle({
+        Title = L("farm_chest"),
+        Desc = L("farm_chest_desc"),
+        Value = false,
+        Callback = function(state)
+            setMode("chest", state, CaveToggle)
+        end,
+    })
+    Util.register("farm_chest_stages", ChestToggle)
 
     task.spawn(function()
         while isAlive() do
