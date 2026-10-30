@@ -108,13 +108,12 @@ local Strings = {
         home_discord_desc = "Join the community server",
         home_discord_label = "Discord link",
 
-        farm_section = "Auto Farm",
-        farm_cave = "Auto Cave Stages",
-        farm_cave_desc = "Flies through every DarknessPart of CaveStage1 to CaveStage10 and drops you at the end",
+        farm_section = "Auto Farm No teleport",
+        farm_cave = "Auto Farm",
+        farm_cave_desc = "Flies through the stages automatically without teleporting, respawns when it finishes and repeats until you turn it off",
         farm_speed_input = "Flight speed",
-        farm_speed_ph = "120",
-        farm_missing = "No CaveStage with a DarknessPart was found.",
-        farm_done = "Last stage reached. Dropping the character.",
+        farm_speed_ph = "400",
+        farm_missing = "The stages could not be found.",
 
         ex_farm_section = "Farming Utilities",
         ex_lockpos = "Lock Position",
@@ -284,13 +283,12 @@ local Strings = {
         home_discord_desc = "Únete al servidor de la comunidad",
         home_discord_label = "Enlace de Discord",
 
-        farm_section = "Auto Farmeo",
-        farm_cave = "Auto Cave Stages",
-        farm_cave_desc = "Vuela por cada DarknessPart de CaveStage1 a CaveStage10 y te suelta al final",
+        farm_section = "Auto Farm No teleport",
+        farm_cave = "Auto Farm",
+        farm_cave_desc = "Recorre los stages automáticamente sin teletransportarte, reaparece al terminar y repite hasta que lo apagues",
         farm_speed_input = "Velocidad de vuelo",
-        farm_speed_ph = "120",
-        farm_missing = "No se encontró ningún CaveStage con DarknessPart.",
-        farm_done = "Llegaste al último stage. Soltando al personaje.",
+        farm_speed_ph = "400",
+        farm_missing = "No se encontraron los stages.",
 
         ex_farm_section = "Utilidades de farmeo",
         ex_lockpos = "Bloquear posición",
@@ -1224,7 +1222,7 @@ do
 
     local CaveFarm = {
         enabled = false,
-        speed = 120,
+        speed = 400,
         token = 0,
         noclipConn = nil,
     }
@@ -1300,59 +1298,86 @@ do
             return CaveFarm.enabled and CaveFarm.token == token and isAlive()
         end
 
-        task.spawn(function()
-            local visited = 0
-
-            for index = 1, 10 do
-                local target = getDarknessPart(index)
-
-                if target then
-                    visited = visited + 1
-
-                    while active() and target.Parent do
-                        local dt = RunService.Heartbeat:Wait()
-                        local root, character = getRoot()
-                        local humanoid = character and character:FindFirstChildOfClass("Humanoid")
-
-                        if root and humanoid and humanoid.Health > 0 then
-                            humanoid.PlatformStand = true
-
-                            local diff = target.Position - root.Position
-                            local distance = diff.Magnitude
-                            local step = CaveFarm.speed * dt
-
-                            root.AssemblyLinearVelocity = Vector3.zero
-                            root.AssemblyAngularVelocity = Vector3.zero
-
-                            if distance <= step then
-                                root.CFrame = CFrame.new(target.Position) * root.CFrame.Rotation
-                                break
-                            end
-
-                            root.CFrame = CFrame.new(root.Position + diff.Unit * step) * root.CFrame.Rotation
-                        end
-                    end
-
-                    if not active() then
-                        return
-                    end
+        local function waitForRespawn(oldCharacter)
+            while active() do
+                task.wait(0.2)
+                local root, character = getRoot()
+                local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+                if character and character ~= oldCharacter and root and humanoid and humanoid.Health > 0 then
+                    break
                 end
             end
-
-            if CaveFarm.token ~= token then
-                return
+            if active() then
+                task.wait(1.5)
             end
+        end
 
-            if visited == 0 then
-                Util.notify(L("farm_section"), L("farm_missing"), "triangle-alert")
-            else
-                Util.notify(L("farm_section"), L("farm_done"), "check")
+        task.spawn(function()
+            while active() do
+                local visited = 0
+
+                for index = 1, 10 do
+                    local target = getDarknessPart(index)
+
+                    if target then
+                        visited = visited + 1
+
+                        while active() and target.Parent do
+                            local dt = RunService.Heartbeat:Wait()
+                            local root, character = getRoot()
+                            local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+
+                            if root and humanoid and humanoid.Health > 0 then
+                                humanoid.PlatformStand = true
+
+                                local diff = target.Position - root.Position
+                                local distance = diff.Magnitude
+                                local step = CaveFarm.speed * dt
+
+                                root.AssemblyLinearVelocity = Vector3.zero
+                                root.AssemblyAngularVelocity = Vector3.zero
+
+                                if distance <= step then
+                                    root.CFrame = CFrame.new(target.Position) * root.CFrame.Rotation
+                                    break
+                                end
+
+                                root.CFrame = CFrame.new(root.Position + diff.Unit * step) * root.CFrame.Rotation
+                            end
+                        end
+
+                        if not active() then
+                            return
+                        end
+                    end
+                end
+
+                if not active() then
+                    return
+                end
+
+                if visited == 0 then
+                    Util.notify(L("farm_section"), L("farm_missing"), "triangle-alert")
+                    stopFarm()
+                    pcall(function()
+                        CaveToggle:Set(false)
+                    end)
+                    return
+                end
+
+                local _, character = getRoot()
+                local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+                if humanoid then
+                    humanoid.PlatformStand = false
+                    humanoid.Health = 0
+                elseif character then
+                    pcall(function()
+                        character:BreakJoints()
+                    end)
+                end
+
+                waitForRespawn(character)
             end
-
-            stopFarm()
-            pcall(function()
-                CaveToggle:Set(false)
-            end)
         end)
     end
 
