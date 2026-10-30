@@ -1238,9 +1238,9 @@ do
     local CHEST_WAIT = 3
     local STAGE_TIMEOUT = 8
 
-    local TP_DWELL = 0.35
+    local TP_DWELL = 0.5
     local TP_JITTER = 2
-    local TP_STEP = 300
+    local TP_STEP = 40
 
     local CaveFarm = {
         enabled = false,
