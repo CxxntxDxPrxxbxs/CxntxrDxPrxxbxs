@@ -116,6 +116,11 @@ local Strings = {
         farm_missing = "The stages could not be found.",
         farm_chest = "Auto Farm + Treasure Chest",
         farm_chest_desc = "Same as Auto Farm, but at the end it flies to the treasure chest to claim your rewards, then returns to the start and repeats",
+        farm_tp_section = "Farm Teleport",
+        farm_tp_stages = "Auto Farm Teleport",
+        farm_tp_stages_desc = "Teleports quickly from stage to stage with small movements so the game counts each one, respawns when it finishes and repeats",
+        farm_tp_chest = "Auto Farm Teleport + Treasure Chest",
+        farm_tp_chest_desc = "Same as Auto Farm Teleport, but at the end it teleports to the treasure chest to claim your rewards, then returns to the start and repeats",
 
         ex_farm_section = "Farming Utilities",
         ex_lockpos = "Lock Position",
@@ -293,6 +298,11 @@ local Strings = {
         farm_missing = "No se encontraron los stages.",
         farm_chest = "Auto Farm + Cofre del tesoro",
         farm_chest_desc = "Igual que Auto Farm, pero al final vuela hasta el cofre del tesoro para reclamar tus recompensas, luego vuelve al inicio y repite",
+        farm_tp_section = "Farm Teleport",
+        farm_tp_stages = "Auto Farm Teleport",
+        farm_tp_stages_desc = "Se teletransporta rápido de stage en stage con pequeños movimientos para que el juego cuente cada uno, reaparece al terminar y repite",
+        farm_tp_chest = "Auto Farm Teleport + Cofre del tesoro",
+        farm_tp_chest_desc = "Igual que Auto Farm Teleport, pero al final se teletransporta al cofre del tesoro para reclamar tus recompensas, luego vuelve al inicio y repite",
 
         ex_farm_section = "Utilidades de farmeo",
         ex_lockpos = "Bloquear posición",
@@ -1228,6 +1238,9 @@ do
     local CHEST_WAIT = 3
     local STAGE_TIMEOUT = 8
 
+    local TP_DWELL = 0.3
+    local TP_JITTER = 1.5
+
     local CaveFarm = {
         enabled = false,
         mode = nil,
@@ -1235,6 +1248,8 @@ do
         token = 0,
         noclipConn = nil,
     }
+
+    local Toggles = {}
 
     local function getRoot()
         local character = LocalPlayer.Character
@@ -1304,13 +1319,11 @@ do
         end
     end
 
-    local CaveToggle, ChestToggle
-
-    local function startFarm(mode)
+    local function startFarm(key, style, finish)
         CaveFarm.token = CaveFarm.token + 1
         local token = CaveFarm.token
         CaveFarm.enabled = true
-        CaveFarm.mode = mode
+        CaveFarm.mode = key
         startNoclip()
 
         local function active()
@@ -1395,6 +1408,55 @@ do
             return "stopped"
         end
 
+        local function tpTo(getPosition, character)
+            local position = getPosition()
+            if not position then
+                return "ok"
+            end
+
+            local untilTime = os.clock() + TP_DWELL
+            local frame = 0
+
+            while active() do
+                RunService.Heartbeat:Wait()
+
+                if not isCharacterAlive(character) then
+                    return "died"
+                end
+
+                local root = character:FindFirstChild("HumanoidRootPart")
+                local humanoid = character:FindFirstChildOfClass("Humanoid")
+
+                if root and humanoid then
+                    humanoid.PlatformStand = true
+
+                    frame = frame + 1
+                    local angle = frame * 1.7
+                    local offset = Vector3.new(
+                        math.sin(angle) * TP_JITTER,
+                        0,
+                        math.cos(angle) * TP_JITTER
+                    )
+
+                    root.AssemblyLinearVelocity = Vector3.zero
+                    root.AssemblyAngularVelocity = Vector3.zero
+                    root.CFrame = CFrame.new(position + offset) * root.CFrame.Rotation
+                end
+
+                if os.clock() >= untilTime then
+                    return "ok"
+                end
+            end
+            return "stopped"
+        end
+
+        local function moveTo(getPosition, character)
+            if style == "tp" then
+                return tpTo(getPosition, character)
+            end
+            return flyTo(getPosition, character)
+        end
+
         local function holdAt(position, seconds, character)
             local untilTime = os.clock() + seconds
             while active() and os.clock() < untilTime do
@@ -1425,12 +1487,11 @@ do
 
         local function stopAll()
             stopFarm()
-            pcall(function()
-                CaveToggle:Set(false)
-            end)
-            pcall(function()
-                ChestToggle:Set(false)
-            end)
+            for _, toggle in pairs(Toggles) do
+                pcall(function()
+                    toggle:Set(false)
+                end)
+            end
         end
 
         task.spawn(function()
@@ -1459,7 +1520,7 @@ do
                     end
 
                     local lastPosition = target.Position
-                    local flight = flyTo(function()
+                    local flight = moveTo(function()
                         local part = getDarknessPart(index)
                         if part then
                             lastPosition = part.Position
@@ -1490,8 +1551,8 @@ do
                     killCharacter(character)
                     waitForSpawn(character, 1.5)
                 else
-                    if mode == "chest" then
-                        local flight = flyTo(function()
+                    if finish == "chest" then
+                        local flight = moveTo(function()
                             return CHEST_POSITION
                         end, character)
 
@@ -1515,16 +1576,20 @@ do
         end)
     end
 
-    local function setMode(mode, state, otherToggle)
+    local function setMode(key, style, finish, state)
         if state then
-            if CaveFarm.mode and CaveFarm.mode ~= mode then
+            if CaveFarm.mode and CaveFarm.mode ~= key then
                 stopFarm()
-                pcall(function()
-                    otherToggle:Set(false)
-                end)
             end
-            startFarm(mode)
-        elseif CaveFarm.mode == mode then
+            for otherKey, toggle in pairs(Toggles) do
+                if otherKey ~= key then
+                    pcall(function()
+                        toggle:Set(false)
+                    end)
+                end
+            end
+            startFarm(key, style, finish)
+        elseif CaveFarm.mode == key then
             stopFarm()
         end
     end
@@ -1543,25 +1608,47 @@ do
         end,
     })
 
-    CaveToggle = Farm:Toggle({
+    Toggles.fly_normal = Farm:Toggle({
         Title = L("farm_cave"),
         Desc = L("farm_cave_desc"),
         Value = false,
         Callback = function(state)
-            setMode("normal", state, ChestToggle)
+            setMode("fly_normal", "fly", "normal", state)
         end,
     })
-    Util.register("farm_cave_stages", CaveToggle)
+    Util.register("farm_cave_stages", Toggles.fly_normal)
 
-    ChestToggle = Farm:Toggle({
+    Toggles.fly_chest = Farm:Toggle({
         Title = L("farm_chest"),
         Desc = L("farm_chest_desc"),
         Value = false,
         Callback = function(state)
-            setMode("chest", state, CaveToggle)
+            setMode("fly_chest", "fly", "chest", state)
         end,
     })
-    Util.register("farm_chest_stages", ChestToggle)
+    Util.register("farm_chest_stages", Toggles.fly_chest)
+
+    Farm:Section({ Title = L("farm_tp_section") })
+
+    Toggles.tp_normal = Farm:Toggle({
+        Title = L("farm_tp_stages"),
+        Desc = L("farm_tp_stages_desc"),
+        Value = false,
+        Callback = function(state)
+            setMode("tp_normal", "tp", "normal", state)
+        end,
+    })
+    Util.register("farm_tp_stages", Toggles.tp_normal)
+
+    Toggles.tp_chest = Farm:Toggle({
+        Title = L("farm_tp_chest"),
+        Desc = L("farm_tp_chest_desc"),
+        Value = false,
+        Callback = function(state)
+            setMode("tp_chest", "tp", "chest", state)
+        end,
+    })
+    Util.register("farm_tp_chest", Toggles.tp_chest)
 
     task.spawn(function()
         while isAlive() do
