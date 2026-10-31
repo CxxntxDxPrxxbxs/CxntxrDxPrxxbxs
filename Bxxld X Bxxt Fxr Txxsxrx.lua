@@ -122,6 +122,42 @@ local Strings = {
         farm_tp_chest = "Auto Farm Teleport + Treasure Chest",
         farm_tp_chest_desc = "Same as Auto Farm Teleport, but at the end it teleports to the treasure chest to claim your rewards, then returns to the start and repeats",
 
+        data_calc_section = "Gold Calculator",
+        data_calc_title = "Estimated earnings (approximate)",
+        data_per_hour = "Per hour",
+        data_per_day = "Per day",
+        data_per_week = "Per week",
+        data_per_month = "Per month (30 days)",
+        data_approx = "This is an approximation based on your current session. Real results may vary.",
+        data_calculating = "Calculating... (keep the tracker running)",
+        data_tracker_section = "Gold Tracker",
+        data_tracker_toggle = "Gold Tracker",
+        data_tracker_desc = "Counts the gold you gain. Turning it off pauses the count.",
+        data_gained_title = "Gained gold",
+        data_gained = "Gained",
+        data_elapsed = "Elapsed time",
+        data_hour_title = "Gained in 1 hour",
+        data_day_title = "Gained in 1 day",
+        data_time = "Time",
+        data_status = "Status",
+        data_status_counting = "Counting...",
+        data_status_frozen = "Frozen (completed)",
+        data_reset = "Reset tracker",
+        data_reset_desc = "Sets the session, 1 hour and 1 day counters back to zero",
+        data_reset_done = "Tracker reset.",
+        data_no_gold = "Could not find your Gold value.",
+        data_webhook_section = "Webhook",
+        data_webhook_url = "Webhook URL",
+        data_webhook_url_ph = "https://discord.com/api/webhooks/...",
+        data_webhook_auto = "Auto send reports",
+        data_webhook_auto_desc = "Sends a report when the 1 hour and 1 day trackers finish",
+        data_webhook_send = "Send report now",
+        data_webhook_send_desc = "Sends the current results to your webhook",
+        data_webhook_sent = "Report sent.",
+        data_webhook_failed = "The webhook could not be sent.",
+        data_webhook_nourl = "Enter a valid webhook URL first.",
+        data_webhook_norequest = "Your executor doesn't support HTTP requests.",
+
         ex_farm_section = "Farming Utilities",
         ex_lockpos = "Lock Position",
         ex_lockpos_desc = "Keeps your character frozen in place",
@@ -303,6 +339,42 @@ local Strings = {
         farm_tp_stages_desc = "Se teletransporta rápido de stage en stage con pequeños movimientos para que el juego cuente cada uno, reaparece al terminar y repite",
         farm_tp_chest = "Auto Farm Teleport + Cofre del tesoro",
         farm_tp_chest_desc = "Igual que Auto Farm Teleport, pero al final se teletransporta al cofre del tesoro para reclamar tus recompensas, luego vuelve al inicio y repite",
+
+        data_calc_section = "Calculadora de oro",
+        data_calc_title = "Ganancias estimadas (aproximado)",
+        data_per_hour = "Por hora",
+        data_per_day = "Por día",
+        data_per_week = "Por semana",
+        data_per_month = "Por mes (30 días)",
+        data_approx = "Esto es un aproximado basado en tu sesión actual. Los resultados reales pueden variar.",
+        data_calculating = "Calculando... (deja el tracker activo)",
+        data_tracker_section = "Tracker de oro",
+        data_tracker_toggle = "Tracker de oro",
+        data_tracker_desc = "Cuenta el oro que ganas. Al apagarlo se pausa el conteo.",
+        data_gained_title = "Oro ganado",
+        data_gained = "Ganado",
+        data_elapsed = "Tiempo transcurrido",
+        data_hour_title = "Ganado en 1 hora",
+        data_day_title = "Ganado en 1 día",
+        data_time = "Tiempo",
+        data_status = "Estado",
+        data_status_counting = "Contando...",
+        data_status_frozen = "Congelado (completado)",
+        data_reset = "Reiniciar tracker",
+        data_reset_desc = "Regresa a cero los contadores de sesión, 1 hora y 1 día",
+        data_reset_done = "Tracker reiniciado.",
+        data_no_gold = "No se encontró tu valor de Gold.",
+        data_webhook_section = "Webhook",
+        data_webhook_url = "URL del webhook",
+        data_webhook_url_ph = "https://discord.com/api/webhooks/...",
+        data_webhook_auto = "Enviar reportes automáticamente",
+        data_webhook_auto_desc = "Envía un reporte cuando terminan los contadores de 1 hora y 1 día",
+        data_webhook_send = "Enviar reporte ahora",
+        data_webhook_send_desc = "Envía los resultados actuales a tu webhook",
+        data_webhook_sent = "Reporte enviado.",
+        data_webhook_failed = "No se pudo enviar el webhook.",
+        data_webhook_nourl = "Primero escribe una URL de webhook válida.",
+        data_webhook_norequest = "Tu executor no soporta peticiones HTTP.",
 
         ex_farm_section = "Utilidades de farmeo",
         ex_lockpos = "Bloquear posición",
@@ -1671,6 +1743,375 @@ end
 
 do
     local Data = Tabs.Data
+
+    local HOUR_SECONDS = 3600
+    local DAY_SECONDS = 86400
+    local MIN_SECONDS_FOR_RATE = 10
+    local WEBHOOK_COLOR = 0x170158
+    local WEBHOOK_IMAGE = "https://raw.githubusercontent.com/Mystery-Center/Mystery-Media/main/Mystery%20Notificaciones%20Imagen.png"
+
+    local Tracker = {
+        running = false,
+        elapsed = 0,
+        gained = 0,
+        lastGold = 0,
+        lastTick = 0,
+        hour = { elapsed = 0, gained = 0, done = false },
+        day = { elapsed = 0, gained = 0, done = false },
+        autoSend = false,
+        sending = false,
+    }
+
+    local webhookUrl = ""
+
+    local ABBREVIATIONS = {
+        { 1e12, "T" },
+        { 1e9, "B" },
+        { 1e6, "M" },
+        { 1e3, "K" },
+    }
+
+    local function withCommas(number)
+        local text = string.format("%d", math.floor(number))
+        local reversed = text:reverse():gsub("(%d%d%d)", "%1,")
+        local result = reversed:reverse():gsub("^,", "")
+        return result
+    end
+
+    local function abbreviate(number)
+        for _, entry in ipairs(ABBREVIATIONS) do
+            if number >= entry[1] then
+                local value = math.floor(number / entry[1] * 100) / 100
+                local text = string.format("%.2f", value):gsub("%.?0+$", "")
+                return text .. entry[2]
+            end
+        end
+        return nil
+    end
+
+    local function formatGold(number)
+        number = math.floor(number or 0)
+        local short = abbreviate(number)
+        if short then
+            return withCommas(number) .. " [" .. short .. "]"
+        end
+        return withCommas(number)
+    end
+
+    local function getGoldObject()
+        local data = LocalPlayer:FindFirstChild("Data")
+        return data and data:FindFirstChild("Gold")
+    end
+
+    local function getRates()
+        if Tracker.elapsed < MIN_SECONDS_FOR_RATE then
+            return nil
+        end
+        local perHour = Tracker.gained / Tracker.elapsed * 3600
+        return {
+            hour = perHour,
+            day = perHour * 24,
+            week = perHour * 24 * 7,
+            month = perHour * 24 * 30,
+        }
+    end
+
+    local function buildCalcText()
+        local rates = getRates()
+        local lines = {}
+        if rates then
+            table.insert(lines, L("data_per_hour") .. ": " .. formatGold(rates.hour))
+            table.insert(lines, L("data_per_day") .. ": " .. formatGold(rates.day))
+            table.insert(lines, L("data_per_week") .. ": " .. formatGold(rates.week))
+            table.insert(lines, L("data_per_month") .. ": " .. formatGold(rates.month))
+        else
+            table.insert(lines, L("data_calculating"))
+        end
+        table.insert(lines, "")
+        table.insert(lines, L("data_approx"))
+        return table.concat(lines, "\n")
+    end
+
+    local function buildGainedText()
+        return table.concat({
+            L("data_gained") .. ": " .. formatGold(Tracker.gained),
+            L("data_elapsed") .. ": " .. Util.formatTime(Tracker.elapsed),
+        }, "\n")
+    end
+
+    local function buildBlockText(block, limit)
+        return table.concat({
+            L("data_gained") .. ": " .. formatGold(block.gained),
+            L("data_time") .. ": " .. Util.formatTime(block.elapsed) .. " / " .. Util.formatTime(limit),
+            L("data_status") .. ": " .. (block.done and L("data_status_frozen") or L("data_status_counting")),
+        }, "\n")
+    end
+
+    local function sendReport(kind)
+        if Tracker.sending then
+            return
+        end
+
+        if webhookUrl == "" or not webhookUrl:match("^https://") then
+            Util.notify(L("data_webhook_section"), L("data_webhook_nourl"), "triangle-alert")
+            return
+        end
+
+        local request = Logger.getRequest()
+        if not request then
+            Util.notify(L("error"), L("data_webhook_norequest"), "triangle-alert")
+            return
+        end
+
+        Tracker.sending = true
+
+        local titles = {
+            manual = "Gold Report",
+            hour = "1 Hour Completed",
+            day = "1 Day Completed",
+        }
+
+        local rates = getRates()
+        local lines = {
+            "**Player**",
+            "Username: " .. LocalPlayer.Name,
+            "",
+            "**Session**",
+            "Elapsed: " .. Util.formatTime(Tracker.elapsed),
+            "Gained = " .. formatGold(Tracker.gained),
+            "",
+            "**Estimated (approximate)**",
+        }
+
+        if rates then
+            table.insert(lines, "Per hour = " .. formatGold(rates.hour))
+            table.insert(lines, "Per day = " .. formatGold(rates.day))
+            table.insert(lines, "Per week = " .. formatGold(rates.week))
+            table.insert(lines, "Per month = " .. formatGold(rates.month))
+        else
+            table.insert(lines, "Not enough data yet")
+        end
+
+        table.insert(lines, "")
+        table.insert(lines, "**1 Hour**")
+        table.insert(lines, "Gained = " .. formatGold(Tracker.hour.gained) .. (Tracker.hour.done and " (frozen)" or " (counting)"))
+        table.insert(lines, "")
+        table.insert(lines, "**1 Day**")
+        table.insert(lines, "Gained = " .. formatGold(Tracker.day.gained) .. (Tracker.day.done and " (frozen)" or " (counting)"))
+
+        local payload = {
+            username = Config.HubName,
+            embeds = {
+                {
+                    title = titles[kind] or titles.manual,
+                    description = table.concat(lines, "\n"),
+                    color = WEBHOOK_COLOR,
+                    image = { url = WEBHOOK_IMAGE },
+                    footer = { text = "Mystery Hub • Gold Tracker" },
+                    timestamp = os.date("!%Y-%m-%dT%H:%M:%SZ"),
+                },
+            },
+        }
+
+        local success = false
+        local encodeOk, body = pcall(function()
+            return HttpService:JSONEncode(payload)
+        end)
+
+        if encodeOk then
+            local ok, response = pcall(function()
+                return request({
+                    Url = webhookUrl,
+                    Method = "POST",
+                    Headers = { ["Content-Type"] = "application/json" },
+                    Body = body,
+                })
+            end)
+            if ok then
+                if type(response) == "table" then
+                    local code = tonumber(response.StatusCode or response.Status)
+                    success = code ~= nil and code >= 200 and code < 300
+                else
+                    success = true
+                end
+            end
+        end
+
+        Tracker.sending = false
+
+        if success then
+            Util.notify(L("data_webhook_section"), L("data_webhook_sent"), "check")
+        else
+            Util.notify(L("error"), L("data_webhook_failed"), "triangle-alert")
+        end
+    end
+
+    local function advanceBlock(block, limit, dt, delta, kind)
+        if block.done then
+            return
+        end
+
+        block.elapsed = block.elapsed + dt
+        block.gained = block.gained + delta
+
+        if block.elapsed >= limit then
+            block.elapsed = limit
+            block.done = true
+            if Tracker.autoSend then
+                task.spawn(sendReport, kind)
+            end
+        end
+    end
+
+    local function trackerTick()
+        local goldObject = getGoldObject()
+        if not goldObject then
+            return
+        end
+
+        local now = os.clock()
+        local dt = now - Tracker.lastTick
+        Tracker.lastTick = now
+
+        local value = goldObject.Value
+        local delta = math.max(value - Tracker.lastGold, 0)
+        Tracker.lastGold = value
+
+        Tracker.elapsed = Tracker.elapsed + dt
+        Tracker.gained = Tracker.gained + delta
+
+        advanceBlock(Tracker.hour, HOUR_SECONDS, dt, delta, "hour")
+        advanceBlock(Tracker.day, DAY_SECONDS, dt, delta, "day")
+    end
+
+    local function resetTracker()
+        Tracker.elapsed = 0
+        Tracker.gained = 0
+        Tracker.hour = { elapsed = 0, gained = 0, done = false }
+        Tracker.day = { elapsed = 0, gained = 0, done = false }
+
+        local goldObject = getGoldObject()
+        Tracker.lastGold = goldObject and goldObject.Value or 0
+        Tracker.lastTick = os.clock()
+    end
+
+    Data:Section({ Title = L("data_calc_section") })
+
+    local CalcParagraph = Data:Paragraph({
+        Title = L("data_calc_title"),
+        Desc = L("data_calculating"),
+    })
+
+    Data:Section({ Title = L("data_tracker_section") })
+
+    local TrackerToggle
+    TrackerToggle = Data:Toggle({
+        Title = L("data_tracker_toggle"),
+        Desc = L("data_tracker_desc"),
+        Value = false,
+        Callback = function(state)
+            if state then
+                local goldObject = getGoldObject()
+                if not goldObject then
+                    Util.notify(L("error"), L("data_no_gold"), "triangle-alert")
+                    task.defer(function()
+                        pcall(function()
+                            TrackerToggle:Set(false)
+                        end)
+                    end)
+                    return
+                end
+                Tracker.lastGold = goldObject.Value
+                Tracker.lastTick = os.clock()
+                Tracker.running = true
+            else
+                Tracker.running = false
+            end
+        end,
+    })
+    Util.register("data_tracker", TrackerToggle)
+
+    local GainedParagraph = Data:Paragraph({
+        Title = L("data_gained_title"),
+        Desc = L("home_loading"),
+    })
+
+    local HourParagraph = Data:Paragraph({
+        Title = L("data_hour_title"),
+        Desc = L("home_loading"),
+    })
+
+    local DayParagraph = Data:Paragraph({
+        Title = L("data_day_title"),
+        Desc = L("home_loading"),
+    })
+
+    Data:Button({
+        Title = L("data_reset"),
+        Desc = L("data_reset_desc"),
+        Icon = "rotate-ccw",
+        Callback = function()
+            resetTracker()
+            Util.notify(L("data_tracker_section"), L("data_reset_done"), "check")
+        end,
+    })
+
+    Data:Section({ Title = L("data_webhook_section") })
+
+    local WebhookInput = Data:Input({
+        Title = L("data_webhook_url"),
+        Placeholder = L("data_webhook_url_ph"),
+        Value = "",
+        Callback = function(text)
+            webhookUrl = tostring(text or ""):gsub("%s+", "")
+        end,
+    })
+    Util.register("data_webhook_url", WebhookInput)
+
+    local AutoSendToggle = Data:Toggle({
+        Title = L("data_webhook_auto"),
+        Desc = L("data_webhook_auto_desc"),
+        Value = false,
+        Callback = function(state)
+            Tracker.autoSend = state
+        end,
+    })
+    Util.register("data_webhook_auto", AutoSendToggle)
+
+    Data:Button({
+        Title = L("data_webhook_send"),
+        Desc = L("data_webhook_send_desc"),
+        Icon = "send",
+        Callback = function()
+            task.spawn(sendReport, "manual")
+        end,
+    })
+
+    local setCalc = Util.makeSetter(CalcParagraph)
+    local setGained = Util.makeSetter(GainedParagraph)
+    local setHour = Util.makeSetter(HourParagraph)
+    local setDay = Util.makeSetter(DayParagraph)
+
+    local function render()
+        setCalc(buildCalcText())
+        setGained(buildGainedText())
+        setHour(buildBlockText(Tracker.hour, HOUR_SECONDS))
+        setDay(buildBlockText(Tracker.day, DAY_SECONDS))
+    end
+
+    pcall(render)
+
+    task.spawn(function()
+        while isAlive() do
+            task.wait(1)
+            if Tracker.running then
+                pcall(trackerTick)
+            end
+            pcall(render)
+        end
+        Tracker.running = false
+        Tracker.autoSend = false
+    end)
 end
 
 do
