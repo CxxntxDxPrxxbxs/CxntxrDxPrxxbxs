@@ -108,6 +108,19 @@ local Strings = {
         home_discord_desc = "Join the community server",
         home_discord_label = "Discord link",
 
+        farm_section = "Auto Farm No teleport",
+        farm_cave = "Auto Farm",
+        farm_cave_desc = "Flies through the stages automatically without teleporting, respawns when it finishes and repeats until you turn it off",
+        farm_speed_input = "Flight speed",
+        farm_speed_ph = "400",
+        farm_missing = "The stages could not be found.",
+        farm_chest = "Auto Farm + Treasure Chest",
+        farm_chest_desc = "Same as Auto Farm, but at the end it flies to the treasure chest, waits for the game to send you back to the start after claiming, and repeats",
+        farm_tp_section = "Farm Teleport",
+        farm_tp_stages = "Auto Farm Teleport",
+        farm_tp_stages_desc = "Teleports quickly from stage to stage with small movements so the game counts each one, respawns when it finishes and repeats",
+        farm_tp_chest = "Auto Farm Teleport + Treasure Chest",
+        farm_tp_chest_desc = "Same as Auto Farm Teleport, but at the end it teleports to the treasure chest, waits for the game to send you back to the start after claiming, and repeats",
         farm_status_title = "Farm status",
         farm_status_idle = "No farm running. Turn one on below.",
         farm_status_mode = "Mode",
@@ -126,8 +139,9 @@ local Strings = {
         farm_speed_input_desc = "Speed of the flying farms in studs per second (10 to 1000)",
         farm_tp_dwell = "Teleport dwell (s)",
         farm_tp_dwell_desc = "How long it stays on each stage in the Teleport farms so the game counts it (0.1 to 5)",
-        farm_chest_wait = "Chest wait (s)",
-        farm_chest_wait_desc = "How long it stays at the treasure chest to claim the rewards (0.5 to 10)",
+        farm_state_claiming = "Claiming the chest",
+        farm_chest_wait = "Chest timeout (s)",
+        farm_chest_wait_desc = "Maximum time it waits at the chest for the game to send you back to the start before resetting you (5 to 120)",
         farm_respawn_delay = "Respawn delay (s)",
         farm_respawn_delay_desc = "Extra wait after respawning before the next run starts (0.5 to 10)",
         farm_push_speed = "Speed Farm velocity",
@@ -500,6 +514,19 @@ local Strings = {
         home_discord_desc = "Únete al servidor de la comunidad",
         home_discord_label = "Enlace de Discord",
 
+        farm_section = "Auto Farm No teleport",
+        farm_cave = "Auto Farm",
+        farm_cave_desc = "Recorre los stages automáticamente sin teletransportarte, reaparece al terminar y repite hasta que lo apagues",
+        farm_speed_input = "Velocidad de vuelo",
+        farm_speed_ph = "400",
+        farm_missing = "No se encontraron los stages.",
+        farm_chest = "Auto Farm + Cofre del tesoro",
+        farm_chest_desc = "Igual que Auto Farm, pero al final vuela hasta el cofre del tesoro, espera a que el juego te regrese al inicio después de reclamar y repite",
+        farm_tp_section = "Farm Teleport",
+        farm_tp_stages = "Auto Farm Teleport",
+        farm_tp_stages_desc = "Se teletransporta rápido de stage en stage con pequeños movimientos para que el juego cuente cada uno, reaparece al terminar y repite",
+        farm_tp_chest = "Auto Farm Teleport + Cofre del tesoro",
+        farm_tp_chest_desc = "Igual que Auto Farm Teleport, pero al final se teletransporta al cofre del tesoro, espera a que el juego te regrese al inicio después de reclamar y repite",
         farm_status_title = "Estado del farmeo",
         farm_status_idle = "Ningún farmeo activo. Enciende uno abajo.",
         farm_status_mode = "Modo",
@@ -518,6 +545,7 @@ local Strings = {
         farm_speed_input_desc = "Velocidad de los farmeos que vuelan, en studs por segundo (10 a 1000)",
         farm_tp_dwell = "Pausa del teleport (s)",
         farm_tp_dwell_desc = "Cuánto se queda en cada stage en los Farm Teleport para que el juego lo cuente (0.1 a 5)",
+        farm_state_claiming = "Reclamando el cofre",
         farm_chest_wait = "Espera en el cofre (s)",
         farm_chest_wait_desc = "Cuánto se queda en el cofre del tesoro para reclamar las recompensas (0.5 a 10)",
         farm_respawn_delay = "Espera al reaparecer (s)",
@@ -1669,6 +1697,7 @@ do
     local CHEST_POSITION = Vector3.new(-53.337, -358.568, 9490.461)
     local SPEED_START = Vector3.new(-43.148, 65.99, 825.943)
     local STAGE_COUNT = 10
+    local CHEST_RETURN_DISTANCE = 200
     local STAGE_TIMEOUT = 8
     local TP_JITTER = 2
     local TP_STEP = 40
@@ -1678,7 +1707,7 @@ do
     local Cfg = {
         flySpeed = 400,
         tpDwell = 0.5,
-        chestWait = 3,
+        chestWait = 30,
         respawnDelay = 1.5,
         pushSpeed = 390,
         pushTime = 19,
@@ -1729,6 +1758,18 @@ do
             return part
         end
         return nil
+    end
+
+    local function getChestPosition()
+        local boatStages = workspace:FindFirstChild("BoatStages")
+        local normal = boatStages and boatStages:FindFirstChild("NormalStages")
+        local theEnd = normal and normal:FindFirstChild("TheEnd")
+        local chest = theEnd and theEnd:FindFirstChild("GoldenChest")
+        local trigger = chest and chest:FindFirstChild("Trigger")
+        if trigger and trigger:IsA("BasePart") then
+            return trigger.Position
+        end
+        return CHEST_POSITION
     end
 
     local function claimGold()
@@ -1989,20 +2030,36 @@ do
             return flyTo(getPosition, character)
         end
 
-        local function holdAt(position, seconds, character)
-            local untilTime = os.clock() + seconds
-            while active() and os.clock() < untilTime do
+        local function claimChest(position, character)
+            Stats.state = "claiming"
+            local deadline = os.clock() + Cfg.chestWait
+
+            while active() do
                 RunService.Heartbeat:Wait()
-                if LocalPlayer.Character ~= character then
-                    return
+
+                if LocalPlayer.Character ~= character or not isCharacterAlive(character) then
+                    return "respawned"
                 end
-                local root = getRoot()
-                if root then
-                    root.AssemblyLinearVelocity = Vector3.zero
-                    root.AssemblyAngularVelocity = Vector3.zero
-                    root.CFrame = CFrame.new(position) * root.CFrame.Rotation
+
+                local root = character:FindFirstChild("HumanoidRootPart")
+                if not root then
+                    return "respawned"
                 end
+
+                if (root.Position - position).Magnitude > CHEST_RETURN_DISTANCE then
+                    return "returned"
+                end
+
+                if os.clock() >= deadline then
+                    return "timeout"
+                end
+
+                root.AssemblyLinearVelocity = Vector3.zero
+                root.AssemblyAngularVelocity = Vector3.zero
+                root.CFrame = CFrame.new(position) * root.CFrame.Rotation
             end
+
+            return "stopped"
         end
 
         task.spawn(function()
@@ -2068,32 +2125,48 @@ do
                     run.killCharacter(character)
                     run.waitForSpawn(character)
                 else
+                    local waitFor = character
+                    local completed = true
+
                     if finish == "chest" then
                         Stats.state = "chest"
+                        local chestPosition = getChestPosition()
                         local flight = moveTo(function()
-                            return CHEST_POSITION
+                            return chestPosition
                         end, character)
 
                         if flight == "stopped" then
                             return
                         end
+
                         if flight == "ok" then
-                            holdAt(CHEST_POSITION, Cfg.chestWait, character)
-                        end
-                        if not active() then
-                            return
-                        end
-                    end
+                            local outcome = claimChest(chestPosition, character)
+                            if not active() then
+                                return
+                            end
 
-                    Stats.runs = Stats.runs + 1
-                    if Cfg.autoClaim then
-                        claimGold()
-                    end
-
-                    if isCharacterAlive(character) then
+                            if outcome == "timeout" then
+                                if isCharacterAlive(character) then
+                                    run.killCharacter(character)
+                                end
+                            elseif outcome == "returned" then
+                                waitFor = nil
+                            end
+                        else
+                            completed = false
+                        end
+                    elseif isCharacterAlive(character) then
                         run.killCharacter(character)
                     end
-                    run.waitForSpawn(character)
+
+                    if completed then
+                        Stats.runs = Stats.runs + 1
+                        if Cfg.autoClaim then
+                            claimGold()
+                        end
+                    end
+
+                    run.waitForSpawn(waitFor)
                 end
             end
         end)
@@ -2257,7 +2330,7 @@ do
     addNumberInput("farm_tp_dwell", "farm_tp_dwell", "0.5", 0.1, 5, function(value)
         Cfg.tpDwell = value
     end)
-    addNumberInput("farm_chest_wait", "farm_chest_wait", "3", 0.5, 10, function(value)
+    addNumberInput("farm_chest_wait", "farm_chest_wait", "30", 5, 120, function(value)
         Cfg.chestWait = value
     end)
     addNumberInput("farm_respawn_delay", "farm_respawn_delay", "1.5", 0.5, 10, function(value)
@@ -2274,6 +2347,7 @@ do
         waiting = "farm_state_waiting",
         stages = "farm_state_stages",
         chest = "farm_state_chest",
+        claiming = "farm_state_claiming",
         speed = "farm_state_speed",
     }
 
