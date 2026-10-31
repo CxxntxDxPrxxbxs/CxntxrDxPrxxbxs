@@ -108,19 +108,34 @@ local Strings = {
         home_discord_desc = "Join the community server",
         home_discord_label = "Discord link",
 
-        farm_section = "Auto Farm No teleport",
-        farm_cave = "Auto Farm",
-        farm_cave_desc = "Flies through the stages automatically without teleporting, respawns when it finishes and repeats until you turn it off",
-        farm_speed_input = "Flight speed",
-        farm_speed_ph = "400",
-        farm_missing = "The stages could not be found.",
-        farm_chest = "Auto Farm + Treasure Chest",
-        farm_chest_desc = "Same as Auto Farm, but at the end it flies to the treasure chest to claim your rewards, then returns to the start and repeats",
-        farm_tp_section = "Farm Teleport",
-        farm_tp_stages = "Auto Farm Teleport",
-        farm_tp_stages_desc = "Teleports quickly from stage to stage with small movements so the game counts each one, respawns when it finishes and repeats",
-        farm_tp_chest = "Auto Farm Teleport + Treasure Chest",
-        farm_tp_chest_desc = "Same as Auto Farm Teleport, but at the end it teleports to the treasure chest to claim your rewards, then returns to the start and repeats",
+        farm_status_title = "Farm status",
+        farm_status_idle = "No farm running. Turn one on below.",
+        farm_status_mode = "Mode",
+        farm_status_state = "State",
+        farm_status_stage = "Stage",
+        farm_status_runs = "Runs completed",
+        farm_status_time = "Time running",
+        farm_state_waiting = "Waiting for respawn",
+        farm_state_stages = "Running the stages",
+        farm_state_chest = "Going to the chest",
+        farm_state_speed = "Speed run",
+        farm_fast_section = "Speed Farm",
+        farm_fast = "Auto Farm Speed (No Chest)",
+        farm_fast_desc = "Teleports to the start and pushes you forward at high speed through the whole river, respawns when the time is up and repeats",
+        farm_settings_section = "Farm settings",
+        farm_speed_input_desc = "Speed of the flying farms in studs per second (10 to 1000)",
+        farm_tp_dwell = "Teleport dwell (s)",
+        farm_tp_dwell_desc = "How long it stays on each stage in the Teleport farms so the game counts it (0.1 to 5)",
+        farm_chest_wait = "Chest wait (s)",
+        farm_chest_wait_desc = "How long it stays at the treasure chest to claim the rewards (0.5 to 10)",
+        farm_respawn_delay = "Respawn delay (s)",
+        farm_respawn_delay_desc = "Extra wait after respawning before the next run starts (0.5 to 10)",
+        farm_push_speed = "Speed Farm velocity",
+        farm_push_speed_desc = "Forward speed of the Speed Farm (100 to 500)",
+        farm_push_time = "Speed Farm run time (s)",
+        farm_push_time_desc = "How long each Speed Farm run lasts before respawning (5 to 60)",
+        farm_autoclaim = "Auto Claim Gold",
+        farm_autoclaim_desc = "Claims the river gold while a farm is running and at the end of every run",
 
         data_calc_section = "Gold Calculator",
         data_calc_title = "Estimated earnings (approximate)",
@@ -146,6 +161,11 @@ local Strings = {
         data_reset_desc = "Sets the session, 1 hour and 1 day counters back to zero",
         data_reset_done = "Tracker reset.",
         data_no_gold = "Could not find your Gold value.",
+        data_gold = "Gold",
+        data_goldblock = "Gold Blocks",
+        data_auto_farm = "Auto start with farm",
+        data_auto_farm_desc = "Starts the tracker by itself when you turn on any Auto Farm",
+        data_auto_started = "Tracker started automatically.",
         data_webhook_section = "Webhook",
         data_webhook_url = "Webhook URL",
         data_webhook_url_ph = "https://discord.com/api/webhooks/...",
@@ -157,6 +177,152 @@ local Strings = {
         data_webhook_failed = "The webhook could not be sent.",
         data_webhook_nourl = "Enter a valid webhook URL first.",
         data_webhook_norequest = "Your executor doesn't support HTTP requests.",
+
+        bld_title = "Builder",
+        bld_sec_auto = "Auto Build",
+        bld_sec_adjust = "Position, Rotation & Size",
+        bld_sec_files = "File Management",
+        bld_sec_image = "Image Loader",
+
+        bld_status = "Status",
+        bld_status_idle = "Idle. Select a build and press Preview.",
+        bld_files = "Saved builds",
+        bld_files_desc = "Builds saved in FileStorage (or the executor workspace folder)",
+        bld_no_files = "No builds found",
+        bld_refresh = "Refresh list",
+        bld_preview = "Preview build",
+        bld_preview_desc = "Shows the selected build as a ghost on your plot",
+        bld_build = "Build",
+        bld_build_desc = "Places the previewed blocks automatically using your inventory",
+        bld_stop = "Stop",
+        bld_stop_desc = "Cancels the current build or preview",
+        bld_clear = "Clear preview",
+        bld_speed = "Build speed",
+        bld_speed_desc = "Blocks sent per tick. Lower is safer",
+        bld_safe = "Safe mode",
+        bld_safe_desc = "Places one block at a time. Slower but the most reliable",
+
+        bld_move_step = "Move step (studs)",
+        bld_move_up = "Move up",
+        bld_move_down = "Move down",
+        bld_move_right = "Move right (+X)",
+        bld_move_left = "Move left (-X)",
+        bld_move_back = "Move back (+Z)",
+        bld_move_forward = "Move forward (-Z)",
+        bld_center = "Center on plot",
+        bld_center_desc = "Centers the build horizontally on your plot (keeps the height)",
+        bld_rot_x = "Rotation X",
+        bld_rot_y = "Rotation Y",
+        bld_rot_z = "Rotation Z",
+        bld_scale = "Build size (%)",
+        bld_scale_desc = "100 = original size. Resizable blocks scale with it, other blocks only change position",
+        bld_scale_invalid = "Type a number between 5 and 1000.",
+        bld_reset_adjust = "Reset adjustments",
+        bld_reset_adjust_desc = "Sets position, rotation and size back to the original",
+
+        bld_save_name = "File name",
+        bld_save_name_ph = "My boat",
+        bld_save_scope = "Save blocks from",
+        bld_scope_team = "Whole team",
+        bld_scope_mine = "Only my blocks",
+        bld_save = "Save build",
+        bld_save_desc = "Saves the blocks on your plot as a new file",
+        bld_rename_input = "New name",
+        bld_rename_input_ph = "New file name",
+        bld_rename = "Rename selected",
+        bld_update = "Update selected",
+        bld_update_desc = "Overwrites the selected file with the blocks currently on your plot",
+        bld_delete = "Delete selected",
+
+        bld_need_fs = "Your executor doesn't support the file functions needed.",
+        bld_no_plot = "Could not find your team plot. Join a team first.",
+        bld_no_data = "Could not find your block inventory.",
+        bld_no_tool = "Could not find %s. Equip or keep it in your backpack.",
+        bld_need_preview = "Load a preview first.",
+        bld_busy = "Another task is running. Stop it first.",
+        bld_wait_preview = "The preview is still loading.",
+        bld_select_file = "Select a build first.",
+        bld_bad_file = "The file could not be read or is not a valid build.",
+        bld_empty_file = "The file has no valid blocks.",
+        bld_preview_ready = "Preview ready: %d blocks.",
+        bld_placing = "Placing blocks: %d / %d",
+        bld_scaling = "Resizing blocks: %d / %d",
+        bld_painting = "Painting blocks...",
+        bld_done = "Finished: %d of %d blocks placed.",
+        bld_skipped = "Skipped: %d outside the plot, %d without enough blocks.",
+        bld_nothing = "Nothing to place. Outside the plot: %d, missing blocks: %d.",
+        bld_cancelled = "Cancelled.",
+        bld_failed = "The build failed. Check the console.",
+        bld_place_failed = "The server did not accept the placement. Make sure you are on your plot and the BuildingTool is available.",
+        bld_no_scale_tool = "ScalingTool not found: resizing was skipped.",
+        bld_no_paint_tool = "PaintingTool not found: painting was skipped.",
+        bld_cleared = "Preview cleared.",
+        bld_type_name = "Type a valid file name first.",
+        bld_no_blocks = "There are no blocks to save.",
+        bld_cant_write = "The file could not be written.",
+        bld_saved = "Saved: %s (%d blocks).",
+        bld_overwrite_title = "Overwrite file",
+        bld_overwrite_content = "A file with that name already exists. Overwrite it?",
+        bld_update_title = "Update file",
+        bld_update_content = "Overwrite the selected file with the blocks on your plot?",
+        bld_updated = "Updated: %s (%d blocks).",
+        bld_exists = "A file with that name already exists.",
+        bld_renamed = "Renamed to: %s",
+        bld_delete_title = "Delete file",
+        bld_delete_content = "Are you sure you want to delete the selected file? This cannot be undone.",
+        bld_deleted = "Deleted: %s",
+        bld_no_dialog = "Could not open the confirmation dialog. Nothing was changed.",
+
+        bld_img_link = "Image link",
+        bld_img_link_ph = "https://...png",
+        bld_img_res = "Resolution (WxH)",
+        bld_img_res_ph = "64x64",
+        bld_img_res_set = "Resolution set to %dx%d.",
+        bld_img_res_invalid = "Use a format like 64x64 (10 to 320).",
+        bld_img_block = "Block type",
+        bld_img_size = "Block size (X Y Z)",
+        bld_img_size_ph = "2 2 2",
+        bld_img_size_set = "Block size set to %s.",
+        bld_img_size_invalid = "Use three numbers like 2 2 2 (0.1 to 64).",
+        bld_img_preview = "Generate image preview",
+        bld_img_preview_desc = "Converts the image into blocks and shows the preview",
+        bld_img_build = "Build image",
+        bld_img_build_desc = "Places the previewed image with the blocks you own",
+        bld_img_note = "The image is converted by an external service, so your link is sent to it. Large resolutions create a lot of blocks.",
+        bld_img_bad_link = "Enter a valid image link (http or https).",
+        bld_img_loading = "Converting the image...",
+        bld_img_failed = "The image could not be converted. Check the link.",
+        bld_img_ready = "Image ready: %d blocks (%dx%d).",
+        bld_img_many = "This image uses %d blocks. It may take a while.",
+
+        shop_section = "Chests",
+        shop_chest_type = "Chest type",
+        shop_chest_type_desc = "Select which chest to open",
+        shop_auto_open = "Auto Open Chests",
+        shop_auto_open_desc = "Opens the selected chest again and again until you turn it off",
+        shop_delay = "Delay (seconds)",
+        shop_delay_desc = "Time between each chest (minimum 0.1)",
+        shop_no_remote = "Could not find the chest remote.",
+
+        quest_soon_title = "Coming soon",
+        quest_soon_desc = "This section isn't ready yet. It will be available in upcoming updates, stay tuned!",
+
+        troll_section = "Visual",
+        troll_inf_gold = "Inf Gold [Visual]",
+        troll_inf_gold_desc = "Adds gold only on your screen (client side). Turning it off removes the gold that was added.",
+        troll_no_gold = "Could not find your Gold value.",
+
+        players_section = "Teleport to player",
+        players_list = "Players",
+        players_list_desc = "Format: username - display name",
+        players_none = "No players found",
+        players_refresh = "Refresh list",
+        players_tp = "Teleport to player",
+        players_tp_desc = "Teleports you next to the selected player",
+        players_select_first = "Select a player first.",
+        players_gone = "That player is no longer in the server.",
+        players_no_char = "Could not find the character.",
+        players_teleported = "Teleported to %s.",
 
         ex_farm_section = "Farming Utilities",
         ex_lockpos = "Lock Position",
@@ -205,6 +371,14 @@ local Strings = {
         ex_server_rejoin = "Reconnect Same Server",
         ex_server_joining = "Joining a server with %d players...",
         ex_server_none = "No available servers were found.",
+
+        tp_section = "Teams",
+        tp_team = "Select team",
+        tp_team_desc = "Choose the team base you want to go to",
+        tp_go = "Teleport to team",
+        tp_go_desc = "Teleports you to the selected team's base",
+        tp_no_char = "Could not find your character.",
+        tp_done = "Teleported to %s.",
 
         set_appearance = "Appearance",
         set_theme = "Theme",
@@ -326,19 +500,34 @@ local Strings = {
         home_discord_desc = "Únete al servidor de la comunidad",
         home_discord_label = "Enlace de Discord",
 
-        farm_section = "Auto Farm No teleport",
-        farm_cave = "Auto Farm",
-        farm_cave_desc = "Recorre los stages automáticamente sin teletransportarte, reaparece al terminar y repite hasta que lo apagues",
-        farm_speed_input = "Velocidad de vuelo",
-        farm_speed_ph = "400",
-        farm_missing = "No se encontraron los stages.",
-        farm_chest = "Auto Farm + Cofre del tesoro",
-        farm_chest_desc = "Igual que Auto Farm, pero al final vuela hasta el cofre del tesoro para reclamar tus recompensas, luego vuelve al inicio y repite",
-        farm_tp_section = "Farm Teleport",
-        farm_tp_stages = "Auto Farm Teleport",
-        farm_tp_stages_desc = "Se teletransporta rápido de stage en stage con pequeños movimientos para que el juego cuente cada uno, reaparece al terminar y repite",
-        farm_tp_chest = "Auto Farm Teleport + Cofre del tesoro",
-        farm_tp_chest_desc = "Igual que Auto Farm Teleport, pero al final se teletransporta al cofre del tesoro para reclamar tus recompensas, luego vuelve al inicio y repite",
+        farm_status_title = "Estado del farmeo",
+        farm_status_idle = "Ningún farmeo activo. Enciende uno abajo.",
+        farm_status_mode = "Modo",
+        farm_status_state = "Estado",
+        farm_status_stage = "Stage",
+        farm_status_runs = "Rondas completadas",
+        farm_status_time = "Tiempo activo",
+        farm_state_waiting = "Esperando reaparecer",
+        farm_state_stages = "Recorriendo los stages",
+        farm_state_chest = "Yendo al cofre",
+        farm_state_speed = "Recorrido rápido",
+        farm_fast_section = "Speed Farm",
+        farm_fast = "Auto Farm Speed (Sin cofre)",
+        farm_fast_desc = "Te lleva al inicio y te empuja hacia adelante a gran velocidad por todo el río, reaparece cuando se acaba el tiempo y repite",
+        farm_settings_section = "Ajustes del farmeo",
+        farm_speed_input_desc = "Velocidad de los farmeos que vuelan, en studs por segundo (10 a 1000)",
+        farm_tp_dwell = "Pausa del teleport (s)",
+        farm_tp_dwell_desc = "Cuánto se queda en cada stage en los Farm Teleport para que el juego lo cuente (0.1 a 5)",
+        farm_chest_wait = "Espera en el cofre (s)",
+        farm_chest_wait_desc = "Cuánto se queda en el cofre del tesoro para reclamar las recompensas (0.5 a 10)",
+        farm_respawn_delay = "Espera al reaparecer (s)",
+        farm_respawn_delay_desc = "Espera extra tras reaparecer antes de empezar la siguiente ronda (0.5 a 10)",
+        farm_push_speed = "Velocidad del Speed Farm",
+        farm_push_speed_desc = "Velocidad hacia adelante del Speed Farm (100 a 500)",
+        farm_push_time = "Duración del Speed Farm (s)",
+        farm_push_time_desc = "Cuánto dura cada recorrido del Speed Farm antes de reaparecer (5 a 60)",
+        farm_autoclaim = "Auto reclamar oro",
+        farm_autoclaim_desc = "Reclama el oro del río mientras farmeas y al final de cada ronda",
 
         data_calc_section = "Calculadora de oro",
         data_calc_title = "Ganancias estimadas (aproximado)",
@@ -364,6 +553,11 @@ local Strings = {
         data_reset_desc = "Regresa a cero los contadores de sesión, 1 hora y 1 día",
         data_reset_done = "Tracker reiniciado.",
         data_no_gold = "No se encontró tu valor de Gold.",
+        data_gold = "Oro",
+        data_goldblock = "Gold Blocks",
+        data_auto_farm = "Iniciar con el farmeo",
+        data_auto_farm_desc = "Inicia el tracker automáticamente cuando enciendes cualquier Auto Farm",
+        data_auto_started = "Tracker iniciado automáticamente.",
         data_webhook_section = "Webhook",
         data_webhook_url = "URL del webhook",
         data_webhook_url_ph = "https://discord.com/api/webhooks/...",
@@ -375,6 +569,152 @@ local Strings = {
         data_webhook_failed = "No se pudo enviar el webhook.",
         data_webhook_nourl = "Primero escribe una URL de webhook válida.",
         data_webhook_norequest = "Tu executor no soporta peticiones HTTP.",
+
+        bld_title = "Constructor",
+        bld_sec_auto = "Auto construcción",
+        bld_sec_adjust = "Posición, rotación y tamaño",
+        bld_sec_files = "Gestión de archivos",
+        bld_sec_image = "Cargador de imágenes",
+
+        bld_status = "Estado",
+        bld_status_idle = "En espera. Elige una construcción y pulsa Vista previa.",
+        bld_files = "Construcciones guardadas",
+        bld_files_desc = "Construcciones guardadas en FileStorage (o en la carpeta workspace del executor)",
+        bld_no_files = "No se encontraron construcciones",
+        bld_refresh = "Actualizar lista",
+        bld_preview = "Vista previa",
+        bld_preview_desc = "Muestra la construcción elegida como fantasma sobre tu plot",
+        bld_build = "Construir",
+        bld_build_desc = "Coloca los bloques de la vista previa automáticamente con tu inventario",
+        bld_stop = "Detener",
+        bld_stop_desc = "Cancela la construcción o la vista previa en curso",
+        bld_clear = "Quitar vista previa",
+        bld_speed = "Velocidad de construcción",
+        bld_speed_desc = "Bloques enviados por tick. Menos es más seguro",
+        bld_safe = "Modo seguro",
+        bld_safe_desc = "Coloca un bloque a la vez. Más lento pero el más fiable",
+
+        bld_move_step = "Paso de movimiento (studs)",
+        bld_move_up = "Mover arriba",
+        bld_move_down = "Mover abajo",
+        bld_move_right = "Mover a la derecha (+X)",
+        bld_move_left = "Mover a la izquierda (-X)",
+        bld_move_back = "Mover atrás (+Z)",
+        bld_move_forward = "Mover adelante (-Z)",
+        bld_center = "Centrar en el plot",
+        bld_center_desc = "Centra la construcción horizontalmente en tu plot (mantiene la altura)",
+        bld_rot_x = "Rotación X",
+        bld_rot_y = "Rotación Y",
+        bld_rot_z = "Rotación Z",
+        bld_scale = "Tamaño de la construcción (%)",
+        bld_scale_desc = "100 = tamaño original. Los bloques redimensionables escalan, los demás solo cambian de posición",
+        bld_scale_invalid = "Escribe un número entre 5 y 1000.",
+        bld_reset_adjust = "Reiniciar ajustes",
+        bld_reset_adjust_desc = "Regresa posición, rotación y tamaño al original",
+
+        bld_save_name = "Nombre del archivo",
+        bld_save_name_ph = "Mi barco",
+        bld_save_scope = "Guardar bloques de",
+        bld_scope_team = "Todo el equipo",
+        bld_scope_mine = "Solo mis bloques",
+        bld_save = "Guardar construcción",
+        bld_save_desc = "Guarda los bloques de tu plot en un archivo nuevo",
+        bld_rename_input = "Nuevo nombre",
+        bld_rename_input_ph = "Nuevo nombre del archivo",
+        bld_rename = "Renombrar seleccionado",
+        bld_update = "Actualizar seleccionado",
+        bld_update_desc = "Sobrescribe el archivo elegido con los bloques que hay ahora en tu plot",
+        bld_delete = "Eliminar seleccionado",
+
+        bld_need_fs = "Tu executor no soporta las funciones de archivos necesarias.",
+        bld_no_plot = "No se encontró el plot de tu equipo. Únete a un equipo primero.",
+        bld_no_data = "No se encontró tu inventario de bloques.",
+        bld_no_tool = "No se encontró %s. Equípala o déjala en tu mochila.",
+        bld_need_preview = "Carga una vista previa primero.",
+        bld_busy = "Hay otra tarea en curso. Detenla primero.",
+        bld_wait_preview = "La vista previa todavía se está cargando.",
+        bld_select_file = "Elige una construcción primero.",
+        bld_bad_file = "No se pudo leer el archivo o no es una construcción válida.",
+        bld_empty_file = "El archivo no tiene bloques válidos.",
+        bld_preview_ready = "Vista previa lista: %d bloques.",
+        bld_placing = "Colocando bloques: %d / %d",
+        bld_scaling = "Cambiando tamaño: %d / %d",
+        bld_painting = "Pintando bloques...",
+        bld_done = "Terminado: %d de %d bloques colocados.",
+        bld_skipped = "Omitidos: %d fuera del plot, %d sin bloques suficientes.",
+        bld_nothing = "No hay nada que colocar. Fuera del plot: %d, bloques faltantes: %d.",
+        bld_cancelled = "Cancelado.",
+        bld_failed = "La construcción falló. Revisa la consola.",
+        bld_place_failed = "El servidor no aceptó la colocación. Asegúrate de estar en tu plot y de tener la BuildingTool.",
+        bld_no_scale_tool = "No se encontró la ScalingTool: se omitió el cambio de tamaño.",
+        bld_no_paint_tool = "No se encontró la PaintingTool: se omitió el pintado.",
+        bld_cleared = "Vista previa eliminada.",
+        bld_type_name = "Escribe un nombre de archivo válido primero.",
+        bld_no_blocks = "No hay bloques para guardar.",
+        bld_cant_write = "No se pudo escribir el archivo.",
+        bld_saved = "Guardado: %s (%d bloques).",
+        bld_overwrite_title = "Sobrescribir archivo",
+        bld_overwrite_content = "Ya existe un archivo con ese nombre. ¿Quieres sobrescribirlo?",
+        bld_update_title = "Actualizar archivo",
+        bld_update_content = "¿Sobrescribir el archivo elegido con los bloques de tu plot?",
+        bld_updated = "Actualizado: %s (%d bloques).",
+        bld_exists = "Ya existe un archivo con ese nombre.",
+        bld_renamed = "Renombrado a: %s",
+        bld_delete_title = "Eliminar archivo",
+        bld_delete_content = "¿Seguro que quieres eliminar el archivo elegido? No se puede deshacer.",
+        bld_deleted = "Eliminado: %s",
+        bld_no_dialog = "No se pudo abrir el cuadro de confirmación. No se cambió nada.",
+
+        bld_img_link = "Enlace de la imagen",
+        bld_img_link_ph = "https://...png",
+        bld_img_res = "Resolución (AnchoxAlto)",
+        bld_img_res_ph = "64x64",
+        bld_img_res_set = "Resolución cambiada a %dx%d.",
+        bld_img_res_invalid = "Usa un formato como 64x64 (de 10 a 320).",
+        bld_img_block = "Tipo de bloque",
+        bld_img_size = "Tamaño del bloque (X Y Z)",
+        bld_img_size_ph = "2 2 2",
+        bld_img_size_set = "Tamaño de bloque cambiado a %s.",
+        bld_img_size_invalid = "Usa tres números como 2 2 2 (de 0.1 a 64).",
+        bld_img_preview = "Generar vista previa de la imagen",
+        bld_img_preview_desc = "Convierte la imagen en bloques y muestra la vista previa",
+        bld_img_build = "Construir imagen",
+        bld_img_build_desc = "Coloca la imagen de la vista previa con los bloques que tienes",
+        bld_img_note = "La imagen la convierte un servicio externo, así que tu enlace se le envía. Las resoluciones grandes crean muchísimos bloques.",
+        bld_img_bad_link = "Escribe un enlace de imagen válido (http o https).",
+        bld_img_loading = "Convirtiendo la imagen...",
+        bld_img_failed = "No se pudo convertir la imagen. Revisa el enlace.",
+        bld_img_ready = "Imagen lista: %d bloques (%dx%d).",
+        bld_img_many = "Esta imagen usa %d bloques. Puede tardar un rato.",
+
+        shop_section = "Cofres",
+        shop_chest_type = "Tipo de cofre",
+        shop_chest_type_desc = "Elige qué cofre quieres abrir",
+        shop_auto_open = "Auto abrir cofres",
+        shop_auto_open_desc = "Abre el cofre elegido una y otra vez hasta que lo apagues",
+        shop_delay = "Retraso (segundos)",
+        shop_delay_desc = "Tiempo entre cada cofre (mínimo 0.1)",
+        shop_no_remote = "No se encontró el remote de los cofres.",
+
+        quest_soon_title = "Próximamente",
+        quest_soon_desc = "Esta sección todavía no está lista. Estará disponible en próximas actualizaciones, ¡mantente atento!",
+
+        troll_section = "Visual",
+        troll_inf_gold = "Oro infinito [Visual]",
+        troll_inf_gold_desc = "Suma oro solo en tu pantalla (lado cliente). Al apagarlo se quita el oro que se agregó.",
+        troll_no_gold = "No se encontró tu valor de Gold.",
+
+        players_section = "Teletransporte a jugador",
+        players_list = "Jugadores",
+        players_list_desc = "Formato: usuario - nombre visible",
+        players_none = "No se encontraron jugadores",
+        players_refresh = "Actualizar lista",
+        players_tp = "Teletransportarme al jugador",
+        players_tp_desc = "Te teletransporta junto al jugador elegido",
+        players_select_first = "Elige un jugador primero.",
+        players_gone = "Ese jugador ya no está en el servidor.",
+        players_no_char = "No se encontró el personaje.",
+        players_teleported = "Teletransportado a %s.",
 
         ex_farm_section = "Utilidades de farmeo",
         ex_lockpos = "Bloquear posición",
@@ -423,6 +763,14 @@ local Strings = {
         ex_server_rejoin = "Reconectar al mismo servidor",
         ex_server_joining = "Entrando a un servidor con %d jugadores...",
         ex_server_none = "No se encontraron servidores disponibles.",
+
+        tp_section = "Equipos",
+        tp_team = "Seleccionar equipo",
+        tp_team_desc = "Elige la base del equipo a la que quieres ir",
+        tp_go = "Teletransportarme al equipo",
+        tp_go_desc = "Te teletransporta a la base del equipo elegido",
+        tp_no_char = "No se encontró tu personaje.",
+        tp_done = "Teletransportado a %s.",
 
         set_appearance = "Apariencia",
         set_theme = "Tema",
@@ -831,6 +1179,19 @@ local function findUser(list, userId)
     return nil
 end
 
+local function sendThenKick(title, status, color, reason, kickMessage)
+    local done = false
+    task.spawn(function()
+        Logger.send(title, status, color, reason)
+        done = true
+    end)
+    local start = os.clock()
+    while not done and os.clock() - start < 4 do
+        task.wait(0.1)
+    end
+    LocalPlayer:Kick(kickMessage)
+end
+
 local function isAllowedGame()
     if game.GameId ~= Config.AllowedGameId then
         return false
@@ -881,20 +1242,19 @@ else
 end
 
 if not isAllowedGame() then
-    Logger.send(
+    sendThenKick(
         "Unsupported Game Attempt",
         accessStatus,
         accessColor,
-        "Unsupported game (Place ID " .. tostring(game.PlaceId) .. ")"
+        "Unsupported game (Place ID " .. tostring(game.PlaceId) .. ")",
+        L("game_not_supported")
     )
-    LocalPlayer:Kick(L("game_not_supported"))
     return
 end
 
 if blacklistEntry then
     local reason = tostring(blacklistEntry.Reason or L("blacklisted"))
-    Logger.send(accessTitle, accessStatus, accessColor, reason)
-    LocalPlayer:Kick(reason)
+    sendThenKick(accessTitle, accessStatus, accessColor, reason, reason)
     return
 end
 
@@ -1307,22 +1667,42 @@ do
     local Farm = Tabs.Farm
 
     local CHEST_POSITION = Vector3.new(-53.337, -358.568, 9490.461)
-    local CHEST_WAIT = 3
+    local SPEED_START = Vector3.new(-43.148, 65.99, 825.943)
+    local STAGE_COUNT = 10
     local STAGE_TIMEOUT = 8
-
-    local TP_DWELL = 0.5
     local TP_JITTER = 2
     local TP_STEP = 40
+    local CLAIM_INTERVAL = 5
+    local CLAIM_DEBOUNCE = 1
+
+    local Cfg = {
+        flySpeed = 400,
+        tpDwell = 0.5,
+        chestWait = 3,
+        respawnDelay = 1.5,
+        pushSpeed = 390,
+        pushTime = 19,
+        autoClaim = true,
+    }
 
     local CaveFarm = {
         enabled = false,
         mode = nil,
-        speed = 400,
         token = 0,
         noclipConn = nil,
+        push = nil,
+    }
+
+    local Stats = {
+        runs = 0,
+        stage = 0,
+        state = "idle",
+        startedAt = 0,
     }
 
     local Toggles = {}
+    local ModeText = {}
+    local lastClaim = 0
 
     local function getRoot()
         local character = LocalPlayer.Character
@@ -1351,6 +1731,36 @@ do
         return nil
     end
 
+    local function claimGold()
+        if os.clock() - lastClaim < CLAIM_DEBOUNCE then
+            return
+        end
+        local remote = workspace:FindFirstChild("ClaimRiverResultsGold")
+        if not remote then
+            return
+        end
+        lastClaim = os.clock()
+        if remote:IsA("RemoteEvent") then
+            pcall(remote.FireServer, remote)
+        elseif remote:IsA("RemoteFunction") then
+            task.spawn(pcall, remote.InvokeServer, remote)
+        end
+    end
+
+    local function removePush()
+        if CaveFarm.push then
+            pcall(function()
+                CaveFarm.push:Destroy()
+            end)
+            CaveFarm.push = nil
+        end
+        local root = getRoot()
+        local stray = root and root:FindFirstChild("MysteryFarmPush")
+        if stray then
+            stray:Destroy()
+        end
+    end
+
     local function startNoclip()
         if CaveFarm.noclipConn then
             return
@@ -1372,6 +1782,9 @@ do
         CaveFarm.enabled = false
         CaveFarm.mode = nil
         CaveFarm.token = CaveFarm.token + 1
+        Stats.state = "idle"
+
+        removePush()
 
         if CaveFarm.noclipConn then
             CaveFarm.noclipConn:Disconnect()
@@ -1392,18 +1805,24 @@ do
         end
     end
 
-    local function startFarm(key, style, finish)
+    local function newRun(key)
         CaveFarm.token = CaveFarm.token + 1
         local token = CaveFarm.token
         CaveFarm.enabled = true
         CaveFarm.mode = key
+        Stats.runs = 0
+        Stats.stage = 0
+        Stats.state = "waiting"
+        Stats.startedAt = os.clock()
         startNoclip()
 
-        local function active()
+        local run = {}
+
+        function run.active()
             return CaveFarm.enabled and CaveFarm.token == token and isAlive()
         end
 
-        local function freeze(character)
+        function run.freeze(character)
             local root = character and character:FindFirstChild("HumanoidRootPart")
             if root then
                 root.AssemblyLinearVelocity = Vector3.zero
@@ -1411,18 +1830,48 @@ do
             end
         end
 
-        local function waitForSpawn(oldCharacter, delay)
-            while active() do
+        function run.waitForSpawn(oldCharacter)
+            Stats.state = "waiting"
+            Stats.stage = 0
+            while run.active() do
                 local root, character = getRoot()
                 if root and character ~= oldCharacter and isCharacterAlive(character) then
                     break
                 end
                 task.wait(0.2)
             end
-            if active() then
-                task.wait(delay or 1.5)
+            if run.active() then
+                task.wait(Cfg.respawnDelay)
             end
         end
+
+        function run.killCharacter(character)
+            local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+            if humanoid then
+                humanoid.PlatformStand = false
+                humanoid.Health = 0
+            elseif character then
+                pcall(function()
+                    character:BreakJoints()
+                end)
+            end
+        end
+
+        function run.stopAll()
+            stopFarm()
+            for _, toggle in pairs(Toggles) do
+                pcall(function()
+                    toggle:Set(false)
+                end)
+            end
+        end
+
+        return run
+    end
+
+    local function startStageFarm(key, style, finish)
+        local run = newRun(key)
+        local active = run.active
 
         local function waitForStage(index, character)
             local deadline = os.clock() + STAGE_TIMEOUT
@@ -1438,7 +1887,7 @@ do
                 if humanoid then
                     humanoid.PlatformStand = true
                 end
-                freeze(character)
+                run.freeze(character)
                 task.wait(0.1)
             end
             return nil
@@ -1465,7 +1914,7 @@ do
 
                     local diff = position - root.Position
                     local distance = diff.Magnitude
-                    local step = CaveFarm.speed * dt
+                    local step = Cfg.flySpeed * dt
 
                     root.AssemblyLinearVelocity = Vector3.zero
                     root.AssemblyAngularVelocity = Vector3.zero
@@ -1512,7 +1961,7 @@ do
                     else
                         if not dwellUntil then
                             local pingSeconds = Util.getPing() / 1000
-                            dwellUntil = os.clock() + TP_DWELL + pingSeconds * 2
+                            dwellUntil = os.clock() + Cfg.tpDwell + pingSeconds * 2
                         end
 
                         frame = frame + 1
@@ -1556,38 +2005,23 @@ do
             end
         end
 
-        local function killCharacter(character)
-            local humanoid = character and character:FindFirstChildOfClass("Humanoid")
-            if humanoid then
-                humanoid.PlatformStand = false
-                humanoid.Health = 0
-            elseif character then
-                pcall(function()
-                    character:BreakJoints()
-                end)
-            end
-        end
-
-        local function stopAll()
-            stopFarm()
-            for _, toggle in pairs(Toggles) do
-                pcall(function()
-                    toggle:Set(false)
-                end)
-            end
-        end
-
         task.spawn(function()
             while active() do
-                waitForSpawn(nil, 1.5)
+                run.waitForSpawn(nil)
                 if not active() then
                     return
                 end
 
+                if Cfg.autoClaim then
+                    claimGold()
+                end
+
                 local _, character = getRoot()
                 local result = "ok"
+                Stats.state = "stages"
 
-                for index = 1, 10 do
+                for index = 1, STAGE_COUNT do
+                    Stats.stage = index
                     local target = waitForStage(index, character)
 
                     if not active() then
@@ -1626,15 +2060,16 @@ do
 
                 if result == "nostages" then
                     Util.notify(L("farm_section"), L("farm_missing"), "triangle-alert")
-                    stopAll()
+                    run.stopAll()
                     return
                 elseif result == "died" then
-                    waitForSpawn(character, 1.5)
+                    run.waitForSpawn(character)
                 elseif result == "missing" then
-                    killCharacter(character)
-                    waitForSpawn(character, 1.5)
+                    run.killCharacter(character)
+                    run.waitForSpawn(character)
                 else
                     if finish == "chest" then
+                        Stats.state = "chest"
                         local flight = moveTo(function()
                             return CHEST_POSITION
                         end, character)
@@ -1643,23 +2078,88 @@ do
                             return
                         end
                         if flight == "ok" then
-                            holdAt(CHEST_POSITION, CHEST_WAIT, character)
+                            holdAt(CHEST_POSITION, Cfg.chestWait, character)
                         end
                         if not active() then
                             return
                         end
                     end
 
-                    if isCharacterAlive(character) then
-                        killCharacter(character)
+                    Stats.runs = Stats.runs + 1
+                    if Cfg.autoClaim then
+                        claimGold()
                     end
-                    waitForSpawn(character, 1.5)
+
+                    if isCharacterAlive(character) then
+                        run.killCharacter(character)
+                    end
+                    run.waitForSpawn(character)
                 end
             end
         end)
     end
 
-    local function setMode(key, style, finish, state)
+    local function startSpeedFarm(key)
+        local run = newRun(key)
+        local active = run.active
+
+        task.spawn(function()
+            while active() do
+                run.waitForSpawn(nil)
+                if not active() then
+                    return
+                end
+
+                if Cfg.autoClaim then
+                    claimGold()
+                end
+
+                local root, character = getRoot()
+                local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+
+                if root and humanoid and isCharacterAlive(character) then
+                    Stats.state = "speed"
+
+                    humanoid.PlatformStand = true
+                    root.AssemblyLinearVelocity = Vector3.zero
+                    root.AssemblyAngularVelocity = Vector3.zero
+                    root.CFrame = CFrame.new(SPEED_START)
+
+                    removePush()
+                    local push = Instance.new("BodyVelocity")
+                    push.Name = "MysteryFarmPush"
+                    push.MaxForce = Vector3.new(9e9, 9e9, 9e9)
+                    push.Velocity = Vector3.new(0, 0, Cfg.pushSpeed)
+                    push.Parent = root
+                    CaveFarm.push = push
+
+                    local untilTime = os.clock() + Cfg.pushTime
+                    while active() and os.clock() < untilTime and isCharacterAlive(character) do
+                        push.Velocity = Vector3.new(0, 0, Cfg.pushSpeed)
+                        RunService.Heartbeat:Wait()
+                    end
+
+                    removePush()
+                    if not active() then
+                        return
+                    end
+
+                    if isCharacterAlive(character) then
+                        Stats.runs = Stats.runs + 1
+                        if Cfg.autoClaim then
+                            claimGold()
+                        end
+                        run.killCharacter(character)
+                    end
+                    run.waitForSpawn(character)
+                else
+                    task.wait(0.5)
+                end
+            end
+        end)
+    end
+
+    local function setMode(key, state, starter)
         if state then
             if CaveFarm.mode and CaveFarm.mode ~= key then
                 stopFarm()
@@ -1671,71 +2171,142 @@ do
                     end)
                 end
             end
-            startFarm(key, style, finish)
+            starter()
         elseif CaveFarm.mode == key then
             stopFarm()
         end
     end
 
+    local function addFarmToggle(key, flag, textKey, starter)
+        local toggle = Farm:Toggle({
+            Title = L(textKey),
+            Desc = L(textKey .. "_desc"),
+            Value = false,
+            Callback = function(state)
+                setMode(key, state, starter)
+            end,
+        })
+        Toggles[key] = toggle
+        ModeText[key] = textKey
+        Util.register(flag, toggle)
+    end
+
+    local function addNumberInput(flag, textKey, placeholder, min, max, apply)
+        local input = Farm:Input({
+            Title = L(textKey),
+            Desc = L(textKey .. "_desc"),
+            Placeholder = placeholder,
+            Value = "",
+            Callback = function(text)
+                local n = tonumber(text)
+                if n then
+                    apply(math.clamp(n, min, max))
+                end
+            end,
+        })
+        Util.register(flag, input)
+    end
+
+    local StatusParagraph = Farm:Paragraph({
+        Title = L("farm_status_title"),
+        Desc = L("farm_status_idle"),
+    })
+    local setStatus = Util.makeSetter(StatusParagraph)
+
     Farm:Section({ Title = L("farm_section") })
 
-    Farm:Input({
-        Title = L("farm_speed_input"),
-        Placeholder = L("farm_speed_ph"),
-        Value = "",
-        Callback = function(text)
-            local n = tonumber(text)
-            if n then
-                CaveFarm.speed = math.clamp(n, 10, 1000)
-            end
-        end,
-    })
+    addFarmToggle("fly_normal", "farm_cave_stages", "farm_cave", function()
+        startStageFarm("fly_normal", "fly", "normal")
+    end)
 
-    Toggles.fly_normal = Farm:Toggle({
-        Title = L("farm_cave"),
-        Desc = L("farm_cave_desc"),
-        Value = false,
-        Callback = function(state)
-            setMode("fly_normal", "fly", "normal", state)
-        end,
-    })
-    Util.register("farm_cave_stages", Toggles.fly_normal)
-
-    Toggles.fly_chest = Farm:Toggle({
-        Title = L("farm_chest"),
-        Desc = L("farm_chest_desc"),
-        Value = false,
-        Callback = function(state)
-            setMode("fly_chest", "fly", "chest", state)
-        end,
-    })
-    Util.register("farm_chest_stages", Toggles.fly_chest)
+    addFarmToggle("fly_chest", "farm_chest_stages", "farm_chest", function()
+        startStageFarm("fly_chest", "fly", "chest")
+    end)
 
     Farm:Section({ Title = L("farm_tp_section") })
 
-    Toggles.tp_normal = Farm:Toggle({
-        Title = L("farm_tp_stages"),
-        Desc = L("farm_tp_stages_desc"),
-        Value = false,
-        Callback = function(state)
-            setMode("tp_normal", "tp", "normal", state)
-        end,
-    })
-    Util.register("farm_tp_stages", Toggles.tp_normal)
+    addFarmToggle("tp_normal", "farm_tp_stages", "farm_tp_stages", function()
+        startStageFarm("tp_normal", "tp", "normal")
+    end)
 
-    Toggles.tp_chest = Farm:Toggle({
-        Title = L("farm_tp_chest"),
-        Desc = L("farm_tp_chest_desc"),
-        Value = false,
+    addFarmToggle("tp_chest", "farm_tp_chest", "farm_tp_chest", function()
+        startStageFarm("tp_chest", "tp", "chest")
+    end)
+
+    Farm:Section({ Title = L("farm_fast_section") })
+
+    addFarmToggle("fast", "farm_fast", "farm_fast", function()
+        startSpeedFarm("fast")
+    end)
+
+    Farm:Section({ Title = L("farm_settings_section") })
+
+    local AutoClaimToggle = Farm:Toggle({
+        Title = L("farm_autoclaim"),
+        Desc = L("farm_autoclaim_desc"),
+        Value = true,
         Callback = function(state)
-            setMode("tp_chest", "tp", "chest", state)
+            Cfg.autoClaim = state
         end,
     })
-    Util.register("farm_tp_chest", Toggles.tp_chest)
+    Util.register("farm_autoclaim", AutoClaimToggle)
+
+    addNumberInput("farm_fly_speed", "farm_speed_input", L("farm_speed_ph"), 10, 1000, function(value)
+        Cfg.flySpeed = value
+    end)
+    addNumberInput("farm_tp_dwell", "farm_tp_dwell", "0.5", 0.1, 5, function(value)
+        Cfg.tpDwell = value
+    end)
+    addNumberInput("farm_chest_wait", "farm_chest_wait", "3", 0.5, 10, function(value)
+        Cfg.chestWait = value
+    end)
+    addNumberInput("farm_respawn_delay", "farm_respawn_delay", "1.5", 0.5, 10, function(value)
+        Cfg.respawnDelay = value
+    end)
+    addNumberInput("farm_push_speed", "farm_push_speed", "390", 100, 500, function(value)
+        Cfg.pushSpeed = value
+    end)
+    addNumberInput("farm_push_time", "farm_push_time", "19", 5, 60, function(value)
+        Cfg.pushTime = value
+    end)
+
+    local STATE_TEXT = {
+        waiting = "farm_state_waiting",
+        stages = "farm_state_stages",
+        chest = "farm_state_chest",
+        speed = "farm_state_speed",
+    }
+
+    local function buildStatus()
+        local lines = {
+            L("farm_status_mode") .. ": " .. L(ModeText[CaveFarm.mode] or "farm_status_idle"),
+            L("farm_status_state") .. ": " .. L(STATE_TEXT[Stats.state] or "farm_state_waiting"),
+        }
+        if CaveFarm.mode ~= "fast" and Stats.stage > 0 then
+            table.insert(lines, L("farm_status_stage") .. ": " .. Stats.stage .. "/" .. STAGE_COUNT)
+        end
+        table.insert(lines, L("farm_status_runs") .. ": " .. Stats.runs)
+        table.insert(lines, L("farm_status_time") .. ": " .. Util.formatTime(os.clock() - Stats.startedAt))
+        return table.concat(lines, "\n")
+    end
+
+    task.spawn(function()
+        while isAlive() do
+            task.wait(CLAIM_INTERVAL)
+            if Cfg.autoClaim and CaveFarm.enabled then
+                claimGold()
+            end
+        end
+    end)
 
     task.spawn(function()
         while isAlive() do
             task.wait(1)
+            if CaveFarm.enabled and CaveFarm.mode then
+                setStatus(buildStatus())
+            else
+                setStatus(L("farm_status_idle"))
+            end
         end
         pcall(stopFarm)
     end)
@@ -1750,15 +2321,30 @@ do
     local WEBHOOK_COLOR = 0x170158
     local WEBHOOK_IMAGE = "https://raw.githubusercontent.com/Mystery-Center/Mystery-Media/main/Mystery%20Notificaciones%20Imagen.png"
 
+    local FARM_FLAGS = {
+        "farm_cave_stages",
+        "farm_chest_stages",
+        "farm_tp_stages",
+        "farm_tp_chest",
+        "farm_fast",
+    }
+
+    local function newBlock()
+        return { elapsed = 0, gold = 0, blocks = 0, done = false }
+    end
+
     local Tracker = {
         running = false,
         elapsed = 0,
-        gained = 0,
+        gold = 0,
+        blocks = 0,
         lastGold = 0,
+        lastBlocks = 0,
         lastTick = 0,
-        hour = { elapsed = 0, gained = 0, done = false },
-        day = { elapsed = 0, gained = 0, done = false },
+        hour = newBlock(),
+        day = newBlock(),
         autoSend = false,
+        autoStart = true,
         sending = false,
     }
 
@@ -1789,7 +2375,7 @@ do
         return nil
     end
 
-    local function formatGold(number)
+    local function formatNumber(number)
         number = math.floor(number or 0)
         local short = abbreviate(number)
         if short then
@@ -1798,32 +2384,48 @@ do
         return withCommas(number)
     end
 
-    local function getGoldObject()
+    local function getDataValue(name)
         local data = LocalPlayer:FindFirstChild("Data")
-        return data and data:FindFirstChild("Gold")
+        return data and data:FindFirstChild(name)
+    end
+
+    local function getGoldObject()
+        return getDataValue("Gold")
+    end
+
+    local function getBlockObject()
+        return getDataValue("GoldBlock")
     end
 
     local function getRates()
         if Tracker.elapsed < MIN_SECONDS_FOR_RATE then
             return nil
         end
-        local perHour = Tracker.gained / Tracker.elapsed * 3600
+        local goldHour = Tracker.gold / Tracker.elapsed * 3600
+        local blockHour = Tracker.blocks / Tracker.elapsed * 3600
         return {
-            hour = perHour,
-            day = perHour * 24,
-            week = perHour * 24 * 7,
-            month = perHour * 24 * 30,
+            hour = { gold = goldHour, blocks = blockHour },
+            day = { gold = goldHour * 24, blocks = blockHour * 24 },
+            week = { gold = goldHour * 24 * 7, blocks = blockHour * 24 * 7 },
+            month = { gold = goldHour * 24 * 30, blocks = blockHour * 24 * 30 },
         }
+    end
+
+    local function rateLine(label, rate)
+        return label .. ": "
+            .. formatNumber(rate.gold) .. " " .. L("data_gold")
+            .. " | "
+            .. formatNumber(rate.blocks) .. " " .. L("data_goldblock")
     end
 
     local function buildCalcText()
         local rates = getRates()
         local lines = {}
         if rates then
-            table.insert(lines, L("data_per_hour") .. ": " .. formatGold(rates.hour))
-            table.insert(lines, L("data_per_day") .. ": " .. formatGold(rates.day))
-            table.insert(lines, L("data_per_week") .. ": " .. formatGold(rates.week))
-            table.insert(lines, L("data_per_month") .. ": " .. formatGold(rates.month))
+            table.insert(lines, rateLine(L("data_per_hour"), rates.hour))
+            table.insert(lines, rateLine(L("data_per_day"), rates.day))
+            table.insert(lines, rateLine(L("data_per_week"), rates.week))
+            table.insert(lines, rateLine(L("data_per_month"), rates.month))
         else
             table.insert(lines, L("data_calculating"))
         end
@@ -1834,14 +2436,16 @@ do
 
     local function buildGainedText()
         return table.concat({
-            L("data_gained") .. ": " .. formatGold(Tracker.gained),
+            L("data_gold") .. ": " .. formatNumber(Tracker.gold),
+            L("data_goldblock") .. ": " .. formatNumber(Tracker.blocks),
             L("data_elapsed") .. ": " .. Util.formatTime(Tracker.elapsed),
         }, "\n")
     end
 
     local function buildBlockText(block, limit)
         return table.concat({
-            L("data_gained") .. ": " .. formatGold(block.gained),
+            L("data_gold") .. ": " .. formatNumber(block.gold),
+            L("data_goldblock") .. ": " .. formatNumber(block.blocks),
             L("data_time") .. ": " .. Util.formatTime(block.elapsed) .. " / " .. Util.formatTime(limit),
             L("data_status") .. ": " .. (block.done and L("data_status_frozen") or L("data_status_counting")),
         }, "\n")
@@ -1871,6 +2475,10 @@ do
             day = "1 Day Completed",
         }
 
+        local function status(block)
+            return block.done and " (frozen)" or " (counting)"
+        end
+
         local rates = getRates()
         local lines = {
             "**Player**",
@@ -1878,26 +2486,34 @@ do
             "",
             "**Session**",
             "Elapsed: " .. Util.formatTime(Tracker.elapsed),
-            "Gained = " .. formatGold(Tracker.gained),
+            "Gold = " .. formatNumber(Tracker.gold),
+            "Gold Blocks = " .. formatNumber(Tracker.blocks),
             "",
             "**Estimated (approximate)**",
         }
 
         if rates then
-            table.insert(lines, "Per hour = " .. formatGold(rates.hour))
-            table.insert(lines, "Per day = " .. formatGold(rates.day))
-            table.insert(lines, "Per week = " .. formatGold(rates.week))
-            table.insert(lines, "Per month = " .. formatGold(rates.month))
+            for _, item in ipairs({
+                { "Per hour", rates.hour },
+                { "Per day", rates.day },
+                { "Per week", rates.week },
+                { "Per month", rates.month },
+            }) do
+                table.insert(lines, item[1] .. " = " .. formatNumber(item[2].gold)
+                    .. " Gold | " .. formatNumber(item[2].blocks) .. " Gold Blocks")
+            end
         else
             table.insert(lines, "Not enough data yet")
         end
 
         table.insert(lines, "")
-        table.insert(lines, "**1 Hour**")
-        table.insert(lines, "Gained = " .. formatGold(Tracker.hour.gained) .. (Tracker.hour.done and " (frozen)" or " (counting)"))
+        table.insert(lines, "**1 Hour**" .. status(Tracker.hour))
+        table.insert(lines, "Gold = " .. formatNumber(Tracker.hour.gold))
+        table.insert(lines, "Gold Blocks = " .. formatNumber(Tracker.hour.blocks))
         table.insert(lines, "")
-        table.insert(lines, "**1 Day**")
-        table.insert(lines, "Gained = " .. formatGold(Tracker.day.gained) .. (Tracker.day.done and " (frozen)" or " (counting)"))
+        table.insert(lines, "**1 Day**" .. status(Tracker.day))
+        table.insert(lines, "Gold = " .. formatNumber(Tracker.day.gold))
+        table.insert(lines, "Gold Blocks = " .. formatNumber(Tracker.day.blocks))
 
         local payload = {
             username = Config.HubName,
@@ -1946,13 +2562,14 @@ do
         end
     end
 
-    local function advanceBlock(block, limit, dt, delta, kind)
+    local function advanceBlock(block, limit, dt, deltaGold, deltaBlocks, kind)
         if block.done then
             return
         end
 
         block.elapsed = block.elapsed + dt
-        block.gained = block.gained + delta
+        block.gold = block.gold + deltaGold
+        block.blocks = block.blocks + deltaBlocks
 
         if block.elapsed >= limit then
             block.elapsed = limit
@@ -1963,36 +2580,66 @@ do
         end
     end
 
+    local function snapshotValues()
+        local goldObject = getGoldObject()
+        local blockObject = getBlockObject()
+        Tracker.lastGold = goldObject and goldObject.Value or 0
+        Tracker.lastBlocks = blockObject and blockObject.Value or 0
+        Tracker.lastTick = os.clock()
+    end
+
     local function trackerTick()
         local goldObject = getGoldObject()
         if not goldObject then
             return
         end
+        local blockObject = getBlockObject()
 
         local now = os.clock()
         local dt = now - Tracker.lastTick
         Tracker.lastTick = now
 
-        local value = goldObject.Value
-        local delta = math.max(value - Tracker.lastGold, 0)
-        Tracker.lastGold = value
+        local goldValue = goldObject.Value
+        local deltaGold = math.max(goldValue - Tracker.lastGold, 0)
+        Tracker.lastGold = goldValue
+
+        local deltaBlocks = 0
+        if blockObject then
+            local blockValue = blockObject.Value
+            deltaBlocks = math.max(blockValue - Tracker.lastBlocks, 0)
+            Tracker.lastBlocks = blockValue
+        end
 
         Tracker.elapsed = Tracker.elapsed + dt
-        Tracker.gained = Tracker.gained + delta
+        Tracker.gold = Tracker.gold + deltaGold
+        Tracker.blocks = Tracker.blocks + deltaBlocks
 
-        advanceBlock(Tracker.hour, HOUR_SECONDS, dt, delta, "hour")
-        advanceBlock(Tracker.day, DAY_SECONDS, dt, delta, "day")
+        advanceBlock(Tracker.hour, HOUR_SECONDS, dt, deltaGold, deltaBlocks, "hour")
+        advanceBlock(Tracker.day, DAY_SECONDS, dt, deltaGold, deltaBlocks, "day")
     end
 
     local function resetTracker()
         Tracker.elapsed = 0
-        Tracker.gained = 0
-        Tracker.hour = { elapsed = 0, gained = 0, done = false }
-        Tracker.day = { elapsed = 0, gained = 0, done = false }
+        Tracker.gold = 0
+        Tracker.blocks = 0
+        Tracker.hour = newBlock()
+        Tracker.day = newBlock()
+        snapshotValues()
+    end
 
-        local goldObject = getGoldObject()
-        Tracker.lastGold = goldObject and goldObject.Value or 0
-        Tracker.lastTick = os.clock()
+    local function isFarmActive()
+        for _, flag in ipairs(FARM_FLAGS) do
+            local element = Registry[flag]
+            if element then
+                local ok, value = pcall(function()
+                    return element.Value
+                end)
+                if ok and value == true then
+                    return true
+                end
+            end
+        end
+        return false
     end
 
     Data:Section({ Title = L("data_calc_section") })
@@ -2011,8 +2658,7 @@ do
         Value = false,
         Callback = function(state)
             if state then
-                local goldObject = getGoldObject()
-                if not goldObject then
+                if not getGoldObject() then
                     Util.notify(L("error"), L("data_no_gold"), "triangle-alert")
                     task.defer(function()
                         pcall(function()
@@ -2021,8 +2667,7 @@ do
                     end)
                     return
                 end
-                Tracker.lastGold = goldObject.Value
-                Tracker.lastTick = os.clock()
+                snapshotValues()
                 Tracker.running = true
             else
                 Tracker.running = false
@@ -2030,6 +2675,16 @@ do
         end,
     })
     Util.register("data_tracker", TrackerToggle)
+
+    local AutoStartToggle = Data:Toggle({
+        Title = L("data_auto_farm"),
+        Desc = L("data_auto_farm_desc"),
+        Value = true,
+        Callback = function(state)
+            Tracker.autoStart = state
+        end,
+    })
+    Util.register("data_auto_start", AutoStartToggle)
 
     local GainedParagraph = Data:Paragraph({
         Title = L("data_gained_title"),
@@ -2101,9 +2756,30 @@ do
 
     pcall(render)
 
+    local function checkAutoStart(farmWasActive)
+        local active = isFarmActive()
+
+        if active and not farmWasActive and Tracker.autoStart and not Tracker.running then
+            pcall(function()
+                TrackerToggle:Set(true)
+            end)
+            if not Tracker.running and getGoldObject() then
+                snapshotValues()
+                Tracker.running = true
+            end
+            if Tracker.running then
+                Util.notify(L("data_tracker_section"), L("data_auto_started"), "check")
+            end
+        end
+
+        return active
+    end
+
     task.spawn(function()
+        local farmWasActive = false
         while isAlive() do
             task.wait(1)
+            farmWasActive = checkAutoStart(farmWasActive)
             if Tracker.running then
                 pcall(trackerTick)
             end
@@ -2116,22 +2792,2141 @@ end
 
 do
     local Builder = Tabs.Builder
+
+    local FILE_DIR = "FileStorage/"
+    local FILE_EXT = ".Build"
+    local PREVIEW_NAME = "MysteryBuildPreview"
+
+    local DEFAULT_SIZE = Vector3.new(2, 2, 2)
+    local SIZE_EPSILON = 0.001
+    local COLOR_EPSILON = 0.003
+    local MATCH_DISTANCE = 1
+
+    local MIN_DIM = 0.1
+    local MAX_DIM = 64
+    local MIN_SCALE = 5
+    local MAX_SCALE = 1000
+
+    local IMAGE_API = "https://mystery-image.onrender.com/"
+    local IMAGE_MIN_RES = 10
+    local IMAGE_MAX_RES = 320
+    local IMAGE_LIFT = 10
+    local IMAGE_WARN_BLOCKS = 5000
+
+    local TICK_DELAY = 0.1
+    local SAFE_DELAY = 0.05
+    local SETTLE_TIMEOUT = 8
+    local STALL_TIMEOUT = 15
+    local CALIBRATE_TIMEOUT = 3
+    local PAINT_CHUNK = 250
+    local YIELD_EVERY = 100
+    local REFRESH_INTERVAL = 0.1
+    local HIGHLIGHT_LIMIT = 2000
+
+    local BLOCK_NAMES = {
+        "PlasticBlock", "WoodBlock", "SmoothWoodBlock", "StoneBlock", "ConcreteBlock",
+        "BrickBlock", "MetalBlock", "TitaniumBlock", "RustedBlock", "ObsidianBlock",
+        "MarbleBlock", "GlassBlock", "IceBlock", "NeonBlock", "SandBlock",
+        "GrassBlock", "CoalBlock", "CaneBlock", "FabricBlock", "ToyBlock",
+        "BouncyBlock", "BalloonBlock", "BalloonStarBlock", "ParachuteBlock", "GoldBlock",
+    }
+
+    local SIGNATURES = {
+        function(name, count, flag, cf)
+            return name, count, nil, nil, flag, 1, cf
+        end,
+        function(name, count, _, cf)
+            return name, count, nil, nil, true, cf, false
+        end,
+    }
+
+    local State = {
+        busy = false,
+        cancel = false,
+        previewing = false,
+        dirty = false,
+        gen = 0,
+        signature = nil,
+
+        entries = {},
+        pieces = {},
+        center = Vector3.zero,
+
+        offset = Vector3.zero,
+        rot = Vector3.zero,
+        scale = 1,
+        moveStep = 1,
+
+        speed = 8,
+        safe = false,
+
+        fileMap = {},
+        selectedFile = nil,
+        saveName = "",
+        newName = "",
+        scope = "team",
+
+        image = {
+            link = "",
+            resX = 64,
+            resY = 64,
+            block = "PlasticBlock",
+            size = DEFAULT_SIZE,
+        },
+    }
+
+    local Status = {
+        set = function() end,
+    }
+
+    local FilesDropdown
+
+    local hasFs = type(writefile) == "function"
+        and type(readfile) == "function"
+        and type(listfiles) == "function"
+        and type(isfile) == "function"
+        and type(delfile) == "function"
+        and type(isfolder) == "function"
+        and type(makefolder) == "function"
+
+    local function notifyError(message)
+        Util.notify(L("error"), message, "triangle-alert")
+    end
+
+    local function notifyInfo(message, icon)
+        Util.notify(L("bld_title"), message, icon or "check")
+    end
+
+    local function requireFs()
+        if not hasFs then
+            notifyError(L("bld_need_fs"))
+            return false
+        end
+        return true
+    end
+
+    local function getParts()
+        return ReplicatedStorage:FindFirstChild("BuildingParts")
+    end
+
+    local function getPlot()
+        return workspace:FindFirstChild(LocalPlayer.TeamColor.Name .. "Zone")
+    end
+
+    local function findToolRemote(toolName)
+        local containers = { LocalPlayer:FindFirstChild("Backpack"), LocalPlayer.Character }
+        for index = 1, 2 do
+            local container = containers[index]
+            local tool = container and container:FindFirstChild(toolName)
+            local remote = tool and tool:FindFirstChild("RF")
+            if remote then
+                return remote, tool
+            end
+        end
+        return nil, nil
+    end
+
+    local function makeZoneChecker(plot, tool)
+        local envCheck
+        pcall(function()
+            local script = tool and tool:FindFirstChild("LocalScript")
+            local env = script and getsenv(script)
+            if env and type(env.isPartInZone) == "function" then
+                envCheck = env.isPartInZone
+            end
+        end)
+
+        local half = plot.Size / 2
+        local function fallback(cf)
+            local rel = plot.CFrame:PointToObjectSpace(cf.Position)
+            return math.abs(rel.X) <= half.X and math.abs(rel.Y) <= half.Y and math.abs(rel.Z) <= half.Z
+        end
+
+        return function(cf)
+            if envCheck then
+                local ok, result = pcall(envCheck, cf, plot)
+                if ok then
+                    return result and true or false
+                end
+            end
+            return fallback(cf)
+        end
+    end
+
+    local function blockCost(size)
+        if size then
+            return math.ceil(size.X * size.Y * size.Z / 8 + 0.5)
+        end
+        return 1
+    end
+
+    local function formatSize(bytes)
+        if bytes < 1024 then
+            return string.format("%d B", bytes)
+        elseif bytes < 1048576 then
+            return string.format("%.1f KB", bytes / 1024)
+        end
+        return string.format("%.1f MB", bytes / 1048576)
+    end
+
+    local function confirm(title, content, onYes)
+        local ok = pcall(function()
+            Window:Dialog({
+                Icon = "triangle-alert",
+                Title = title,
+                Content = content,
+                Buttons = {
+                    {
+                        Title = L("yes"),
+                        Callback = function()
+                            task.spawn(onYes)
+                        end,
+                    },
+                    {
+                        Title = L("no"),
+                        Callback = function() end,
+                    },
+                },
+            })
+        end)
+        if not ok then
+            notifyError(L("bld_no_dialog"))
+        end
+    end
+
+    local function parseVec3(value)
+        if typeof(value) == "Vector3" then
+            return value
+        end
+        if type(value) ~= "string" then
+            return nil
+        end
+        local a, b, c = string.match(value, "^%s*([^,%s]+)%s*,%s*([^,%s]+)%s*,%s*([^,%s]+)%s*$")
+        a, b, c = tonumber(a), tonumber(b), tonumber(c)
+        if a and b and c then
+            return Vector3.new(a, b, c)
+        end
+        return nil
+    end
+
+    local function toColor(vector)
+        return Color3.new(
+            math.clamp(vector.X, 0, 1),
+            math.clamp(vector.Y, 0, 1),
+            math.clamp(vector.Z, 0, 1)
+        )
+    end
+
+    local function anglesToCFrame(degrees)
+        return CFrame.Angles(math.rad(degrees.X), math.rad(degrees.Y), math.rad(degrees.Z))
+    end
+
+    local function entryFromItem(name, item)
+        if type(item) ~= "table" then
+            return nil
+        end
+        local position = parseVec3(item.Position)
+        if not position then
+            return nil
+        end
+        local rotation = parseVec3(item.Rotation) or Vector3.zero
+
+        local entry = {
+            name = name,
+            cf = CFrame.new(position) * anglesToCFrame(rotation),
+            toolFlag = item.Anchored == nil,
+        }
+
+        local color = parseVec3(item.Color)
+        if color then
+            entry.color = toColor(color)
+        end
+
+        local size = parseVec3(item.Size)
+        if size and (size - DEFAULT_SIZE).Magnitude > SIZE_EPSILON then
+            entry.size = size
+        end
+
+        return entry
+    end
+
+    local function decodeLegacy(text, parts)
+        local entries = {}
+        local origin = CFrame.new(0, -17.9999924, 0)
+
+        for chunk in string.gmatch(text, "[^/]+") do
+            local fields = string.split(chunk, ":")
+            local name = fields[5]
+            if #fields >= 5 and name and parts:FindFirstChild(name) then
+                local position = parseVec3(fields[1])
+                local angles = parseVec3(fields[2])
+                if position and angles then
+                    local world = CFrame.new(position) * anglesToCFrame(angles)
+                    local entry = {
+                        name = name,
+                        cf = origin:ToObjectSpace(world),
+                        toolFlag = false,
+                    }
+                    if fields[3] and fields[3] ~= "-" then
+                        local color = parseVec3(fields[3])
+                        if color then
+                            entry.color = toColor(color)
+                        end
+                    end
+                    if fields[4] and fields[4] ~= "-" then
+                        local size = parseVec3(fields[4])
+                        if size and (size - DEFAULT_SIZE).Magnitude > SIZE_EPSILON then
+                            entry.size = size
+                        end
+                    end
+                    table.insert(entries, entry)
+                end
+            end
+        end
+
+        return entries
+    end
+
+    local function decodeBuild(text)
+        if type(text) ~= "string" then
+            return nil, "invalid"
+        end
+        local trimmed = string.match(text, "^%s*(.-)%s*$")
+        if trimmed == "" then
+            return nil, "empty"
+        end
+
+        local parts = getParts()
+        if not parts then
+            return nil, "invalid"
+        end
+
+        local entries = {}
+
+        if string.sub(trimmed, 1, 1) == "{" then
+            local ok, data = pcall(function()
+                return HttpService:JSONDecode(trimmed)
+            end)
+            if not ok or type(data) ~= "table" then
+                return nil, "invalid"
+            end
+            local processed = 0
+            for name, list in pairs(data) do
+                if type(list) == "table" and parts:FindFirstChild(name) then
+                    for _, item in ipairs(list) do
+                        local entry = entryFromItem(name, item)
+                        if entry then
+                            table.insert(entries, entry)
+                        end
+                        processed = processed + 1
+                        if processed % 2000 == 0 then
+                            task.wait()
+                        end
+                    end
+                end
+            end
+        elseif string.find(trimmed, ":", 1, true) then
+            entries = decodeLegacy(trimmed, parts)
+        else
+            return nil, "invalid"
+        end
+
+        if #entries == 0 then
+            return nil, "empty"
+        end
+        return entries
+    end
+
+    local function colorsClose(a, b)
+        return math.abs(a.R - b.R) < COLOR_EPSILON
+            and math.abs(a.G - b.G) < COLOR_EPSILON
+            and math.abs(a.B - b.B) < COLOR_EPSILON
+    end
+
+    local function encodeBlocks(models, plotCF)
+        local parts = getParts()
+        local grouped = {}
+        local count = 0
+
+        for index, model in ipairs(models) do
+            local main = model:FindFirstChild("PPart")
+            local template = parts and parts:FindFirstChild(model.Name)
+
+            if main and main:IsA("BasePart") and template then
+                local rel = plotCF:ToObjectSpace(main.CFrame)
+                local rx, ry, rz = rel:ToEulerAnglesXYZ()
+
+                local item = {
+                    Rotation = string.format("%.5f,%.5f,%.5f", math.deg(rx), math.deg(ry), math.deg(rz)),
+                    Position = string.format("%.4f,%.4f,%.4f", rel.X, rel.Y, rel.Z),
+                    ShowShadow = main.CastShadow,
+                    CanCollide = main.CanCollide,
+                    Anchored = main.Anchored,
+                }
+
+                if main.Transparency > 0 then
+                    item.Transparency = main.Transparency
+                end
+
+                if string.find(model.Name, "Block", 1, true)
+                    and (main.Size - DEFAULT_SIZE).Magnitude > SIZE_EPSILON then
+                    item.Size = string.format("%.4f,%.4f,%.4f", main.Size.X, main.Size.Y, main.Size.Z)
+                end
+
+                local templateMain = template:FindFirstChild("PPart")
+                if templateMain and not colorsClose(main.Color, templateMain.Color) then
+                    item.Color = string.format("%.5f,%.5f,%.5f", main.Color.R, main.Color.G, main.Color.B)
+                end
+
+                local bucket = grouped[model.Name]
+                if not bucket then
+                    bucket = {}
+                    grouped[model.Name] = bucket
+                end
+                table.insert(bucket, item)
+                count = count + 1
+            end
+
+            if index % 500 == 0 then
+                task.wait()
+            end
+        end
+
+        if count == 0 then
+            return nil, 0
+        end
+        return HttpService:JSONEncode(grouped), count
+    end
+
+    local function collectBlocks(scope)
+        local folder = workspace:FindFirstChild("Blocks")
+        local models = {}
+        if not folder then
+            return models
+        end
+
+        local function addFrom(playerName)
+            local owner = folder:FindFirstChild(playerName)
+            if owner then
+                for _, child in ipairs(owner:GetChildren()) do
+                    if child:IsA("Model") then
+                        table.insert(models, child)
+                    end
+                end
+            end
+        end
+
+        if scope == "mine" or LocalPlayer.Team == nil then
+            addFrom(LocalPlayer.Name)
+        else
+            for _, player in ipairs(Players:GetPlayers()) do
+                if player.Team == LocalPlayer.Team then
+                    addFrom(player.Name)
+                end
+            end
+        end
+
+        return models
+    end
+
+    local function getPreviewRoot(create)
+        local root = workspace:FindFirstChild(PREVIEW_NAME)
+        if not root and create then
+            root = Instance.new("Model")
+            root.Name = PREVIEW_NAME
+            root.Parent = workspace
+        end
+        return root
+    end
+
+    local function clearPreview()
+        State.gen = State.gen + 1
+        State.previewing = false
+        State.pieces = {}
+        local root = getPreviewRoot(false)
+        if root then
+            root:ClearAllChildren()
+        end
+    end
+
+    local function computeCenter(entries)
+        local minV, maxV
+        for _, entry in ipairs(entries) do
+            local p = entry.cf.Position
+            if not minV then
+                minV, maxV = p, p
+            else
+                minV = Vector3.new(math.min(minV.X, p.X), math.min(minV.Y, p.Y), math.min(minV.Z, p.Z))
+                maxV = Vector3.new(math.max(maxV.X, p.X), math.max(maxV.Y, p.Y), math.max(maxV.Z, p.Z))
+            end
+        end
+        if not minV then
+            return Vector3.zero
+        end
+        return (minV + maxV) / 2
+    end
+
+    local function finalLocalCF(entry)
+        local rotation = CFrame.Angles(math.rad(State.rot.X), math.rad(State.rot.Y), math.rad(State.rot.Z))
+        local relative = (entry.cf.Position - State.center) * State.scale
+        return CFrame.new(State.center + State.offset)
+            * rotation
+            * CFrame.new(relative)
+            * entry.cf.Rotation
+    end
+
+    local function finalSize(entry)
+        local size = entry.size
+        if State.scale ~= 1 and string.find(entry.name, "Block", 1, true) then
+            size = (size or DEFAULT_SIZE) * State.scale
+        end
+        if size then
+            size = Vector3.new(
+                math.clamp(size.X, MIN_DIM, MAX_DIM),
+                math.clamp(size.Y, MIN_DIM, MAX_DIM),
+                math.clamp(size.Z, MIN_DIM, MAX_DIM)
+            )
+            if (size - DEFAULT_SIZE).Magnitude <= SIZE_EPSILON then
+                size = nil
+            end
+        end
+        return size
+    end
+
+    local function pieceMain(piece)
+        if piece:IsA("BasePart") then
+            return piece
+        end
+        return piece:FindFirstChild("PPart")
+    end
+
+    local function preparePart(part, entry)
+        part.Anchored = true
+        part.CanCollide = false
+        part.CanQuery = false
+        part.CanTouch = false
+        if entry.color then
+            part.Color = entry.color
+        end
+    end
+
+    local function createPiece(entry, parts)
+        if entry.simple then
+            local piece = Instance.new("Part")
+            piece.Name = entry.name
+            piece.CastShadow = false
+            piece.Material = Enum.Material.SmoothPlastic
+            piece.Size = DEFAULT_SIZE
+            preparePart(piece, entry)
+            entry.baseSize = DEFAULT_SIZE
+            return piece
+        end
+
+        local template = parts and parts:FindFirstChild(entry.name)
+        if not template then
+            return nil
+        end
+
+        local piece = template:Clone()
+        local main = pieceMain(piece)
+        if not main then
+            piece:Destroy()
+            return nil
+        end
+
+        if piece:IsA("BasePart") then
+            preparePart(piece, entry)
+        end
+        for _, descendant in ipairs(piece:GetDescendants()) do
+            if descendant:IsA("BaseScript") then
+                descendant:Destroy()
+            elseif descendant:IsA("BasePart") then
+                preparePart(descendant, entry)
+            end
+        end
+
+        main.PivotOffset = CFrame.new()
+        if piece:IsA("Model") then
+            piece.PrimaryPart = main
+        end
+        entry.baseSize = main.Size
+        return piece
+    end
+
+    local function applyPiece(piece, entry, plotCF)
+        local main = pieceMain(piece)
+        if not main then
+            return
+        end
+        main.Size = finalSize(entry) or entry.baseSize or main.Size
+        piece:PivotTo(plotCF * finalLocalCF(entry))
+    end
+
+    local function showPreview(entries)
+        local plot = getPlot()
+        if not plot then
+            notifyError(L("bld_no_plot"))
+            return false
+        end
+
+        clearPreview()
+        local gen = State.gen
+
+        State.entries = entries
+        State.center = computeCenter(entries)
+        State.previewing = true
+
+        local parts = getParts()
+        local root = getPreviewRoot(true)
+        local plotCF = plot.CFrame
+        local pieces = {}
+        State.pieces = pieces
+
+        for index, entry in ipairs(entries) do
+            local piece = createPiece(entry, parts)
+            if piece then
+                pieces[index] = piece
+                applyPiece(piece, entry, plotCF)
+                piece.Parent = root
+            end
+
+            if index % YIELD_EVERY == 0 then
+                RunService.Heartbeat:Wait()
+                if State.gen ~= gen or not isAlive() then
+                    return false
+                end
+            end
+        end
+
+        if #entries <= HIGHLIGHT_LIMIT then
+            local highlight = Instance.new("Highlight")
+            highlight.Name = "BuildPreviewHighlight"
+            highlight.FillColor = Color3.fromRGB(100, 0, 0)
+            highlight.FillTransparency = 0.5
+            highlight.OutlineColor = Color3.fromRGB(0, 0, 0)
+            highlight.Adornee = root
+            highlight.Parent = root
+        end
+
+        State.previewing = false
+        return true
+    end
+
+    local function refreshPreview()
+        if State.previewing then
+            return
+        end
+        local plot = getPlot()
+        if not plot or #State.pieces == 0 then
+            State.dirty = false
+            return
+        end
+
+        State.dirty = false
+        local gen = State.gen
+        local plotCF = plot.CFrame
+
+        for index, entry in ipairs(State.entries) do
+            local piece = State.pieces[index]
+            if piece and piece.Parent then
+                applyPiece(piece, entry, plotCF)
+            end
+            if index % YIELD_EVERY == 0 then
+                RunService.Heartbeat:Wait()
+                if State.gen ~= gen or not isAlive() or State.dirty then
+                    return
+                end
+            end
+        end
+    end
+
+    local function markDirty()
+        State.dirty = true
+    end
+
+    local function executeBuild()
+        local plot = getPlot()
+        if not plot then
+            notifyError(L("bld_no_plot"))
+            return
+        end
+
+        local parts = getParts()
+        local data = LocalPlayer:FindFirstChild("Data")
+        if not parts or not data then
+            notifyError(L("bld_no_data"))
+            return
+        end
+
+        local buildRemote, buildTool = findToolRemote("BuildingTool")
+        if not buildRemote then
+            notifyError(L("bld_no_tool", "BuildingTool"))
+            return
+        end
+        local scaleRemote = findToolRemote("ScalingTool")
+        local paintRemote = findToolRemote("PaintingTool")
+
+        local plotCF = plot.CFrame
+        local inZone = makeZoneChecker(plot, buildTool)
+        local remaining = {}
+        local jobs = {}
+        local skippedZone, skippedStock = 0, 0
+        local needsScale, needsPaint = false, false
+
+        for index, entry in ipairs(State.entries) do
+            local counter = data:FindFirstChild(entry.name)
+            if counter then
+                local cf = plotCF * finalLocalCF(entry)
+                local size = finalSize(entry)
+
+                local left = remaining[entry.name]
+                if left == nil then
+                    local used = counter:FindFirstChild("Used")
+                    left = counter.Value - (used and used.Value or 0)
+                end
+
+                local cost = blockCost(size)
+                if not inZone(cf) then
+                    skippedZone = skippedZone + 1
+                elseif left < cost then
+                    skippedStock = skippedStock + 1
+                else
+                    left = left - cost
+                    table.insert(jobs, {
+                        name = entry.name,
+                        entry = entry,
+                        counter = counter,
+                        cf = cf,
+                        size = size,
+                        color = entry.color,
+                    })
+                    needsScale = needsScale or size ~= nil
+                    needsPaint = needsPaint or entry.color ~= nil
+                end
+                remaining[entry.name] = left
+            else
+                skippedStock = skippedStock + 1
+            end
+
+            if index % 500 == 0 then
+                task.wait()
+            end
+        end
+
+        if #jobs == 0 then
+            notifyError(L("bld_nothing", skippedZone, skippedStock))
+            Status.set(L("bld_nothing", skippedZone, skippedStock))
+            return
+        end
+
+        if needsScale and not scaleRemote then
+            notifyInfo(L("bld_no_scale_tool"), "triangle-alert")
+        end
+        if needsPaint and not paintRemote then
+            notifyInfo(L("bld_no_paint_tool"), "triangle-alert")
+        end
+
+        clearPreview()
+
+        local pending, matched, seen = {}, {}, {}
+        local connections = {}
+
+        local function tryMatch(model)
+            if seen[model] or not model:IsA("Model") or not parts:FindFirstChild(model.Name) then
+                return
+            end
+            local main = model:FindFirstChild("PPart") or model:WaitForChild("PPart", 1)
+            if not main or seen[model] then
+                return
+            end
+            seen[model] = true
+
+            local position = main.Position
+            for index, job in ipairs(pending) do
+                if job.name == model.Name and (position - job.cf.Position).Magnitude < MATCH_DISTANCE then
+                    table.remove(pending, index)
+                    job.block = model
+                    table.insert(matched, job)
+                    return
+                end
+            end
+        end
+
+        table.insert(connections, workspace.ChildAdded:Connect(function(child)
+            task.spawn(tryMatch, child)
+        end))
+
+        local blocksFolder = workspace:FindFirstChild("Blocks")
+        if blocksFolder then
+            table.insert(connections, blocksFolder.DescendantAdded:Connect(function(descendant)
+                if descendant:IsA("Model") and descendant.Parent and descendant.Parent.Parent == blocksFolder then
+                    task.spawn(tryMatch, descendant)
+                end
+            end))
+        end
+
+        local function cancelled()
+            return State.cancel or not isAlive()
+        end
+
+        local function sendPlace(job)
+            local build = SIGNATURES[State.signature or 1]
+            pcall(function()
+                buildRemote:InvokeServer(build(job.name, job.counter.Value, job.entry.toolFlag, job.cf))
+            end)
+        end
+
+        local function waitUntil(predicate, timeout)
+            local deadline = os.clock() + timeout
+            while os.clock() < deadline do
+                if predicate() then
+                    return true
+                end
+                if cancelled() then
+                    return false
+                end
+                task.wait(0.05)
+            end
+            return predicate()
+        end
+
+        local function throttle(counter)
+            if State.safe then
+                task.wait(SAFE_DELAY)
+            elseif counter % State.speed == 0 then
+                task.wait(TICK_DELAY)
+            end
+        end
+
+        local failed = false
+
+        local ok, err = pcall(function()
+            local startIndex = 1
+            if not State.signature then
+                local first = jobs[1]
+                table.insert(pending, first)
+                for signature = 1, #SIGNATURES do
+                    State.signature = signature
+                    sendPlace(first)
+                    if waitUntil(function()
+                        return first.block ~= nil
+                    end, CALIBRATE_TIMEOUT) then
+                        break
+                    end
+                    State.signature = nil
+                    if cancelled() then
+                        break
+                    end
+                end
+                if not State.signature then
+                    local position = table.find(pending, first)
+                    if position then
+                        table.remove(pending, position)
+                    end
+                    if not cancelled() then
+                        failed = true
+                        notifyError(L("bld_place_failed"))
+                    end
+                    return
+                end
+                startIndex = 2
+            end
+
+            local launched = 0
+            local backlog = State.safe and 1 or State.speed * 25
+            local lastMatched, lastProgress = #matched, os.clock()
+            local stalled = false
+
+            for index = startIndex, #jobs do
+                if cancelled() then
+                    return
+                end
+
+                local job = jobs[index]
+                table.insert(pending, job)
+
+                if State.safe then
+                    sendPlace(job)
+                else
+                    task.spawn(sendPlace, job)
+                end
+
+                launched = launched + 1
+                throttle(launched)
+
+                if launched % 25 == 0 then
+                    Status.set(L("bld_placing", #matched, #jobs))
+                end
+
+                while #pending > backlog and not cancelled() do
+                    task.wait(0.1)
+                    if #matched ~= lastMatched then
+                        lastMatched = #matched
+                        lastProgress = os.clock()
+                    elseif os.clock() - lastProgress > STALL_TIMEOUT then
+                        stalled = true
+                        break
+                    end
+                end
+                if stalled then
+                    break
+                end
+            end
+
+            lastMatched, lastProgress = #matched, os.clock()
+            while #pending > 0 and not cancelled() do
+                task.wait(0.2)
+                Status.set(L("bld_placing", #matched, #jobs))
+                if #matched ~= lastMatched then
+                    lastMatched = #matched
+                    lastProgress = os.clock()
+                elseif os.clock() - lastProgress > SETTLE_TIMEOUT then
+                    break
+                end
+            end
+            if cancelled() then
+                return
+            end
+
+            for _, connection in ipairs(connections) do
+                connection:Disconnect()
+            end
+            connections = {}
+
+            if scaleRemote then
+                local scalable = {}
+                for _, job in ipairs(matched) do
+                    if job.size then
+                        table.insert(scalable, job)
+                    end
+                end
+
+                if #scalable > 0 then
+                    task.wait(1)
+                    for index, job in ipairs(scalable) do
+                        if cancelled() then
+                            return
+                        end
+                        local main = job.block.Parent and job.block:FindFirstChild("PPart")
+                        if main then
+                            local block, size, cf = job.block, job.size, main.CFrame
+                            if State.safe then
+                                pcall(function()
+                                    scaleRemote:InvokeServer(block, size, cf)
+                                end)
+                            else
+                                task.spawn(pcall, scaleRemote.InvokeServer, scaleRemote, block, size, cf)
+                            end
+                        end
+                        throttle(index)
+                        if index % 25 == 0 then
+                            Status.set(L("bld_scaling", index, #scalable))
+                        end
+                    end
+                    task.wait(1)
+                end
+            end
+
+            if paintRemote then
+                local paintList = {}
+                for _, job in ipairs(matched) do
+                    if job.color and job.block.Parent then
+                        table.insert(paintList, { job.block, job.color })
+                    end
+                end
+
+                if #paintList > 0 then
+                    Status.set(L("bld_painting"))
+                    for first = 1, #paintList, PAINT_CHUNK do
+                        if cancelled() then
+                            return
+                        end
+                        local chunk = table.move(paintList, first, math.min(first + PAINT_CHUNK - 1, #paintList), 1, {})
+                        pcall(function()
+                            paintRemote:InvokeServer(chunk)
+                        end)
+                        task.wait(0.2)
+                    end
+                end
+            end
+        end)
+
+        for _, connection in ipairs(connections) do
+            connection:Disconnect()
+        end
+
+        if not ok then
+            error(err, 0)
+        end
+        if failed then
+            Status.set(L("bld_place_failed"))
+            return
+        end
+
+        local placed = #matched
+        if cancelled() then
+            Status.set(L("bld_cancelled") .. " " .. L("bld_done", placed, #jobs))
+            notifyInfo(L("bld_cancelled"), "info")
+            return
+        end
+
+        local summary = L("bld_done", placed, #jobs)
+        if skippedZone > 0 or skippedStock > 0 then
+            summary = summary .. " " .. L("bld_skipped", skippedZone, skippedStock)
+        end
+        Status.set(summary)
+        notifyInfo(summary)
+    end
+
+    local function runBuild()
+        if State.busy then
+            notifyError(L("bld_busy"))
+            return
+        end
+        if State.previewing then
+            notifyError(L("bld_wait_preview"))
+            return
+        end
+        if #State.entries == 0 then
+            notifyError(L("bld_need_preview"))
+            return
+        end
+
+        State.busy = true
+        State.cancel = false
+        local ok, message = pcall(executeBuild)
+        State.busy = false
+
+        if not ok then
+            warn("[Builder] " .. tostring(message))
+            notifyError(L("bld_failed"))
+            Status.set(L("bld_failed"))
+        end
+    end
+
+    local function stopAll()
+        State.cancel = true
+        if State.previewing then
+            clearPreview()
+        end
+    end
+
+    local function ensureDir()
+        if hasFs then
+            pcall(function()
+                if not isfolder(FILE_DIR) then
+                    makefolder(FILE_DIR)
+                end
+            end)
+        end
+    end
+
+    local function scanDirectory(directory, list, isRoot)
+        local ok, found = pcall(listfiles, directory)
+        if not ok or type(found) ~= "table" then
+            return
+        end
+
+        for _, path in ipairs(found) do
+            local normalized = string.gsub(tostring(path), "\\", "/")
+            local base = string.match(normalized, "([^/]+)$")
+            local name = base and string.match(base, "^(.+)%.[Bb][Uu][Ii][Ll][Dd]$")
+            if name then
+                local size = 0
+                local readOk, content = pcall(readfile, path)
+                if readOk and type(content) == "string" then
+                    size = #content
+                end
+                table.insert(list, { name = name, path = path, size = size, root = isRoot })
+            end
+        end
+    end
+
+    local function refreshFiles(selectPath)
+        if not hasFs then
+            return
+        end
+        ensureDir()
+
+        local list = {}
+        scanDirectory(FILE_DIR, list, false)
+        scanDirectory("", list, true)
+        table.sort(list, function(a, b)
+            return string.lower(a.name) < string.lower(b.name)
+        end)
+
+        State.fileMap = {}
+        local labels = {}
+        local target
+
+        for _, file in ipairs(list) do
+            local label = file.name .. " - " .. formatSize(file.size)
+            if file.root then
+                label = label .. " [workspace]"
+            end
+            State.fileMap[label] = file
+            table.insert(labels, label)
+            if selectPath and file.path == selectPath then
+                target = label
+            end
+        end
+
+        if #labels == 0 then
+            labels = { L("bld_no_files") }
+        end
+        target = target or labels[1]
+        State.selectedFile = State.fileMap[target]
+
+        pcall(function()
+            FilesDropdown:Refresh(labels)
+        end)
+        pcall(function()
+            FilesDropdown:Select(target)
+        end)
+    end
+
+    local function requireSelected()
+        if not State.selectedFile then
+            notifyError(L("bld_select_file"))
+            return nil
+        end
+        return State.selectedFile
+    end
+
+    local function writeBuild(path)
+        local plot = getPlot()
+        if not plot then
+            return false, "bld_no_plot"
+        end
+
+        local models = collectBlocks(State.scope)
+        local text, count = encodeBlocks(models, plot.CFrame)
+        if not text then
+            return false, "bld_no_blocks"
+        end
+
+        ensureDir()
+        local ok = pcall(writefile, path, text)
+        if not ok then
+            return false, "bld_cant_write"
+        end
+        return true, nil, count
+    end
+
+    local function saveNew()
+        if not requireFs() then
+            return
+        end
+        local name = Util.sanitizeName(State.saveName)
+        if name == "" then
+            notifyError(L("bld_type_name"))
+            return
+        end
+
+        local path = FILE_DIR .. name .. FILE_EXT
+
+        local function go()
+            local ok, reason, count = writeBuild(path)
+            if not ok then
+                notifyError(L(reason))
+                return
+            end
+            refreshFiles(path)
+            notifyInfo(L("bld_saved", name, count))
+        end
+
+        local exists = false
+        pcall(function()
+            ensureDir()
+            exists = isfile(path)
+        end)
+
+        if exists then
+            confirm(L("bld_overwrite_title"), L("bld_overwrite_content"), go)
+        else
+            go()
+        end
+    end
+
+    local function updateSelected()
+        if not requireFs() then
+            return
+        end
+        local file = requireSelected()
+        if not file then
+            return
+        end
+
+        confirm(L("bld_update_title"), L("bld_update_content"), function()
+            local ok, reason, count = writeBuild(file.path)
+            if not ok then
+                notifyError(L(reason))
+                return
+            end
+            refreshFiles(file.path)
+            notifyInfo(L("bld_updated", file.name, count))
+        end)
+    end
+
+    local function renameSelected()
+        if not requireFs() then
+            return
+        end
+        local file = requireSelected()
+        if not file then
+            return
+        end
+
+        local newName = Util.sanitizeName(State.newName)
+        if newName == "" then
+            notifyError(L("bld_type_name"))
+            return
+        end
+        if newName == file.name then
+            return
+        end
+
+        local normalized = string.gsub(tostring(file.path), "\\", "/")
+        local directory = string.match(normalized, "^(.*/)") or ""
+        local newPath = directory .. newName .. FILE_EXT
+
+        local exists = false
+        pcall(function()
+            exists = isfile(newPath)
+        end)
+        if exists then
+            notifyError(L("bld_exists"))
+            return
+        end
+
+        local readOk, content = pcall(readfile, file.path)
+        if not readOk or type(content) ~= "string" then
+            notifyError(L("bld_bad_file"))
+            return
+        end
+        if not pcall(writefile, newPath, content) then
+            notifyError(L("bld_cant_write"))
+            return
+        end
+        pcall(delfile, file.path)
+
+        refreshFiles(newPath)
+        notifyInfo(L("bld_renamed", newName))
+    end
+
+    local function deleteSelected()
+        if not requireFs() then
+            return
+        end
+        local file = requireSelected()
+        if not file then
+            return
+        end
+
+        confirm(L("bld_delete_title"), L("bld_delete_content"), function()
+            pcall(delfile, file.path)
+            refreshFiles()
+            notifyInfo(L("bld_deleted", file.name), "trash-2")
+        end)
+    end
+
+    local function previewSelected()
+        if not requireFs() then
+            return
+        end
+        if State.busy then
+            notifyError(L("bld_busy"))
+            return
+        end
+        local file = requireSelected()
+        if not file then
+            return
+        end
+
+        local ok, text = pcall(readfile, file.path)
+        if not ok then
+            notifyError(L("bld_bad_file"))
+            return
+        end
+
+        local entries, reason = decodeBuild(text)
+        if not entries then
+            notifyError(reason == "empty" and L("bld_empty_file") or L("bld_bad_file"))
+            return
+        end
+
+        if showPreview(entries) then
+            Status.set(L("bld_preview_ready", #entries))
+            notifyInfo(L("bld_preview_ready", #entries))
+        end
+    end
+
+    local function generateImage()
+        if State.busy then
+            notifyError(L("bld_busy"))
+            return
+        end
+
+        local image = State.image
+        if not string.match(image.link, "^https?://%S+$") then
+            notifyError(L("bld_img_bad_link"))
+            return
+        end
+
+        Status.set(L("bld_img_loading"))
+
+        local url = IMAGE_API
+            .. "?URL=" .. HttpService:UrlEncode(image.link)
+            .. "&SizeX=" .. image.resX
+            .. "&SizeY=" .. image.resY
+
+        local ok, decoded
+        for attempt = 1, 3 do
+            ok, decoded = pcall(function()
+                return HttpService:JSONDecode(game:HttpGet(url))
+            end)
+            if ok and type(decoded) == "table" and decoded.Data then
+                break
+            end
+            if attempt < 3 then
+                Status.set(L("bld_img_loading") .. " (" .. attempt .. "/3)")
+                task.wait(5)
+            end
+        end
+
+        local pixels = ok and type(decoded) == "table" and decoded.Data
+        local dims = ok and type(decoded) == "table" and decoded.Size
+        if type(pixels) ~= "table" or type(dims) ~= "table" then
+            notifyError(L("bld_img_failed"))
+            Status.set(L("bld_img_failed"))
+            return
+        end
+
+        local width, height = tonumber(dims[1]), tonumber(dims[2])
+        if not width or not height or width * height ~= #pixels then
+            if #pixels == image.resX * image.resY then
+                width, height = image.resX, image.resY
+            else
+                notifyError(L("bld_img_failed"))
+                Status.set(L("bld_img_failed"))
+                return
+            end
+        end
+        width, height = math.floor(width), math.floor(height)
+
+        local size = image.size
+        local blockSize = (size - DEFAULT_SIZE).Magnitude > SIZE_EPSILON and size or nil
+        local entries = {}
+
+        for row = 1, height do
+            for column = 1, width do
+                local pixel = pixels[(row - 1) * width + column]
+                if type(pixel) == "table" and (pixel[4] == nil or pixel[4] >= 128) then
+                    local r, g, b = tonumber(pixel[1]), tonumber(pixel[2]), tonumber(pixel[3])
+                    if r and g and b then
+                        table.insert(entries, {
+                            name = image.block,
+                            cf = CFrame.new(
+                                (column - (width + 1) / 2) * size.X,
+                                IMAGE_LIFT + (height - row) * size.Y,
+                                0
+                            ),
+                            color = Color3.fromRGB(
+                                math.clamp(r, 0, 255),
+                                math.clamp(g, 0, 255),
+                                math.clamp(b, 0, 255)
+                            ),
+                            size = blockSize,
+                            simple = true,
+                            toolFlag = true,
+                        })
+                    end
+                end
+            end
+            if row % 20 == 0 then
+                task.wait()
+            end
+        end
+
+        if #entries == 0 then
+            notifyError(L("bld_img_failed"))
+            Status.set(L("bld_img_failed"))
+            return
+        end
+        if #entries > IMAGE_WARN_BLOCKS then
+            notifyInfo(L("bld_img_many", #entries), "triangle-alert")
+        end
+
+        if showPreview(entries) then
+            local message = L("bld_img_ready", #entries, width, height)
+            Status.set(message)
+            notifyInfo(message)
+        end
+    end
+
+    Builder:Section({ Title = L("bld_sec_auto") })
+
+    local StatusParagraph = Builder:Paragraph({
+        Title = L("bld_status"),
+        Desc = L("bld_status_idle"),
+    })
+    Status.set = Util.makeSetter(StatusParagraph)
+
+    FilesDropdown = Builder:Dropdown({
+        Title = L("bld_files"),
+        Desc = L("bld_files_desc"),
+        Values = { L("bld_no_files") },
+        Value = L("bld_no_files"),
+        Callback = function(option)
+            if type(option) == "string" then
+                State.selectedFile = State.fileMap[option]
+            end
+        end,
+    })
+
+    Builder:Button({
+        Title = L("bld_refresh"),
+        Icon = "refresh-cw",
+        Callback = function()
+            if requireFs() then
+                refreshFiles(State.selectedFile and State.selectedFile.path or nil)
+            end
+        end,
+    })
+
+    Builder:Button({
+        Title = L("bld_preview"),
+        Desc = L("bld_preview_desc"),
+        Icon = "eye",
+        Callback = function()
+            task.spawn(previewSelected)
+        end,
+    })
+
+    Builder:Button({
+        Title = L("bld_build"),
+        Desc = L("bld_build_desc"),
+        Icon = "hammer",
+        Callback = function()
+            task.spawn(runBuild)
+        end,
+    })
+
+    Builder:Button({
+        Title = L("bld_stop"),
+        Desc = L("bld_stop_desc"),
+        Icon = "octagon-x",
+        Callback = stopAll,
+    })
+
+    Builder:Button({
+        Title = L("bld_clear"),
+        Icon = "eraser",
+        Callback = function()
+            if State.busy then
+                notifyError(L("bld_busy"))
+                return
+            end
+            clearPreview()
+            State.entries = {}
+            Status.set(L("bld_cleared"))
+        end,
+    })
+
+    local SpeedSlider = Builder:Slider({
+        Title = L("bld_speed"),
+        Desc = L("bld_speed_desc"),
+        Step = 1,
+        Value = { Min = 1, Max = 30, Default = State.speed },
+        Callback = function(value)
+            State.speed = math.max(1, math.floor(tonumber(value) or 1))
+        end,
+    })
+    Util.register("bld_speed", SpeedSlider)
+
+    local SafeToggle = Builder:Toggle({
+        Title = L("bld_safe"),
+        Desc = L("bld_safe_desc"),
+        Value = false,
+        Callback = function(state)
+            State.safe = state
+        end,
+    })
+    Util.register("bld_safe", SafeToggle)
+
+    Builder:Section({ Title = L("bld_sec_adjust") })
+
+    local MoveInput = Builder:Input({
+        Title = L("bld_move_step"),
+        Placeholder = "1",
+        Value = "",
+        Callback = function(text)
+            local n = tonumber(text)
+            if n and n > 0 then
+                State.moveStep = math.min(n, 1000)
+            end
+        end,
+    })
+    Util.register("bld_move_step", MoveInput)
+
+    local function move(direction)
+        State.offset = State.offset + direction * State.moveStep
+        markDirty()
+    end
+
+    local moves = {
+        { "bld_move_up", "arrow-up", Vector3.new(0, 1, 0) },
+        { "bld_move_down", "arrow-down", Vector3.new(0, -1, 0) },
+        { "bld_move_right", "arrow-right", Vector3.new(1, 0, 0) },
+        { "bld_move_left", "arrow-left", Vector3.new(-1, 0, 0) },
+        { "bld_move_back", "chevrons-down", Vector3.new(0, 0, 1) },
+        { "bld_move_forward", "chevrons-up", Vector3.new(0, 0, -1) },
+    }
+    for _, item in ipairs(moves) do
+        Builder:Button({
+            Title = L(item[1]),
+            Icon = item[2],
+            Callback = function()
+                move(item[3])
+            end,
+        })
+    end
+
+    Builder:Button({
+        Title = L("bld_center"),
+        Desc = L("bld_center_desc"),
+        Icon = "crosshair",
+        Callback = function()
+            State.offset = Vector3.new(-State.center.X, State.offset.Y, -State.center.Z)
+            markDirty()
+        end,
+    })
+
+    local rotationSliders = {}
+    for axis, key in ipairs({ "bld_rot_x", "bld_rot_y", "bld_rot_z" }) do
+        rotationSliders[axis] = Builder:Slider({
+            Title = L(key),
+            Step = 1,
+            Value = { Min = 0, Max = 360, Default = 0 },
+            Callback = function(value)
+                local degrees = tonumber(value) or 0
+                local current = State.rot
+                if axis == 1 then
+                    State.rot = Vector3.new(degrees, current.Y, current.Z)
+                elseif axis == 2 then
+                    State.rot = Vector3.new(current.X, degrees, current.Z)
+                else
+                    State.rot = Vector3.new(current.X, current.Y, degrees)
+                end
+                markDirty()
+            end,
+        })
+    end
+
+    local ScaleInput = Builder:Input({
+        Title = L("bld_scale"),
+        Desc = L("bld_scale_desc"),
+        Placeholder = "100",
+        Value = "",
+        Callback = function(text)
+            if text == nil or text == "" then
+                return
+            end
+            local n = tonumber(text)
+            if not n then
+                notifyError(L("bld_scale_invalid"))
+                return
+            end
+            State.scale = math.clamp(n, MIN_SCALE, MAX_SCALE) / 100
+            markDirty()
+        end,
+    })
+
+    Builder:Button({
+        Title = L("bld_reset_adjust"),
+        Desc = L("bld_reset_adjust_desc"),
+        Icon = "rotate-ccw",
+        Callback = function()
+            State.offset = Vector3.zero
+            State.rot = Vector3.zero
+            State.scale = 1
+            for _, slider in ipairs(rotationSliders) do
+                pcall(function()
+                    slider:Set(0)
+                end)
+            end
+            pcall(function()
+                ScaleInput:Set("100")
+            end)
+            markDirty()
+        end,
+    })
+
+    Builder:Section({ Title = L("bld_sec_files") })
+
+    Builder:Input({
+        Title = L("bld_save_name"),
+        Placeholder = L("bld_save_name_ph"),
+        Value = "",
+        Callback = function(text)
+            State.saveName = tostring(text or "")
+        end,
+    })
+
+    Builder:Dropdown({
+        Title = L("bld_save_scope"),
+        Values = { L("bld_scope_team"), L("bld_scope_mine") },
+        Value = L("bld_scope_team"),
+        Callback = function(option)
+            State.scope = option == L("bld_scope_mine") and "mine" or "team"
+        end,
+    })
+
+    Builder:Button({
+        Title = L("bld_save"),
+        Desc = L("bld_save_desc"),
+        Icon = "save",
+        Callback = function()
+            task.spawn(saveNew)
+        end,
+    })
+
+    Builder:Input({
+        Title = L("bld_rename_input"),
+        Placeholder = L("bld_rename_input_ph"),
+        Value = "",
+        Callback = function(text)
+            State.newName = tostring(text or "")
+        end,
+    })
+
+    Builder:Button({
+        Title = L("bld_rename"),
+        Icon = "pencil",
+        Callback = function()
+            task.spawn(renameSelected)
+        end,
+    })
+
+    Builder:Button({
+        Title = L("bld_update"),
+        Desc = L("bld_update_desc"),
+        Icon = "refresh-cw",
+        Callback = function()
+            task.spawn(updateSelected)
+        end,
+    })
+
+    Builder:Button({
+        Title = L("bld_delete"),
+        Icon = "trash-2",
+        Callback = function()
+            task.spawn(deleteSelected)
+        end,
+    })
+
+    Builder:Section({ Title = L("bld_sec_image") })
+
+    Builder:Paragraph({
+        Title = L("bld_sec_image"),
+        Desc = L("bld_img_note"),
+    })
+
+    Builder:Input({
+        Title = L("bld_img_link"),
+        Placeholder = L("bld_img_link_ph"),
+        Value = "",
+        Callback = function(text)
+            State.image.link = string.gsub(tostring(text or ""), "%s+", "")
+        end,
+    })
+
+    local ResInput = Builder:Input({
+        Title = L("bld_img_res"),
+        Placeholder = L("bld_img_res_ph"),
+        Value = "",
+        Callback = function(text)
+            local clean = string.gsub(tostring(text or ""), "%s+", "")
+            if clean == "" then
+                return
+            end
+            local w, h = string.match(clean, "^(%d+)[xX](%d+)$")
+            if not w then
+                w = string.match(clean, "^(%d+)$")
+                h = w
+            end
+            w, h = tonumber(w), tonumber(h)
+            if not w or not h then
+                notifyError(L("bld_img_res_invalid"))
+                return
+            end
+            State.image.resX = math.clamp(math.floor(w), IMAGE_MIN_RES, IMAGE_MAX_RES)
+            State.image.resY = math.clamp(math.floor(h), IMAGE_MIN_RES, IMAGE_MAX_RES)
+            notifyInfo(L("bld_img_res_set", State.image.resX, State.image.resY))
+        end,
+    })
+    Util.register("bld_img_res", ResInput)
+
+    local imageBlocks = {}
+    do
+        local parts = getParts()
+        for _, name in ipairs(BLOCK_NAMES) do
+            if not parts or parts:FindFirstChild(name) then
+                table.insert(imageBlocks, name)
+            end
+        end
+        if #imageBlocks == 0 then
+            imageBlocks = { "PlasticBlock" }
+        end
+    end
+
+    local BlockDropdown = Builder:Dropdown({
+        Title = L("bld_img_block"),
+        Values = imageBlocks,
+        Value = table.find(imageBlocks, "PlasticBlock") and "PlasticBlock" or imageBlocks[1],
+        SearchBarEnabled = true,
+        AllowNone = false,
+        Callback = function(option)
+            if type(option) == "string" and table.find(imageBlocks, option) then
+                State.image.block = option
+            end
+        end,
+    })
+    Util.register("bld_img_block", BlockDropdown)
+
+    local SizeInput = Builder:Input({
+        Title = L("bld_img_size"),
+        Placeholder = L("bld_img_size_ph"),
+        Value = "",
+        Callback = function(text)
+            local clean = tostring(text or "")
+            if string.match(clean, "^%s*$") then
+                return
+            end
+            local numbers = {}
+            for token in string.gmatch(clean, "%d+%.?%d*") do
+                table.insert(numbers, tonumber(token))
+            end
+            if #numbers == 1 then
+                numbers = { numbers[1], numbers[1], numbers[1] }
+            end
+            if #numbers ~= 3 then
+                notifyError(L("bld_img_size_invalid"))
+                return
+            end
+            local size = Vector3.new(
+                math.clamp(numbers[1], MIN_DIM, MAX_DIM),
+                math.clamp(numbers[2], MIN_DIM, MAX_DIM),
+                math.clamp(numbers[3], MIN_DIM, MAX_DIM)
+            )
+            State.image.size = size
+            notifyInfo(L("bld_img_size_set", string.format("%g %g %g", size.X, size.Y, size.Z)))
+        end,
+    })
+    Util.register("bld_img_size", SizeInput)
+
+    Builder:Button({
+        Title = L("bld_img_preview"),
+        Desc = L("bld_img_preview_desc"),
+        Icon = "image",
+        Callback = function()
+            task.spawn(generateImage)
+        end,
+    })
+
+    Builder:Button({
+        Title = L("bld_img_build"),
+        Desc = L("bld_img_build_desc"),
+        Icon = "hammer",
+        Callback = function()
+            task.spawn(runBuild)
+        end,
+    })
+
+    refreshFiles()
+
+    task.spawn(function()
+        pcall(function()
+            game:HttpGet(IMAGE_API .. "health")
+        end)
+    end)
+
+    task.spawn(function()
+        while isAlive() do
+            task.wait(REFRESH_INTERVAL)
+            if State.dirty and not State.previewing and #State.pieces > 0 then
+                pcall(refreshPreview)
+            end
+        end
+
+        State.cancel = true
+        State.entries = {}
+        pcall(clearPreview)
+        pcall(function()
+            local root = getPreviewRoot(false)
+            if root then
+                root:Destroy()
+            end
+        end)
+    end)
 end
 
 do
     local Shop = Tabs.Shop
+
+    local CHESTS = {
+        "Common Chest",
+        "Uncommon Chest",
+        "Rare Chest",
+        "Epic Chest",
+        "Legendary Chest",
+    }
+
+    local ChestState = {
+        selected = CHESTS[1],
+        delay = 0.5,
+        enabled = false,
+        token = 0,
+    }
+
+    local function openChest(name)
+        local remote = workspace:FindFirstChild("ItemBoughtFromShop")
+        if not remote then
+            return false
+        end
+
+        if remote:IsA("RemoteFunction") then
+            pcall(remote.InvokeServer, remote, name, 1)
+        elseif remote:IsA("RemoteEvent") then
+            pcall(remote.FireServer, remote, name, 1)
+        else
+            return false
+        end
+
+        return true
+    end
+
+    Shop:Section({ Title = L("shop_section") })
+
+    local ChestDropdown = Shop:Dropdown({
+        Title = L("shop_chest_type"),
+        Desc = L("shop_chest_type_desc"),
+        Values = CHESTS,
+        Value = CHESTS[1],
+        AllowNone = false,
+        Callback = function(option)
+            if type(option) == "string" and table.find(CHESTS, option) then
+                ChestState.selected = option
+            end
+        end,
+    })
+    Util.register("shop_chest_type", ChestDropdown)
+
+    local DelayInput = Shop:Input({
+        Title = L("shop_delay"),
+        Desc = L("shop_delay_desc"),
+        Placeholder = "0.5",
+        Value = "",
+        Callback = function(text)
+            local n = tonumber(text)
+            if n then
+                ChestState.delay = math.clamp(n, 0.1, 60)
+            end
+        end,
+    })
+    Util.register("shop_chest_delay", DelayInput)
+
+    local AutoOpenToggle
+    AutoOpenToggle = Shop:Toggle({
+        Title = L("shop_auto_open"),
+        Desc = L("shop_auto_open_desc"),
+        Value = false,
+        Callback = function(state)
+            ChestState.enabled = state
+            ChestState.token = ChestState.token + 1
+
+            if not state then
+                return
+            end
+
+            local token = ChestState.token
+
+            task.spawn(function()
+                while ChestState.enabled and ChestState.token == token and isAlive() do
+                    if not openChest(ChestState.selected) then
+                        Util.notify(L("error"), L("shop_no_remote"), "triangle-alert")
+                        ChestState.enabled = false
+                        task.defer(function()
+                            pcall(function()
+                                AutoOpenToggle:Set(false)
+                            end)
+                        end)
+                        return
+                    end
+                    task.wait(ChestState.delay)
+                end
+            end)
+        end,
+    })
+    Util.register("shop_auto_open", AutoOpenToggle)
+
+    task.spawn(function()
+        while isAlive() do
+            task.wait(1)
+        end
+        ChestState.enabled = false
+        ChestState.token = ChestState.token + 1
+    end)
 end
 
 do
     local Quest = Tabs.Quest
+
+    Quest:Paragraph({
+        Title = L("quest_soon_title"),
+        Desc = L("quest_soon_desc"),
+        Icon = "clock",
+    })
 end
 
 do
     local Troll = Tabs.Troll
+
+    local GOLD_PER_TICK = 2363424325326
+    local GOLD_DELAY = 1
+
+    local GoldState = {
+        enabled = false,
+        token = 0,
+        added = 0,
+    }
+
+    local function getGold()
+        local data = LocalPlayer:FindFirstChild("Data")
+        return data and data:FindFirstChild("Gold")
+    end
+
+    local function revertGold()
+        local gold = getGold()
+        if gold and GoldState.added > 0 then
+            pcall(function()
+                gold.Value = math.max(gold.Value - GoldState.added, 0)
+            end)
+        end
+        GoldState.added = 0
+    end
+
+    Troll:Section({ Title = L("troll_section") })
+
+    local InfGoldToggle
+    InfGoldToggle = Troll:Toggle({
+        Title = L("troll_inf_gold"),
+        Desc = L("troll_inf_gold_desc"),
+        Value = false,
+        Callback = function(state)
+            GoldState.enabled = state
+            GoldState.token = GoldState.token + 1
+
+            if not state then
+                revertGold()
+                return
+            end
+
+            if not getGold() then
+                Util.notify(L("error"), L("troll_no_gold"), "triangle-alert")
+                GoldState.enabled = false
+                task.defer(function()
+                    pcall(function()
+                        InfGoldToggle:Set(false)
+                    end)
+                end)
+                return
+            end
+
+            local token = GoldState.token
+
+            task.spawn(function()
+                while GoldState.enabled and GoldState.token == token and isAlive() do
+                    local gold = getGold()
+                    if gold then
+                        local ok = pcall(function()
+                            gold.Value = gold.Value + GOLD_PER_TICK
+                        end)
+                        if ok then
+                            GoldState.added = GoldState.added + GOLD_PER_TICK
+                        end
+                    end
+                    task.wait(GOLD_DELAY)
+                end
+            end)
+        end,
+    })
+    Util.register("troll_inf_gold", InfGoldToggle)
+
+    task.spawn(function()
+        while isAlive() do
+            task.wait(1)
+        end
+        GoldState.enabled = false
+        GoldState.token = GoldState.token + 1
+        pcall(revertGold)
+    end)
 end
 
 do
     local PlayersTab = Tabs.Players
+
+    local TP_BEHIND = 3
+
+    local PlayerList = {
+        map = {},
+        selected = nil,
+        refreshing = false,
+    }
+
+    local function makeLabel(player)
+        return player.Name .. " - " .. player.DisplayName
+    end
+
+    local function buildList()
+        local list = {}
+        for _, player in ipairs(Players:GetPlayers()) do
+            if player ~= LocalPlayer then
+                table.insert(list, player)
+            end
+        end
+        table.sort(list, function(a, b)
+            return string.lower(a.Name) < string.lower(b.Name)
+        end)
+        return list
+    end
+
+    local PlayersDropdown
+
+    local function refreshList()
+        if PlayerList.refreshing then
+            return
+        end
+        PlayerList.refreshing = true
+
+        local players = buildList()
+        local labels = {}
+        local map = {}
+        local target
+
+        for _, player in ipairs(players) do
+            local label = makeLabel(player)
+            map[label] = player
+            table.insert(labels, label)
+            if PlayerList.selected == player then
+                target = label
+            end
+        end
+
+        if #labels == 0 then
+            labels = { L("players_none") }
+        end
+
+        target = target or labels[1]
+        PlayerList.map = map
+        PlayerList.selected = map[target]
+
+        pcall(function()
+            PlayersDropdown:Refresh(labels)
+        end)
+        pcall(function()
+            PlayersDropdown:Select(target)
+        end)
+
+        PlayerList.refreshing = false
+    end
+
+    local function teleportToSelected()
+        local target = PlayerList.selected
+        if not target then
+            Util.notify(L("error"), L("players_select_first"), "triangle-alert")
+            return
+        end
+        if target.Parent ~= Players then
+            Util.notify(L("error"), L("players_gone"), "triangle-alert")
+            refreshList()
+            return
+        end
+
+        local targetCharacter = target.Character
+        local targetRoot = targetCharacter and targetCharacter:FindFirstChild("HumanoidRootPart")
+        local character = LocalPlayer.Character
+        local root = character and character:FindFirstChild("HumanoidRootPart")
+
+        if not targetRoot or not root then
+            Util.notify(L("error"), L("players_no_char"), "triangle-alert")
+            return
+        end
+
+        root.AssemblyLinearVelocity = Vector3.zero
+        root.AssemblyAngularVelocity = Vector3.zero
+        root.CFrame = targetRoot.CFrame * CFrame.new(0, 0, TP_BEHIND)
+
+        Util.notify(L("players_section"), L("players_teleported", makeLabel(target)), "map-pin")
+    end
+
+    PlayersTab:Section({ Title = L("players_section") })
+
+    PlayersDropdown = PlayersTab:Dropdown({
+        Title = L("players_list"),
+        Desc = L("players_list_desc"),
+        Values = { L("players_none") },
+        Value = L("players_none"),
+        SearchBarEnabled = true,
+        AllowNone = false,
+        Callback = function(option)
+            if type(option) == "string" then
+                PlayerList.selected = PlayerList.map[option]
+            end
+        end,
+    })
+
+    PlayersTab:Button({
+        Title = L("players_refresh"),
+        Icon = "refresh-cw",
+        Callback = refreshList,
+    })
+
+    PlayersTab:Button({
+        Title = L("players_tp"),
+        Desc = L("players_tp_desc"),
+        Icon = "map-pin",
+        Callback = teleportToSelected,
+    })
+
+    refreshList()
+
+    local addedConn = Players.PlayerAdded:Connect(function()
+        task.defer(function()
+            if isAlive() then
+                refreshList()
+            end
+        end)
+    end)
+
+    local removingConn = Players.PlayerRemoving:Connect(function(player)
+        if PlayerList.selected == player then
+            PlayerList.selected = nil
+        end
+        task.defer(function()
+            if isAlive() then
+                refreshList()
+            end
+        end)
+    end)
+
+    task.spawn(function()
+        while isAlive() do
+            task.wait(1)
+        end
+        addedConn:Disconnect()
+        removingConn:Disconnect()
+    end)
 end
 
 do
@@ -3210,6 +6005,68 @@ end
 
 do
     local Teleport = Tabs.Teleport
+
+    local TEAM_NAMES = {
+        "White Team",
+        "Black Team",
+        "Red Team",
+        "Blue Team",
+        "Pink Team",
+        "Green Team",
+        "Yellow Team",
+    }
+
+    local TEAM_POSITIONS = {
+        ["White Team"] = Vector3.new(-50.11, -8.19, -591.96),
+        ["Black Team"] = Vector3.new(-582.79, -8.19, -70.03),
+        ["Red Team"] = Vector3.new(473.08, -8.18, -65.08),
+        ["Blue Team"] = Vector3.new(472.09, -8.18, 300.86),
+        ["Pink Team"] = Vector3.new(471.79, -8.18, 646.15),
+        ["Green Team"] = Vector3.new(-579.99, -8.2, 294.7),
+        ["Yellow Team"] = Vector3.new(-589.91, -8.18, 640.32),
+    }
+
+    local selectedTeam = TEAM_NAMES[1]
+
+    local function teleportToTeam()
+        local position = TEAM_POSITIONS[selectedTeam]
+        local character = LocalPlayer.Character
+        local root = character and character:FindFirstChild("HumanoidRootPart")
+
+        if not position or not root then
+            Util.notify(L("error"), L("tp_no_char"), "triangle-alert")
+            return
+        end
+
+        root.AssemblyLinearVelocity = Vector3.zero
+        root.AssemblyAngularVelocity = Vector3.zero
+        root.CFrame = CFrame.new(position)
+
+        Util.notify(L("tp_section"), L("tp_done", selectedTeam), "map-pin")
+    end
+
+    Teleport:Section({ Title = L("tp_section") })
+
+    local TeamDropdown = Teleport:Dropdown({
+        Title = L("tp_team"),
+        Desc = L("tp_team_desc"),
+        Values = TEAM_NAMES,
+        Value = TEAM_NAMES[1],
+        AllowNone = false,
+        Callback = function(option)
+            if type(option) == "string" and TEAM_POSITIONS[option] then
+                selectedTeam = option
+            end
+        end,
+    })
+    Util.register("tp_team", TeamDropdown)
+
+    Teleport:Button({
+        Title = L("tp_go"),
+        Desc = L("tp_go_desc"),
+        Icon = "map-pin",
+        Callback = teleportToTeam,
+    })
 end
 
 do
